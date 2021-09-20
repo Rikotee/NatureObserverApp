@@ -10,5 +10,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Log.d("TEST", "Testing!")
         Log.d("TEST", "Testing again")
+        Log.d("TEST", "Testing token")
     }
 }
