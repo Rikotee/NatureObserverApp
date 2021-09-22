@@ -3,7 +3,7 @@ package com.example.natureobserverapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.activity_main.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -11,15 +11,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val firstFragment = FirstFragment()
-        val secondFragment = SecondFragment()
+        val mapFragment = MapFragment()
         val thirdFragment = ThirdFragment()
 
         setCurrentFragment(firstFragment)
 
-        bottomNavigationView.setOnNavigationItemSelectedListener {
+        findViewById<BottomNavigationView>(R.id.bottomNavigationView).setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.home -> setCurrentFragment(firstFragment)
-                R.id.person -> setCurrentFragment(secondFragment)
+                R.id.map -> setCurrentFragment(mapFragment)
                 R.id.settings -> setCurrentFragment(thirdFragment)
             }
             true
