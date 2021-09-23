@@ -17,7 +17,6 @@ import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -79,7 +78,7 @@ class MapFragment : Fragment(), LocationListener {
         Log.d("GEOLOCATION", "new latitude: ${p0.latitude} and longitude: ${p0.longitude}")
         
         // weather info
-        viewModel.getWeatherLatLot(p0.latitude, p0.longitude)
+        viewModel.getWeatherLatLon(p0.latitude, p0.longitude)
         viewModel.hits.observe( this, {
             Log.d("WEATHER", it.main.temp.toString())
             Log.d("WEATHER", it.weather[0].description)

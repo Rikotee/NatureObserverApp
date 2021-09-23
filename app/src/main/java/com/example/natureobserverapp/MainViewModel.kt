@@ -27,7 +27,7 @@ class MainViewModel: ViewModel() {
     }
 
     // latitude, longitude
-    fun getWeatherLatLot(lat: Double, lon: Double){
+    fun getWeatherLatLon(lat: Double, lon: Double){
         searchLat = lat
         searchLon = lon
     }
