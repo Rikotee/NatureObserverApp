@@ -76,11 +76,11 @@ class MapFragment : Fragment(), LocationListener {
 
     override fun onLocationChanged(p0: Location) {
         Log.d("GEOLOCATION", "new latitude: ${p0.latitude} and longitude: ${p0.longitude}")
-        
+
         // weather info
         viewModel.getWeatherLatLon(p0.latitude, p0.longitude)
         viewModel.hits.observe( this, {
-            Log.d("WEATHER", it.main.temp.toString())
+            Log.d("WEATHER", "temp: " + it.main.temp.toString() + " °C")
             Log.d("WEATHER", it.weather[0].description)
         })
 
