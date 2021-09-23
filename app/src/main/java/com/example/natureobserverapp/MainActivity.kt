@@ -10,27 +10,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
-        viewModel = ViewModelProvider( this).get(MainViewModel:: class.java)
-
-        // city
-        //val cityName = "helsinki"
-        //viewModel.getWeatherCity(cityName)
-
-        // latitude, longitude
-        viewModel.getWeatherLatLot(60.1695, 24.9355)
-
-        viewModel.hits.observe( this, Observer {
-            Log.d("WEATHER", it.main.temp.toString())
-            Log.d("WEATHER", it.weather[0].description)
-        })
-
 
         val firstFragment = FirstFragment()
         val mapFragment = MapFragment()

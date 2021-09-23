@@ -8,13 +8,13 @@ import kotlinx.coroutines.Dispatchers
 class MainViewModel: ViewModel() {
     private val repository: WebServiceRepository = WebServiceRepository()
 
-    var searchCity: String = ""
-    var searchLat: Double = 0.0
-    var searchLot: Double = 0.0
+    private var searchCity: String = ""
+    private var searchLat: Double = 0.0
+    private var searchLon: Double = 0.0
 
     val hits = liveData(Dispatchers.IO) {
         try {
-        val retrievedWeather = repository.getCustomPosts(searchLat, searchLot)
+        val retrievedWeather = repository.getCustomPosts(searchLat, searchLon)
         emit(retrievedWeather)
         } catch (t: Throwable) {
             Log.d("WEATHER", t.toString())
@@ -29,6 +29,6 @@ class MainViewModel: ViewModel() {
     // latitude, longitude
     fun getWeatherLatLot(lat: Double, lon: Double){
         searchLat = lat
-        searchLot = lon
+        searchLon = lon
     }
 }
