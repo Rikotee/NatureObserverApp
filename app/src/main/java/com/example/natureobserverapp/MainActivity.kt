@@ -2,13 +2,29 @@ package com.example.natureobserverapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var viewModel: MainViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+        viewModel = ViewModelProvider( this).get(MainViewModel:: class.java)
+        val cityName = "helsinki"
+        viewModel.getWeather(cityName)
+        viewModel.hits.observe( this, Observer {
+            Log.d("WEATHER", it.main.temp.toString())
+            Log.d("WEATHER", it.weather[0].description)
+        })
+
 
         val firstFragment = FirstFragment()
         val mapFragment = MapFragment()
