@@ -10,15 +10,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val firstFragment = FirstFragment()
+        val homeFragment = HomeFragment()
         val mapFragment = MapFragment()
         val thirdFragment = ThirdFragment()
 
-        setCurrentFragment(firstFragment)
+        setCurrentFragment(homeFragment)
 
         findViewById<BottomNavigationView>(R.id.bottomNavigationView).setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.home -> setCurrentFragment(firstFragment)
+                R.id.home -> setCurrentFragment(homeFragment)
                 R.id.map -> setCurrentFragment(mapFragment)
                 R.id.settings -> setCurrentFragment(thirdFragment)
             }

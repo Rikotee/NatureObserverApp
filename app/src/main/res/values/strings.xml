@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">NatureObserverApp</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_title_text">Your nature observations</string>
+    <string name="new_picture_button_text">Take a new picture</string>
+    <string name="new_observation_title_text">New nature observation</string>
+    <string name="observation_info_text">Enter the observation details</string>
+    <string name="observation_title_edit_text_hint">Observation title</string>
+    <string name="save_observation_button_text">Save observation</string>
 </resources>
