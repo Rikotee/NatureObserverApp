@@ -10,7 +10,7 @@ object WeatherApi {
     const val URL = "http://api.openweathermap.org/"
 
     interface Service {
-        @GET("data/2.5/weather?&units=metric&APPID=04a42b96398abc8e4183798ed22f9485")
+        @GET("data/2.5/weather?&units=metric&APPID=b208e0a34797d6a37c6c9dd719be6cc4")
         suspend fun getWeather(
 
             @Query("q") q: String,
