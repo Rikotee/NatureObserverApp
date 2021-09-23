@@ -80,6 +80,7 @@ class MapFragment : Fragment(), LocationListener {
         // weather info
         viewModel.getWeatherLatLon(p0.latitude, p0.longitude)
         viewModel.hits.observe( this, {
+            Log.d("WEATHER", it.name)
             Log.d("WEATHER", "temp: " + it.main.temp.toString() + " °C")
             Log.d("WEATHER", it.weather[0].description)
         })
