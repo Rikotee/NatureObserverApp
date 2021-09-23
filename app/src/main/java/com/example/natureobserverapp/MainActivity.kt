@@ -18,8 +18,14 @@ class MainActivity : AppCompatActivity() {
 
 
         viewModel = ViewModelProvider( this).get(MainViewModel:: class.java)
-        val cityName = "helsinki"
-        viewModel.getWeather(cityName)
+
+        // city
+        //val cityName = "helsinki"
+        //viewModel.getWeatherCity(cityName)
+
+        // latitude, longitude
+        viewModel.getWeatherLatLot(60.1695, 24.9355)
+
         viewModel.hits.observe( this, Observer {
             Log.d("WEATHER", it.main.temp.toString())
             Log.d("WEATHER", it.weather[0].description)
