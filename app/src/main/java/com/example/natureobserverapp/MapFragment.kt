@@ -14,9 +14,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -26,6 +28,7 @@ import org.osmdroid.views.overlay.Marker
 class MapFragment : Fragment(), LocationListener {
     private lateinit var map: MapView
     private lateinit var marker: Marker
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +44,8 @@ class MapFragment : Fragment(), LocationListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProvider( this).get(MainViewModel:: class.java)
 
         Configuration.getInstance()
             .load(context, PreferenceManager.getDefaultSharedPreferences(context))
@@ -72,6 +77,19 @@ class MapFragment : Fragment(), LocationListener {
 
     override fun onLocationChanged(p0: Location) {
         Log.d("GEOLOCATION", "new latitude: ${p0.latitude} and longitude: ${p0.longitude}")
+
+        // weather info
+        viewModel.getWeatherLatLon(p0.latitude, p0.longitude)
+        viewModel.hits.observe( this, {
+
+            val city = view?.findViewById<TextView>(R.id.cityView)
+            if (city != null) {
+                city.text = it.name + "\ntemp: " + it.main.temp.toString() + " °C\n" + it.weather[0].description
+            }
+            Log.d("WEATHER", it.name)
+            Log.d("WEATHER", "temp: " + it.main.temp.toString() + " °C")
+            Log.d("WEATHER", it.weather[0].description)
+        })
 
         map.controller.setCenter(GeoPoint(p0.latitude, p0.longitude))
 
