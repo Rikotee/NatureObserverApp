@@ -22,13 +22,13 @@
         android:paddingBottom="12dp">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="352dp"
-            android:layout_height="479dp"
+            android:layout_width="351dp"
+            android:layout_height="590dp"
             android:layout_margin="10dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="479dp">
+                android:layout_height="match_parent">
 
                 <ImageView
                     android:id="@+id/photoView"
@@ -66,27 +66,40 @@
                     app:layout_constraintTop_toBottomOf="@+id/photoView" />
 
                 <TextView
-                    android:id="@+id/weatherView"
-                    android:layout_width="262dp"
-                    android:layout_height="116dp"
-                    android:layout_marginTop="8dp"
-                    android:text="weather info"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.548"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/infoTextView" />
-
-                <TextView
                     android:id="@+id/infoTextView"
                     android:layout_width="263dp"
                     android:layout_height="124dp"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_marginTop="8dp"
-                    android:text="observation text"
+                    android:text="observation description"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/CategoryView" />
+
+                <LinearLayout
+                    android:layout_width="323dp"
+                    android:layout_height="235dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/infoTextView">
+
+                    <TextView
+                        android:id="@+id/weatherTempView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Temperature" />
+
+                    <TextView
+                        android:id="@+id/weatherDesView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="weather description" />
+
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
