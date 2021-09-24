@@ -5,13 +5,11 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
@@ -51,7 +49,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             Log.d("NATURE", "onResume: no sensor!")
         } else {
             sm.registerListener(this, stepsSensor, SensorManager.SENSOR_DELAY_UI)
-            //Log.d("LIGHT", "onResume")
+            //Log.d("NATURE", "onResume")
         }
     }
 

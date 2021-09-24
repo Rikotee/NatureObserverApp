@@ -23,7 +23,11 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.ItemizedIconOverlay
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.OverlayItem
+import java.util.ArrayList
 
 class MapFragment : Fragment(), LocationListener {
     private lateinit var map: MapView
@@ -107,4 +111,24 @@ class MapFragment : Fragment(), LocationListener {
         val list = geocoder.getFromLocation(lat, lng, 1)
         return list[0].getAddressLine(0)
     }
+
+
+/*    private fun addItemMarker(p0: Location, title:String, snippet:String){
+        val map = view?.findViewById<MapView>(R.id.mapView)
+
+        val items = ArrayList<OverlayItem>()
+        items.add(OverlayItem(title, snippet, GeoPoint(p0.latitude, p0.longitude)))
+        val mOverlay = ItemizedOverlayWithFocus(context,
+            items, object : ItemizedIconOverlay.OnItemGestureListener<OverlayItem?> {
+                override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
+                    return true
+                }
+
+                override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
+                    return false
+                }
+            })
+        mOverlay.setFocusItemsOnTap(true)
+        map?.overlays?.add(mOverlay)
+    }*/
 }
