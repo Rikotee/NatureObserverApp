@@ -112,7 +112,8 @@ class MapFragment : Fragment(), LocationListener {
         return list[0].getAddressLine(0)
     }
 
-
+// when take picture this adds marker to map
+    
 /*    private fun addItemMarker(p0: Location, title:String, snippet:String){
         val map = view?.findViewById<MapView>(R.id.mapView)
 
