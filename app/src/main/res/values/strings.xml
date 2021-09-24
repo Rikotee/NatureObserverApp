@@ -6,4 +6,18 @@
     <string name="observation_info_text">Enter the observation details</string>
     <string name="observation_title_edit_text_hint">Observation title</string>
     <string name="save_observation_button_text">Save observation</string>
+
+<!--    for light sensor-->
+    <string name="si_lux_units_m_s_2">SI lux units (m/s^2)</string>
+    <string name="Lux">Lux</string>
+    <string name="_0">0</string>
+    <string name="light_meter">Light meter</string>
+    <string name="Direct_sunlight">Direct sunlight</string>
+    <string name="Full_daylight_but_not_direct_sun">Full daylight (not direct sun</string>
+    <string name="Overcast_day_or_typical_TV_studio_lighting">Overcast day or typical TV studio lighting</string>
+    <string name="Sunrise_or_sunset_on_a_clear_day">Sunrise or sunset on a clear day</string>
+    <string name="Office_lighting">Office lighting</string>
+    <string name="Train_station_platforms">"Train station platforms</string>
+    <string name="Very_dark_overcast_day">Very dark overcast day</string>
+    <string name="Darkness">Darkness</string>
 </resources>
