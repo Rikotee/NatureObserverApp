@@ -18,6 +18,8 @@ import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.lifecycle.ViewModelProvider
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -93,6 +95,9 @@ class MapFragment : Fragment(), LocationListener {
             Log.d("NATURE", it.name)
             Log.d("NATURE", "temp: " + it.main.temp.toString() + " °C")
             Log.d("NATURE", it.weather[0].description)
+
+            /////////////////test///////////////////7
+            addItemMarker(p0, "testTitle", "testSnippet")
         })
 
         map.controller.setCenter(GeoPoint(p0.latitude, p0.longitude))
@@ -113,8 +118,8 @@ class MapFragment : Fragment(), LocationListener {
     }
 
 // when take picture this adds marker to map
-    
-/*    private fun addItemMarker(p0: Location, title:String, snippet:String){
+
+    private fun addItemMarker(p0: Location, title:String, snippet:String){
         val map = view?.findViewById<MapView>(R.id.mapView)
 
         val items = ArrayList<OverlayItem>()
@@ -122,14 +127,22 @@ class MapFragment : Fragment(), LocationListener {
         val mOverlay = ItemizedOverlayWithFocus(context,
             items, object : ItemizedIconOverlay.OnItemGestureListener<OverlayItem?> {
                 override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
+                    requireActivity().supportFragmentManager.commit {
+                        setReorderingAllowed(true)
+                        replace<FirstFragment>(R.id.flFragment)
+                        addToBackStack(null)}
                     return true
                 }
 
                 override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
+                    requireActivity().supportFragmentManager.commit {
+                        setReorderingAllowed(true)
+                        replace<FirstFragment>(R.id.flFragment)
+                        addToBackStack(null)}
                     return false
                 }
             })
         mOverlay.setFocusItemsOnTap(true)
         map?.overlays?.add(mOverlay)
-    }*/
+    }
 }
