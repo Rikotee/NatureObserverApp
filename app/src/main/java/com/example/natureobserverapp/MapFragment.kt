@@ -51,7 +51,7 @@ class MapFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider( this).get(MainViewModel:: class.java)
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         Configuration.getInstance()
             .load(context, PreferenceManager.getDefaultSharedPreferences(context))
@@ -86,18 +86,20 @@ class MapFragment : Fragment(), LocationListener {
 
         // weather info
         viewModel.getWeatherLatLon(p0.latitude, p0.longitude)
-        viewModel.hits.observe( this, {
+        viewModel.hits.observe(this, {
 
             val city = view?.findViewById<TextView>(R.id.cityView)
             if (city != null) {
-                city.text = it.name + "\ntemp: " + it.main.temp.toString() + " °C\n" + it.weather[0].description
+                city.text =
+                    it.name + "\ntemp: " + it.main.temp.toString() + " °C\n" + it.weather[0].description
             }
             Log.d("NATURE", it.name)
             Log.d("NATURE", "temp: " + it.main.temp.toString() + " °C")
             Log.d("NATURE", it.weather[0].description)
 
-            /////////////////test///////////////////7
+            /////////////////test///////////////////
             addItemMarker(p0, "testTitle", "testSnippet")
+            /////////////////test///////////////////
         })
 
         map.controller.setCenter(GeoPoint(p0.latitude, p0.longitude))
@@ -119,7 +121,7 @@ class MapFragment : Fragment(), LocationListener {
 
 // when take picture this adds marker to map
 
-    private fun addItemMarker(p0: Location, title:String, snippet:String){
+    private fun addItemMarker(p0: Location, title: String, snippet: String) {
         val map = view?.findViewById<MapView>(R.id.mapView)
 
         val items = ArrayList<OverlayItem>()
@@ -130,7 +132,8 @@ class MapFragment : Fragment(), LocationListener {
                     requireActivity().supportFragmentManager.commit {
                         setReorderingAllowed(true)
                         replace<FirstFragment>(R.id.flFragment)
-                        addToBackStack(null)}
+                        addToBackStack(null)
+                    }
                     return true
                 }
 
@@ -138,7 +141,8 @@ class MapFragment : Fragment(), LocationListener {
                     requireActivity().supportFragmentManager.commit {
                         setReorderingAllowed(true)
                         replace<FirstFragment>(R.id.flFragment)
-                        addToBackStack(null)}
+                        addToBackStack(null)
+                    }
                     return false
                 }
             })
