@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         if (stepsSensor == null) {
             Toast.makeText(this, "No Light Sensor !", Toast.LENGTH_SHORT).show()
-            Log.d("LIGHT", "onResume: no sensor!")
+            Log.d("NATURE", "onResume: no sensor!")
         } else {
             sm.registerListener(this, stepsSensor, SensorManager.SENSOR_DELAY_UI)
             //Log.d("LIGHT", "onResume")
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent) {
         if (running) {
             //lightValue.text = "" + event.values[0]
-            Log.d("LIGHT", event.values[0].toString())
+            Log.d("NATURE", event.values[0].toString())
         }
 
 /*        when (event.values[0]) {

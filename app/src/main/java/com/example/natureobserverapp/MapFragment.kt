@@ -76,7 +76,7 @@ class MapFragment : Fragment(), LocationListener {
     }
 
     override fun onLocationChanged(p0: Location) {
-        Log.d("GEOLOCATION", "new latitude: ${p0.latitude} and longitude: ${p0.longitude}")
+        Log.d("NATURE", "new latitude: ${p0.latitude} and longitude: ${p0.longitude}")
 
         // weather info
         viewModel.getWeatherLatLon(p0.latitude, p0.longitude)
@@ -86,9 +86,9 @@ class MapFragment : Fragment(), LocationListener {
             if (city != null) {
                 city.text = it.name + "\ntemp: " + it.main.temp.toString() + " °C\n" + it.weather[0].description
             }
-            Log.d("WEATHER", it.name)
-            Log.d("WEATHER", "temp: " + it.main.temp.toString() + " °C")
-            Log.d("WEATHER", it.weather[0].description)
+            Log.d("NATURE", it.name)
+            Log.d("NATURE", "temp: " + it.main.temp.toString() + " °C")
+            Log.d("NATURE", it.weather[0].description)
         })
 
         map.controller.setCenter(GeoPoint(p0.latitude, p0.longitude))
