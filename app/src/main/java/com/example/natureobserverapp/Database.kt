@@ -32,7 +32,7 @@ data class WeatherInfo(
     val temp: Double,
     val pressure: Long,
     val humidity: Long,
-    val windSpeed: Long,
+    val windSpeed: Double,
     val windDeg: Long,
     val country: String,
     val placeName: String
@@ -42,7 +42,7 @@ class NatureObservationWithWeatherInfo {
     @Embedded
     var natureObservation: NatureObservation? = null
     @Relation(parentColumn = "id", entityColumn = "observationId")
-    var weatherInfo: List<WeatherInfo>? = null
+    var weatherInfo: WeatherInfo? = null
 }
 
 @Dao
