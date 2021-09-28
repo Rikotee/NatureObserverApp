@@ -8,7 +8,7 @@
     <string name="observation_description_edit_text_hint">Description</string>
     <string name="save_observation_button_text">Save observation</string>
 
-<!--    for light sensor-->
+    <!--    for light sensor-->
     <string name="si_lux_units_m_s_2">SI lux units (m/s^2)</string>
     <string name="Lux">Lux</string>
     <string name="_0">0</string>
@@ -21,4 +21,6 @@
     <string name="Train_station_platforms">"Train station platforms</string>
     <string name="Very_dark_overcast_day">Very dark overcast day</string>
     <string name="Darkness">Darkness</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

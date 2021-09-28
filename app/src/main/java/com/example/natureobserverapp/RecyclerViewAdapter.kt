@@ -7,8 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-
-class RecyclerViewAdapter(private val items: List<NatureObservationWithWeatherInfo>?) :
+class RecyclerViewAdapter(private val items: List<NatureObservationWithWeatherInfo>?, private val clickListener: ClickListener) :
     RecyclerView.Adapter<RecyclerViewAdapter.ObservationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ObservationViewHolder {
@@ -23,10 +22,21 @@ class RecyclerViewAdapter(private val items: List<NatureObservationWithWeatherIn
         var titleTextView: TextView = view.findViewById(R.id.titleTextView)
     }
 
-
     override fun onBindViewHolder(holder: ObservationViewHolder, position: Int) {
         holder.titleTextView.text = items?.get(position)?.natureObservation?.title
-        // Example of weather info
-        Log.d("DBG", "${items?.get(position)?.weatherInfo?.temp}, ${items?.get(position)?.weatherInfo?.placeName}")
+
+        holder.itemView.setOnClickListener {
+            //Log.d("DBG", "Clicked $position")
+            //Log.d("DBG", "${items?.get(position)?.weatherInfo?.temp}, ${items?.get(position)?.weatherInfo?.placeName}")
+
+
+                Log.d("DBG", "Clicked $position")
+                clickListener.onItemClick(items?.get(position)?.natureObservation?.id)
+
+        }
+    }
+
+    interface ClickListener {
+        fun onItemClick(observation: Long?)
     }
 }
