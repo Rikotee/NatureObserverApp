@@ -51,7 +51,7 @@ interface NatureObservationDao {
     fun getAll(): LiveData<List<NatureObservation>>
 
     @Query("SELECT * FROM natureobservation WHERE natureobservation.id = :natureObservationId")
-    fun getNatureObservationWithWeatherInfo(natureObservationId: Long): NatureObservationWithWeatherInfo
+    fun getNatureObservationWithWeatherInfo(natureObservationId: Long): LiveData<NatureObservationWithWeatherInfo>
 
     @Query("SELECT * FROM natureobservation")
     fun getAllNatureObservationsWithWeatherInfo(): LiveData<List<NatureObservationWithWeatherInfo>>
