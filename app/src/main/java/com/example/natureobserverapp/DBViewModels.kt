@@ -13,6 +13,13 @@ class NatureObservationModel(application: Application): AndroidViewModel(applica
     fun getNatureObservations() = natureObservations
 }
 
+class NatureObservationWithWeatherInfoModel(application: Application): AndroidViewModel(application) {
+    private val natureObservationsWithWeatherInfo: LiveData<List<NatureObservationWithWeatherInfo>> =
+        NatureObservationDB.get(getApplication()).natureObservationDao().getAllNatureObservationsWithWeatherInfo()
+
+    fun getNatureObservationsWithWeatherInfo() = natureObservationsWithWeatherInfo
+}
+
 class WeatherInfoModel(application: Application, natureObservationId: Long): AndroidViewModel(application) {
     private val weatherInfos: LiveData<List<WeatherInfo>> =
         NatureObservationDB.get(getApplication()).weatherInfoDao().getWeatherInfosOfNatureObservation(natureObservationId)

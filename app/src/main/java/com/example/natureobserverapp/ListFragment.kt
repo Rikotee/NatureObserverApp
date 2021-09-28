@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class ListFragment : Fragment() {
 
@@ -24,33 +25,14 @@ class ListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
-/*    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_list, container, false)
-        initRecyclerView(view)
-        return view
-    }*/
-
-/*    private fun initRecyclerView(view: View) {
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        adapter = RecyclerViewAdapter(presidents, this)
-        recyclerView.adapter = adapter
-    }*/
-
-    override fun onViewCreated(
-        view: View, savedInstanceState:
-        Bundle?
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        rv_obs_list.layoutManager = LinearLayoutManager(this.context)
-//        val ump: NatureObservationModel by viewModels()
-//        ump.getNatureObservations().observe(this) {
-////           rv_obs_list.adapter = RecyclerViewAdapter(it?.sortedBy { that ->
-////                that.title
-////            })
-//        }
+
+        val observationsRecyclerView = view.findViewById<RecyclerView>(R.id.rv_obs_list)
+        observationsRecyclerView.layoutManager = LinearLayoutManager(this.context)
+        val nowwim: NatureObservationWithWeatherInfoModel by viewModels()
+        nowwim.getNatureObservationsWithWeatherInfo().observe(this) {
+            observationsRecyclerView.adapter = RecyclerViewAdapter(it)
+        }
     }
 }
