@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         val homeFragment = HomeFragment()
         val mapFragment = MapFragment()
-        val thirdFragment = ThirdFragment()
+        val listFragment = ListFragment()
 
         setCurrentFragment(homeFragment)
 
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             when (it.itemId) {
                 R.id.home -> setCurrentFragment(homeFragment)
                 R.id.map -> setCurrentFragment(mapFragment)
-                R.id.settings -> setCurrentFragment(thirdFragment)
+                R.id.settings -> setCurrentFragment(listFragment)
             }
             true
         }

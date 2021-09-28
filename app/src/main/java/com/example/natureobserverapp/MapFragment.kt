@@ -131,7 +131,7 @@ class MapFragment : Fragment(), LocationListener {
                 override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
                     requireActivity().supportFragmentManager.commit {
                         setReorderingAllowed(true)
-                        replace<FirstFragment>(R.id.flFragment)
+                        //replace<FirstFragment>(R.id.flFragment)
                         addToBackStack(null)
                     }
                     return true
@@ -140,7 +140,7 @@ class MapFragment : Fragment(), LocationListener {
                 override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
                     requireActivity().supportFragmentManager.commit {
                         setReorderingAllowed(true)
-                        replace<FirstFragment>(R.id.flFragment)
+                        //replace<FirstFragment>(R.id.flFragment)
                         addToBackStack(null)
                     }
                     return false
