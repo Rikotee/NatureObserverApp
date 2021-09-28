@@ -34,7 +34,7 @@ class ListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         val ump: NatureObservationModel by viewModels()
         ump.getNatureObservations().observe(this) {
-           recyclerView.adapter = RecyclerViewAdapter(it?.sortedBy { that ->
+            recyclerView.adapter = RecyclerViewAdapter(it?.sortedBy { that ->
                 that.title
             })
         }
