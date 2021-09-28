@@ -53,6 +53,9 @@ interface NatureObservationDao {
     @Query("SELECT * FROM natureobservation WHERE natureobservation.id = :natureObservationId")
     fun getNatureObservationWithWeatherInfo(natureObservationId: Long): NatureObservationWithWeatherInfo
 
+    @Query("SELECT * FROM natureobservation")
+    fun getAllNatureObservationsWithWeatherInfo(): LiveData<List<NatureObservationWithWeatherInfo>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(natureobservation: NatureObservation): Long
 

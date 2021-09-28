@@ -25,18 +25,14 @@ class ListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
-    override fun onViewCreated(
-        view: View, savedInstanceState:
-        Bundle?
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rv_obs_list)
-        recyclerView.layoutManager = LinearLayoutManager(this.context)
-        val ump: NatureObservationModel by viewModels()
-        ump.getNatureObservations().observe(this) {
-            recyclerView.adapter = RecyclerViewAdapter(it?.sortedBy { that ->
-                that.title
-            })
+
+        val observationsRecyclerView = view.findViewById<RecyclerView>(R.id.rv_obs_list)
+        observationsRecyclerView.layoutManager = LinearLayoutManager(this.context)
+        val nowwim: NatureObservationWithWeatherInfoModel by viewModels()
+        nowwim.getNatureObservationsWithWeatherInfo().observe(this) {
+            observationsRecyclerView.adapter = RecyclerViewAdapter(it)
         }
     }
 }
