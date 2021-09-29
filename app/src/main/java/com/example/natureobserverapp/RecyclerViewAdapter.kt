@@ -34,7 +34,6 @@ class RecyclerViewAdapter(
 
             Log.d("DBG", "Clicked $position")
             clickListener.onItemClick(items?.get(position)?.natureObservation?.id)
-
         }
     }
 

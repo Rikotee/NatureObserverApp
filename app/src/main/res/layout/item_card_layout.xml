@@ -22,15 +22,15 @@
         android:paddingBottom="12dp">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="351dp"
-            android:layout_height="590dp"
+            android:layout_width="352dp"
+            android:layout_height="503dp"
             android:layout_margin="10dp"
             app:cardCornerRadius="10dp"
             app:cardElevation="10dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="503dp">
 
                 <ImageView
                     android:id="@+id/photoView"
