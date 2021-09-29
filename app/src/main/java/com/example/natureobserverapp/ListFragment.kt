@@ -39,11 +39,11 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
 
         Log.d("DBG", "onItemClick id $observation")
 
-        //val fragment: Fragment = ItemFragment.newInstance(observation.toString())
+        val bundle = bundleOf("pos" to observation)
 
         requireActivity().supportFragmentManager.commit {
             setReorderingAllowed(true)
-            replace<ItemFragment>(R.id.flFragment)
+            replace<ItemFragment>(R.id.flFragment, args = bundle)
             addToBackStack(null)
             setFragmentResult("id", bundleOf("idKey" to observation))
 

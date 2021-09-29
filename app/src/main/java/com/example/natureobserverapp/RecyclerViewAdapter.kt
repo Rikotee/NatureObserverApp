@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class RecyclerViewAdapter(private val items: List<NatureObservationWithWeatherInfo>?, private val clickListener: ClickListener) :
+class RecyclerViewAdapter(
+    private val items: List<NatureObservationWithWeatherInfo>?,
+    private val clickListener: ClickListener
+) :
     RecyclerView.Adapter<RecyclerViewAdapter.ObservationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ObservationViewHolder {
@@ -16,9 +19,9 @@ class RecyclerViewAdapter(private val items: List<NatureObservationWithWeatherIn
         return ObservationViewHolder(view)
     }
 
-     override fun getItemCount() = items?.size ?: 0
+    override fun getItemCount() = items?.size ?: 0
 
-    inner class ObservationViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class ObservationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var titleTextView: TextView = view.findViewById(R.id.titleTextView)
     }
 
@@ -29,9 +32,8 @@ class RecyclerViewAdapter(private val items: List<NatureObservationWithWeatherIn
             //Log.d("DBG", "Clicked $position")
             //Log.d("DBG", "${items?.get(position)?.weatherInfo?.temp}, ${items?.get(position)?.weatherInfo?.placeName}")
 
-
-                Log.d("DBG", "Clicked $position")
-                clickListener.onItemClick(items?.get(position)?.natureObservation?.id)
+            Log.d("DBG", "Clicked $position")
+            clickListener.onItemClick(items?.get(position)?.natureObservation?.id)
 
         }
     }

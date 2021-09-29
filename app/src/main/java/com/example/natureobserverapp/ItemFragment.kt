@@ -6,42 +6,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 
 class ItemFragment() : Fragment() {
 
-    private var observationId: Long = 0
+    private var id: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val position = requireArguments().getLong("pos")
+        id = position
+        Log.d("DBG", "onCreate id: $id")
 
-
-        arguments?.let {
-        }
-
-        setFragmentResultListener("id") { requestKey, bundle ->
-            observationId = bundle.getLong("idKey")
-
-        }
-
-        Log.d("DBG", "setFragmentResultListener $observationId")
-
-
-/*        val cmp: NatureObservationWithWeatherInfoModel by viewModels {
+        val cmp: NatureObservationWithWeatherInfoModel by viewModels {
             WeatherInfoModelFactory(this.requireActivity().application,
-            observationId)
+            id)
              }
          cmp.getNatureObservationsWithWeatherInfo().observe(viewLifecycleOwner) {
 
+         }
 
-         }*/
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
     }
 
     override fun onCreateView(
@@ -54,15 +42,4 @@ class ItemFragment() : Fragment() {
 //        val name = view?.findViewById<TextView>(R.id.observationNameView)
 //        name?.text = itemId
     }
-
-/*    companion object {
-        @JvmStatic
-        fun newInstance(id: String) =
-            ItemFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, id)
-                    Log.d("DBG", "ItemFragment newInstance id $id")
-                }
-            }
-    }*/
 }
