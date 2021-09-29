@@ -5,6 +5,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -37,32 +38,33 @@ class MainActivity : AppCompatActivity() {
     private fun setCurrentFragment(fragment: Fragment) {
         if (fragment is HomeFragment) {
             if (supportFragmentManager.backStackEntryCount == 0) {
-                supportFragmentManager.beginTransaction().apply {
+                supportFragmentManager.commit {
+                    setReorderingAllowed(true)
                     replace(R.id.flFragment, fragment)
-                    commit()
                 }
             } else {
                 supportFragmentManager.popBackStack(
-                    "navFragment",
+                    supportFragmentManager.getBackStackEntryAt(0).id,
                     FragmentManager.POP_BACK_STACK_INCLUSIVE
                 )
             }
         } else {
-            supportFragmentManager.beginTransaction().apply {
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
                 replace(R.id.flFragment, fragment)
-                addToBackStack("navFragment")
-                commit()
+                addToBackStack("tabNavigationFragment")
             }
         }
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-
-        when (flFragment.getChildAt(0).tag) {
-            "HOME_FRAGMENT" -> bottomNavigationView.selectedItemId = R.id.home
-            "MAP_FRAGMENT" -> bottomNavigationView.selectedItemId = R.id.map
-            "LIST_FRAGMENT" -> bottomNavigationView.selectedItemId = R.id.list
+        if (supportFragmentManager.backStackEntryCount > 0 &&
+            supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name == "tabNavigationFragment"
+        ) {
+            supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            bottomNavigationView.selectedItemId = R.id.home
+        } else {
+            super.onBackPressed()
         }
     }
 }
