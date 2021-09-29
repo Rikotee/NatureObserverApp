@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +27,8 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.list_title_text)
 
         val observationsRecyclerView = view.findViewById<RecyclerView>(R.id.rv_obs_list)
         observationsRecyclerView.layoutManager = LinearLayoutManager(this.context)

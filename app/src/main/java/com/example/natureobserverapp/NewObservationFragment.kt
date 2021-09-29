@@ -18,11 +18,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
-import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
@@ -53,11 +51,11 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setFragmentResultListener("picturePath") { requestKey, bundle ->
-            pictureFilePath = bundle.getString("pathKey")
-            val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
-            view.findViewById<ImageView>(R.id.observationImageView).setImageBitmap(imageBitmap)
-        }
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.new_observation_title_text)
+
+        val pictureFilePath = requireArguments().getString("picPath")
+        val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
+        view.findViewById<ImageView>(R.id.observationImageView).setImageBitmap(imageBitmap)
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 

@@ -1,22 +1,31 @@
 package com.example.natureobserverapp
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.core.os.bundleOf
 import androidx.fragment.app.*
 import java.io.File
 
 class HomeFragment : Fragment() {
     private lateinit var mCurrentPhotoPath: String
+    internal var activityCallBack: HomeFragmentListener? = null
+
+    interface HomeFragmentListener {
+        fun onNewObservationButtonClick(picturePath: String)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activityCallBack = context as HomeFragmentListener
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +41,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.home_title_text)
 
         val newPictureButton = view.findViewById<Button>(R.id.newPictureButton)
         newPictureButton.setOnClickListener {
@@ -52,12 +63,7 @@ class HomeFragment : Fragment() {
     private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) {
             result ->
         if(result) {
-            requireActivity().supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                replace<NewObservationFragment>(R.id.flFragment)
-                addToBackStack(null)
-                setFragmentResult("picturePath", bundleOf("pathKey" to mCurrentPhotoPath))
-            }
+            activityCallBack!!.onNewObservationButtonClick(mCurrentPhotoPath)
         }
     }
 }
