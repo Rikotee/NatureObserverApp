@@ -40,14 +40,6 @@ class WeatherInfoModel(application: Application, natureObservationId: Long) :
     fun getWeatherInfos() = weatherInfos
 }
 
-class NatureObservationsWithWeatherInfoModelFactory(
-    private val application: Application
-) :
-    ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-        NatureObservationsWithWeatherInfoModel(application) as T
-}
-
 class NatureObservationWithWeatherInfoModelFactory(
     private val application: Application,
     private val natureObservationId: Long

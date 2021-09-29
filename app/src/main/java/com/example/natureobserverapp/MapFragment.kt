@@ -133,13 +133,8 @@ class MapFragment : Fragment(), LocationListener {
 
     private fun addItemMarker() {
 
-        val cmp: NatureObservationsWithWeatherInfoModel by viewModels {
-            NatureObservationsWithWeatherInfoModelFactory(
-                this.requireActivity().application
-            )
-        }
-
-        cmp.getNatureObservationsWithWeatherInfo().observe(viewLifecycleOwner) {
+        val cmp: NatureObservationsWithWeatherInfoModel by viewModels()
+        cmp.getNatureObservationsWithWeatherInfo().observe(this) {
 
             val map = view?.findViewById<MapView>(R.id.mapView)
             val items = ArrayList<OverlayItem>()
