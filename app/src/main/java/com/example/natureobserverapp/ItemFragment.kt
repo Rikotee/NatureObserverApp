@@ -1,10 +1,12 @@
 package com.example.natureobserverapp
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -35,6 +37,10 @@ class ItemFragment() : Fragment() {
 
         cmp.getNatureObservationWithWeatherInfo().observe(viewLifecycleOwner) {
 
+            val pictureFilePath = it.natureObservation?.picturePath
+            val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
+            view.findViewById<ImageView>(R.id.photoView).setImageBitmap(imageBitmap)
+
             val name = view.findViewById<TextView>(R.id.observationNameView)
             val category = view.findViewById<TextView>(R.id.categoryView)
             val description = view.findViewById<TextView>(R.id.infoTextView)
@@ -46,7 +52,6 @@ class ItemFragment() : Fragment() {
             description?.text = it.natureObservation?.description.toString()
             temp?.text = it.weatherInfo?.temp.toString()
             weatherDes?.text = it.weatherInfo?.description.toString()
-
         }
     }
 
