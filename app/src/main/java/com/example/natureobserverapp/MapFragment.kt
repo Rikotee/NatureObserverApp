@@ -37,10 +37,14 @@ class MapFragment : Fragment(), LocationListener {
     private lateinit var marker: Marker
     private lateinit var viewModel: MainViewModel
 
+    var titleId: Long = 0
+    var title: String = ""
+    var description: String = ""
+    var lat: Double = 0.0
+    var lon: Double = 0.0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
 
     }
 
@@ -59,18 +63,7 @@ class MapFragment : Fragment(), LocationListener {
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        //////////////////////////////////////
-
-
-        getLonLanAddMarker(6)
-
-
-
-
-
-
-////////////////////////////////////////////////
-
+        addItemMarker()
 
         Configuration.getInstance()
             .load(context, PreferenceManager.getDefaultSharedPreferences(context))
@@ -135,65 +128,69 @@ class MapFragment : Fragment(), LocationListener {
         return list[0].getAddressLine(0)
     }
 
+
 // when take picture this adds marker to map
 
-    private fun addItemMarker(id: Long, lat: Double, lon: Double, title: String, snippet: String) {
+    private fun addItemMarker() {
 
-        val map = view?.findViewById<MapView>(R.id.mapView)
-
-        val items = ArrayList<OverlayItem>()
-        items.add(OverlayItem(title, snippet, GeoPoint(lat, lon)))
-        val mOverlay = ItemizedOverlayWithFocus(context,
-            items, object : ItemizedIconOverlay.OnItemGestureListener<OverlayItem?> {
-                override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
-                    val bundle = bundleOf("pos" to id)
-                    requireActivity().supportFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        replace<ItemFragment>(R.id.flFragment, args = bundle)
-                        addToBackStack(null)
-                        setFragmentResult("id", bundleOf("idKey" to id))
-                    }
-                    return true
-                }
-
-                override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
-                    val bundle = bundleOf("pos" to id)
-                    requireActivity().supportFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        replace<ItemFragment>(R.id.flFragment, args = bundle)
-                        addToBackStack(null)
-                        setFragmentResult("id", bundleOf("idKey" to id))
-                    }
-                    return false
-                }
-            })
-        mOverlay.setFocusItemsOnTap(true)
-        map?.overlays?.add(mOverlay)
-    }
-
-    private fun getLonLanAddMarker(id: Int){
-
-        val idL: Long = id.toLong()
-
-        val cmp: NatureObservationWithWeatherInfoModel by viewModels {
-            NatureObservationWithWeatherInfoModelFactory(
-                this.requireActivity().application,
-                idL
+        val cmp: NatureObservationsWithWeatherInfoModel by viewModels {
+            NatureObservationsWithWeatherInfoModelFactory(
+                this.requireActivity().application
             )
         }
 
-        cmp.getNatureObservationWithWeatherInfo().observe(viewLifecycleOwner) {
+        cmp.getNatureObservationsWithWeatherInfo().observe(viewLifecycleOwner) {
 
-            val lat = it.natureObservation?.locationLat
-            val lon = it.natureObservation?.locationLon
-            Log.d("DBG", lat.toString())
-            Log.d("DBG", lon.toString())
+            val map = view?.findViewById<MapView>(R.id.mapView)
+            val items = ArrayList<OverlayItem>()
 
-            if (lat != null) {
-                if (lon != null) {
-                    addItemMarker(idL, lat, lon, "testTitle", "testSnippet")
-                }
+            Log.d("DBG", items.size.toString())
+            Log.d("DBG", "------------------------------")
+
+            for (i in it.indices) {
+                titleId = it[i].natureObservation?.id!!
+                title = it[i].natureObservation?.title.toString()
+                description = it[i].natureObservation?.description.toString()
+                lat = it[i].natureObservation?.locationLat!!
+                lon = it[i].natureObservation?.locationLon!!
+
+                Log.d("DBG", titleId.toString())
+                Log.d("DBG", title.toString())
+                Log.d("DBG", description.toString())
+                Log.d("DBG", lat.toString())
+                Log.d("DBG", lon.toString())
+                Log.d("DBG", "------------------------------")
+
+                items.add(OverlayItem(title, description, GeoPoint(lat, lon)))
+                Log.d("DBG", items.size.toString())
             }
+
+            val mOverlay = ItemizedOverlayWithFocus(context,
+                items, object : ItemizedIconOverlay.OnItemGestureListener<OverlayItem?> {
+                    override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
+/*                    val bundle = bundleOf("pos" to titleId)
+                    requireActivity().supportFragmentManager.commit {
+                        setReorderingAllowed(true)
+                        replace<ItemFragment>(R.id.flFragment, args = bundle)
+                        addToBackStack(null)
+                        setFragmentResult("id", bundleOf("idKey" to titleId))
+                    }*/
+                        return true
+                    }
+
+                    override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
+/*                        val bundle = bundleOf("pos" to titleId)
+                        requireActivity().supportFragmentManager.commit {
+                            setReorderingAllowed(true)
+                            replace<ItemFragment>(R.id.flFragment, args = bundle)
+                            addToBackStack(null)
+                            setFragmentResult("id", bundleOf("idKey" to titleId))
+                        }*/
+                        return false
+                    }
+                })
+            mOverlay.setFocusItemsOnTap(true)
+            map?.overlays?.add(mOverlay)
         }
     }
 }
