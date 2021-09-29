@@ -2,6 +2,7 @@ package com.example.natureobserverapp
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
@@ -10,16 +11,16 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
+import androidx.core.os.bundleOf
+import androidx.fragment.app.*
 import androidx.lifecycle.ViewModelProvider
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -38,6 +39,9 @@ class MapFragment : Fragment(), LocationListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
     }
 
     override fun onCreateView(
@@ -51,7 +55,22 @@ class MapFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
+        //////////////////////////////////////
+
+
+        getLonLanAddMarker(6)
+
+
+
+
+
+
+////////////////////////////////////////////////
+
 
         Configuration.getInstance()
             .load(context, PreferenceManager.getDefaultSharedPreferences(context))
@@ -97,9 +116,6 @@ class MapFragment : Fragment(), LocationListener {
             Log.d("NATURE", "temp: " + it.main.temp.toString() + " °C")
             Log.d("NATURE", it.weather[0].description)
 
-            /////////////////test///////////////////
-            addItemMarker(p0, "testTitle", "testSnippet")
-            /////////////////test///////////////////
         })
 
         map.controller.setCenter(GeoPoint(p0.latitude, p0.longitude))
@@ -121,32 +137,63 @@ class MapFragment : Fragment(), LocationListener {
 
 // when take picture this adds marker to map
 
-    private fun addItemMarker(p0: Location, title: String, snippet: String) {
+    private fun addItemMarker(id: Long, lat: Double, lon: Double, title: String, snippet: String) {
+
         val map = view?.findViewById<MapView>(R.id.mapView)
 
         val items = ArrayList<OverlayItem>()
-        items.add(OverlayItem(title, snippet, GeoPoint(p0.latitude, p0.longitude)))
+        items.add(OverlayItem(title, snippet, GeoPoint(lat, lon)))
         val mOverlay = ItemizedOverlayWithFocus(context,
             items, object : ItemizedIconOverlay.OnItemGestureListener<OverlayItem?> {
                 override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
+                    val bundle = bundleOf("pos" to id)
                     requireActivity().supportFragmentManager.commit {
                         setReorderingAllowed(true)
-                        //replace<FirstFragment>(R.id.flFragment)
+                        replace<ItemFragment>(R.id.flFragment, args = bundle)
                         addToBackStack(null)
+                        setFragmentResult("id", bundleOf("idKey" to id))
                     }
                     return true
                 }
 
                 override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
+                    val bundle = bundleOf("pos" to id)
                     requireActivity().supportFragmentManager.commit {
                         setReorderingAllowed(true)
-                        //replace<FirstFragment>(R.id.flFragment)
+                        replace<ItemFragment>(R.id.flFragment, args = bundle)
                         addToBackStack(null)
+                        setFragmentResult("id", bundleOf("idKey" to id))
                     }
                     return false
                 }
             })
         mOverlay.setFocusItemsOnTap(true)
         map?.overlays?.add(mOverlay)
+    }
+
+    private fun getLonLanAddMarker(id: Int){
+
+        val idL: Long = id.toLong()
+
+        val cmp: NatureObservationWithWeatherInfoModel by viewModels {
+            NatureObservationWithWeatherInfoModelFactory(
+                this.requireActivity().application,
+                idL
+            )
+        }
+
+        cmp.getNatureObservationWithWeatherInfo().observe(viewLifecycleOwner) {
+
+            val lat = it.natureObservation?.locationLat
+            val lon = it.natureObservation?.locationLon
+            Log.d("DBG", lat.toString())
+            Log.d("DBG", lon.toString())
+
+            if (lat != null) {
+                if (lon != null) {
+                    addItemMarker(idL, lat, lon, "testTitle", "testSnippet")
+                }
+            }
+        }
     }
 }
