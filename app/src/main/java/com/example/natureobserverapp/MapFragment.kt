@@ -150,8 +150,8 @@ class MapFragment : Fragment(), LocationListener {
                 lon = it[i].natureObservation?.locationLon!!
 
                 Log.d("DBG", titleId.toString())
-                Log.d("DBG", title.toString())
-                Log.d("DBG", description.toString())
+                Log.d("DBG", title)
+                Log.d("DBG", description)
                 Log.d("DBG", lat.toString())
                 Log.d("DBG", lon.toString())
                 Log.d("DBG", "------------------------------")
@@ -163,24 +163,16 @@ class MapFragment : Fragment(), LocationListener {
             val mOverlay = ItemizedOverlayWithFocus(context,
                 items, object : ItemizedIconOverlay.OnItemGestureListener<OverlayItem?> {
                     override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
-/*                    val bundle = bundleOf("pos" to titleId)
-                    requireActivity().supportFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        replace<ItemFragment>(R.id.flFragment, args = bundle)
-                        addToBackStack(null)
-                        setFragmentResult("id", bundleOf("idKey" to titleId))
-                    }*/
                         return true
                     }
 
                     override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
-/*                        val bundle = bundleOf("pos" to titleId)
+                        val bundle = bundleOf("pos" to it[index].natureObservation?.id)
                         requireActivity().supportFragmentManager.commit {
                             setReorderingAllowed(true)
                             replace<ItemFragment>(R.id.flFragment, args = bundle)
                             addToBackStack(null)
-                            setFragmentResult("id", bundleOf("idKey" to titleId))
-                        }*/
+                        }
                         return false
                     }
                 })
