@@ -1,7 +1,6 @@
 package com.example.natureobserverapp.fragment
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -16,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.SimpleCursorAdapter
 import android.widget.Spinner
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
@@ -27,7 +25,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.natureobserverapp.Categories
 import com.example.natureobserverapp.NatureObservationsWithWeatherInfoModel
 import com.example.natureobserverapp.R
-import com.example.natureobserverapp.model.MainViewModel
+import com.example.natureobserverapp.model.WeatherViewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -41,7 +39,7 @@ import java.util.ArrayList
 class MapFragment : Fragment(), LocationListener {
     private lateinit var map: MapView
     private lateinit var marker: Marker
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: WeatherViewModel
     private lateinit var mapCategorySpinner: Spinner
     private lateinit var updateButton: Button
 
@@ -72,7 +70,7 @@ class MapFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
         mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
         updateButton = view.findViewById(R.id.btnUpdate)

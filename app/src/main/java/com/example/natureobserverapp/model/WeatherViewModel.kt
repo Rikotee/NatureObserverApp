@@ -6,7 +6,7 @@ import androidx.lifecycle.liveData
 import com.example.natureobserverapp.service.WebServiceRepository
 import kotlinx.coroutines.Dispatchers
 
-class MainViewModel: ViewModel() {
+class WeatherViewModel: ViewModel() {
     private val repository: WebServiceRepository = WebServiceRepository()
 
     private var searchCity: String = ""
