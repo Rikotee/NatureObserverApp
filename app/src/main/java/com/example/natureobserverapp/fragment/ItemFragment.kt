@@ -19,6 +19,7 @@ import kotlinx.coroutines.withContext
 import com.example.natureobserverapp.NatureObservationWithWeatherInfoModel
 import com.example.natureobserverapp.NatureObservationWithWeatherInfoModelFactory
 import com.example.natureobserverapp.R
+import com.example.natureobserverapp.WeatherIconApi
 
 class ItemFragment() : Fragment() {
 

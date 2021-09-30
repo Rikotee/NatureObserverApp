@@ -12,6 +12,7 @@ import com.example.natureobserverapp.fragment.HomeFragment
 import com.example.natureobserverapp.fragment.ListFragment
 import com.example.natureobserverapp.fragment.MapFragment
 import androidx.fragment.app.replace
+import com.example.natureobserverapp.fragment.NewObservationFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {

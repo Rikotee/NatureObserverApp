@@ -28,6 +28,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.example.natureobserverapp.R
+import com.example.natureobserverapp.WeatherIconApi
+import com.example.natureobserverapp.model.MainViewModel
 import java.io.File
 
 class HomeFragment : Fragment(), LocationListener {
