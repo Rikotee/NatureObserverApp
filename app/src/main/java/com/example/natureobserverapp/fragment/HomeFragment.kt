@@ -1,18 +1,17 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.fragment
 
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.os.bundleOf
 import androidx.fragment.app.*
+import com.example.natureobserverapp.R
 import java.io.File
 
 class HomeFragment : Fragment() {

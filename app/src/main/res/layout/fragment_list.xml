@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:tag="LIST_FRAGMENT"
-    tools:context=".ListFragment">
+    tools:context=".fragment.ListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_obs_list"

@@ -1,4 +1,4 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.fragment
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -10,6 +10,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.natureobserverapp.NatureObservationWithWeatherInfoModel
+import com.example.natureobserverapp.NatureObservationWithWeatherInfoModelFactory
+import com.example.natureobserverapp.R
 
 class ItemFragment() : Fragment() {
 

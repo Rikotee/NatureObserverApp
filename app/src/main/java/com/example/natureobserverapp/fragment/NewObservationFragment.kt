@@ -1,4 +1,4 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.fragment
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -20,10 +20,10 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
+import com.example.natureobserverapp.*
+import com.example.natureobserverapp.model.MainViewModel
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*

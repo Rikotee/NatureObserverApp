@@ -1,4 +1,4 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +9,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.natureobserverapp.NatureObservationsWithWeatherInfoModel
+import com.example.natureobserverapp.R
+import com.example.natureobserverapp.RecyclerViewAdapter
 
 class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
 

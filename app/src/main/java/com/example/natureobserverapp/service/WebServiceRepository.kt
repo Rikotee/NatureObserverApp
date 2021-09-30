@@ -1,4 +1,6 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.service
+
+import com.example.natureobserverapp.service.WeatherApi
 
 class WebServiceRepository() {
     private val call = WeatherApi.service

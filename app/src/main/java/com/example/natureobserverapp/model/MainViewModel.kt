@@ -1,8 +1,9 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.model
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import com.example.natureobserverapp.service.WebServiceRepository
 import kotlinx.coroutines.Dispatchers
 
 class MainViewModel: ViewModel() {

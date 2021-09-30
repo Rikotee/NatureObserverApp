@@ -1,8 +1,7 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.fragment
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
@@ -14,7 +13,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
@@ -22,6 +20,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.*
 import androidx.lifecycle.ViewModelProvider
+import com.example.natureobserverapp.NatureObservationsWithWeatherInfoModel
+import com.example.natureobserverapp.R
+import com.example.natureobserverapp.model.MainViewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
