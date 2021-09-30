@@ -47,15 +47,15 @@ class MapFragment : Fragment(), LocationListener {
 
     private val sharedPrefFile = "sharedpreference"
 
-    var titleId: Long = 0
+    private var titleId: Long = 0
     var title: String = ""
     var description: String = ""
-    var category: String = ""
-    var lat: Double = 0.0
-    var lon: Double = 0.0
+    private var category: String = ""
+    private var lat: Double = 0.0
+    private var lon: Double = 0.0
 
-    var spinnerValue: Int = 0
-    var spinnerIndex: Int = 0
+    private var spinnerValue: Int = 0
+    private var spinnerIndex: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
