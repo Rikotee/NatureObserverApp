@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">NatureObserverApp</string>
-    <string name="home_title_text">Your nature observations</string>
     <string name="new_picture_button_text">Take a new picture</string>
-    <string name="new_observation_title_text">New nature observation</string>
+    <string name="home_title_text">Nature Observer</string>
+    <string name="new_observation_title_text">New Nature Observation</string>
+    <string name="map_title_text">Observation Locations</string>
+    <string name="list_title_text">My Nature Observations</string>
     <string name="observation_info_text">Enter the observation details</string>
     <string name="observation_title_edit_text_hint">Title</string>
     <string name="observation_description_edit_text_hint">Description</string>
