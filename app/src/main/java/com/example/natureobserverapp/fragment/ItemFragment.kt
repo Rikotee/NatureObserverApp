@@ -2,7 +2,6 @@ package com.example.natureobserverapp.fragment
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,13 +12,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import com.example.natureobserverapp.NatureObservationWithWeatherInfoModel
 import com.example.natureobserverapp.NatureObservationWithWeatherInfoModelFactory
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.WeatherIconApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ItemFragment() : Fragment() {
 
@@ -49,8 +48,6 @@ class ItemFragment() : Fragment() {
             getString(R.string.item_title_text)
 
         val id = requireArguments().getLong("pos")
-
-        Log.d("DBG", "onCreate id: $id")
 
         val nowwim: NatureObservationWithWeatherInfoModel by viewModels {
             NatureObservationWithWeatherInfoModelFactory(

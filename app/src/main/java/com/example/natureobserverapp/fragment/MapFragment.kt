@@ -74,7 +74,6 @@ class MapFragment : Fragment(), LocationListener {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
-
         mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
         updateButton = view.findViewById(R.id.btnUpdate)
 
