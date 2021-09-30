@@ -59,7 +59,6 @@ class MapFragment : Fragment(), LocationListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -95,7 +94,6 @@ class MapFragment : Fragment(), LocationListener {
         if (newSpinnerValue != null) {
             spinnerValue = newSpinnerValue
         }
-        Log.d("DBG", "onviewcreated  spinnervalue: $newSpinnerValue")
 
         if (newSpinnerValue != null) {
             mapCategorySpinner.setSelection(newSpinnerValue)
@@ -139,15 +137,6 @@ class MapFragment : Fragment(), LocationListener {
         viewModel.getWeatherLatLon(p0.latitude, p0.longitude)
         viewModel.hits.observe(this, {
 
-/*            val city = view?.findViewById<TextView>(R.id.cityView)
-            if (city != null) {
-                city.text =
-                    it.name + "\ntemp: " + it.main.temp.toString() + " °C\n" + it.weather[0].description
-            }
-            Log.d("NATURE", it.name)
-            Log.d("NATURE", "temp: " + it.main.temp.toString() + " °C")
-            Log.d("NATURE", it.weather[0].description)*/
-
         })
 
         map.controller.setCenter(GeoPoint(p0.latitude, p0.longitude))
@@ -177,8 +166,6 @@ class MapFragment : Fragment(), LocationListener {
             val map = view?.findViewById<MapView>(R.id.mapView)
             val items = ArrayList<OverlayItem>()
 
-            //Log.d("DBG", items.size.toString())
-
             for (i in it.indices) {
                 titleId = it[i].natureObservation?.id!!
                 title = it[i].natureObservation?.title.toString()
@@ -204,7 +191,7 @@ class MapFragment : Fragment(), LocationListener {
 
                     override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
                         val markerId = item?.title?.toLong()
-                        
+
                         val bundle = bundleOf("pos" to markerId)
                         //val bundle = bundleOf("pos" to it[index].natureObservation?.id)
                         requireActivity().supportFragmentManager.commit {
@@ -243,8 +230,6 @@ class MapFragment : Fragment(), LocationListener {
         val editor = sharedPreference?.edit()
         editor?.putInt("spinnerIndex",spinnerIndex)
         editor?.commit()
-
-        Log.d("DBG", "updatemarker  spinnerindex: $spinnerIndex")
 
         requireActivity().supportFragmentManager.commit {
             setReorderingAllowed(true)
