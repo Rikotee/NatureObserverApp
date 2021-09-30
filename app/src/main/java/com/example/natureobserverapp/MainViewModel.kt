@@ -12,7 +12,7 @@ class MainViewModel: ViewModel() {
     private var searchLat: Double = 0.0
     private var searchLon: Double = 0.0
 
-    val hits = liveData(Dispatchers.IO) {
+    var hits = liveData(Dispatchers.IO) {
         try {
         val retrievedWeather = repository.getCustomPosts(searchLat, searchLon)
         emit(retrievedWeather)
@@ -30,5 +30,14 @@ class MainViewModel: ViewModel() {
     fun getWeatherLatLon(lat: Double, lon: Double){
         searchLat = lat
         searchLon = lon
+
+        hits = liveData(Dispatchers.IO) {
+            try {
+                val retrievedWeather = repository.getCustomPosts(searchLat, searchLon)
+                emit(retrievedWeather)
+            } catch (t: Throwable) {
+                Log.d("WEATHER", t.toString())
+            }
+        }
     }
 }
