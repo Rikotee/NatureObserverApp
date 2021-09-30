@@ -1,17 +1,20 @@
 package com.example.natureobserverapp
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.example.natureobserverapp.fragment.HomeFragment
 import com.example.natureobserverapp.fragment.ListFragment
 import com.example.natureobserverapp.fragment.MapFragment
+import androidx.fragment.app.replace
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var flFragment: FrameLayout
 
@@ -35,6 +38,15 @@ class MainActivity : AppCompatActivity() {
                 R.id.list -> setCurrentFragment(listFragment)
             }
             true
+        }
+    }
+
+    override fun onNewObservationButtonClick(picturePath: String) {
+        val bundle = bundleOf("picPath" to picturePath)
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<NewObservationFragment>(R.id.flFragment, args = bundle)
+            addToBackStack(null)
         }
     }
 

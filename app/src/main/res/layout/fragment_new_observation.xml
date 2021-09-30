@@ -10,18 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/newObservationTitleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/new_observation_title_text"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <ImageView
             android:id="@+id/observationImageView"
             android:layout_width="0dp"
@@ -30,8 +18,7 @@
             app:layout_constraintBottom_toTopOf="@+id/observationInfoTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newObservationTitleTextView"
-            app:layout_constraintVertical_bias="0.243" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/observationInfoTextView"

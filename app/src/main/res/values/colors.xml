@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="card_backround">#B5B5B5</color>
+    <color name="weather_view_background">#DCEAF0</color>
 </resources>
