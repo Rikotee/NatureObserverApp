@@ -112,7 +112,7 @@ class MapFragment : Fragment(), LocationListener {
         marker = Marker(map)
         marker.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_map_pin)
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-        
+
         val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 3f, this)
     }
