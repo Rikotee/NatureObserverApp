@@ -26,7 +26,7 @@ import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.natureobserverapp.Categories
-import com.example.natureobserverapp.NatureObservationsWithWeatherInfoModel
+import com.example.natureobserverapp.model.NatureObservationsWithWeatherInfoModel
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.model.WeatherViewModel
 import org.osmdroid.config.Configuration
@@ -77,6 +77,8 @@ class MapFragment : Fragment(), LocationListener {
         mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
         updateButton = view.findViewById(R.id.btnUpdate)
 
+        permissionCheck()
+
         updateButton.setOnClickListener {
             updateMarkers()
         }
@@ -110,9 +112,7 @@ class MapFragment : Fragment(), LocationListener {
         marker = Marker(map)
         marker.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_map_pin)
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-
-        permissionCheck()
-
+        
         val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 3f, this)
     }

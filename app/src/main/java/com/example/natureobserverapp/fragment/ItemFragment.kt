@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.example.natureobserverapp.NatureObservationWithWeatherInfoModel
-import com.example.natureobserverapp.NatureObservationWithWeatherInfoModelFactory
+import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModel
+import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModelFactory
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.WeatherIconApi
 import kotlinx.coroutines.Dispatchers
