@@ -1,7 +1,6 @@
 package com.example.natureobserverapp.fragment
 
 import android.content.Context
-import android.content.PeriodicSync
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -21,7 +20,10 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.fragment.app.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.natureobserverapp.Categories
 import com.example.natureobserverapp.NatureObservationsWithWeatherInfoModel
@@ -35,7 +37,7 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.OverlayItem
-import java.util.ArrayList
+import java.util.*
 
 class MapFragment : Fragment(), LocationListener {
     private lateinit var map: MapView
@@ -225,7 +227,7 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
-    fun permissionCheck(){
+    private fun permissionCheck() {
         if ((Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(
                 requireContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION
