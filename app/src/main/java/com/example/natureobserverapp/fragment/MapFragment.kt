@@ -204,8 +204,7 @@ class MapFragment : Fragment(), LocationListener {
 
                     override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
                         val markerId = item?.title?.toLong()
-
-
+                        
                         val bundle = bundleOf("pos" to markerId)
                         //val bundle = bundleOf("pos" to it[index].natureObservation?.id)
                         requireActivity().supportFragmentManager.commit {
