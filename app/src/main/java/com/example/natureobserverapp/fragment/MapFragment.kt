@@ -75,7 +75,7 @@ class MapFragment : Fragment(), LocationListener {
         mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
         updateButton = view.findViewById(R.id.btnUpdate)
 
-        updateButton.setOnClickListener{
+        updateButton.setOnClickListener {
             updateMarkers()
         }
 
@@ -87,12 +87,13 @@ class MapFragment : Fragment(), LocationListener {
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mapCategorySpinner.adapter = aa
 
-        val sharedPreference = this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val newSpinnerValue = sharedPreference?.getInt("spinnerIndex",0)
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val newSpinnerValue = sharedPreference?.getInt("spinnerIndex", 0)
         if (newSpinnerValue != null) {
             mapCategorySpinner.setSelection(newSpinnerValue)
         }
-        
+
         //This add all markers from saved observations
         addItemMarker()
 
@@ -201,7 +202,7 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
-    private fun updateMarkers(){
+    private fun updateMarkers() {
 
         val categoryS = mapCategorySpinner.selectedItem.toString()
 
@@ -220,9 +221,10 @@ class MapFragment : Fragment(), LocationListener {
             "Spider" -> spinnerIndex = 11
         }
 
-        val sharedPreference = this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val editor = sharedPreference?.edit()
-        editor?.putInt("spinnerIndex",spinnerIndex)
+        editor?.putInt("spinnerIndex", spinnerIndex)
         editor?.commit()
 
         requireActivity().supportFragmentManager.commit {

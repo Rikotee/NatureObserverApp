@@ -45,7 +45,8 @@ class ItemFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.item_title_text)
+        (requireActivity() as AppCompatActivity).supportActionBar?.title =
+            getString(R.string.item_title_text)
 
         val id = requireArguments().getLong("pos")
 

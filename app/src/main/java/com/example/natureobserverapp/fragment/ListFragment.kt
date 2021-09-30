@@ -31,7 +31,8 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.list_title_text)
+        (requireActivity() as AppCompatActivity).supportActionBar?.title =
+            getString(R.string.list_title_text)
 
         val observationsRecyclerView = view.findViewById<RecyclerView>(R.id.rv_obs_list)
         observationsRecyclerView.layoutManager = LinearLayoutManager(this.context)
@@ -42,9 +43,6 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
     }
 
     override fun onItemClick(observation: Long?) {
-
-        Log.d("DBG", "onItemClick id $observation")
-
         val bundle = bundleOf("pos" to observation)
 
         requireActivity().supportFragmentManager.commit {
