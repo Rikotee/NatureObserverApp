@@ -92,13 +92,9 @@ class MapFragment : Fragment(), LocationListener {
         val sharedPreference = this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val newSpinnerValue = sharedPreference?.getInt("spinnerIndex",0)
         if (newSpinnerValue != null) {
-            spinnerValue = newSpinnerValue
-        }
-
-        if (newSpinnerValue != null) {
             mapCategorySpinner.setSelection(newSpinnerValue)
         }
-
+        
         //This add all markers from saved observations
         addItemMarker()
 

@@ -1,17 +1,16 @@
 package com.example.natureobserverapp
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import com.example.natureobserverapp.fragment.HomeFragment
 import com.example.natureobserverapp.fragment.ListFragment
 import com.example.natureobserverapp.fragment.MapFragment
-import androidx.fragment.app.replace
 import com.example.natureobserverapp.fragment.NewObservationFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
