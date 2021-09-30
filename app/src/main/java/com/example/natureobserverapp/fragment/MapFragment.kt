@@ -42,7 +42,6 @@ import java.util.*
 class MapFragment : Fragment(), LocationListener {
     private lateinit var map: MapView
     private lateinit var marker: Marker
-    private lateinit var viewModel: WeatherViewModel
     private lateinit var mapCategorySpinner: Spinner
     private lateinit var updateButton: Button
 
@@ -73,7 +72,6 @@ class MapFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
         mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
         updateButton = view.findViewById(R.id.btnUpdate)
 
@@ -120,12 +118,6 @@ class MapFragment : Fragment(), LocationListener {
     override fun onLocationChanged(p0: Location) {
         Log.d("NATURE", "new latitude: ${p0.latitude} and longitude: ${p0.longitude}")
 
-        // weather info
-        viewModel.getWeatherLatLon(p0.latitude, p0.longitude)
-        viewModel.hits.observe(this, {
-
-        })
-
         map.controller.setCenter(GeoPoint(p0.latitude, p0.longitude))
 
         marker.position = GeoPoint(p0.latitude, p0.longitude)
@@ -142,7 +134,6 @@ class MapFragment : Fragment(), LocationListener {
         val list = geocoder.getFromLocation(lat, lng, 1)
         return list[0].getAddressLine(0)
     }
-
 
     // This add saved observation to map
     private fun addItemMarker() {

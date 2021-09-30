@@ -9,12 +9,12 @@
 
     <org.osmdroid.views.MapView
         android:id="@+id/mapView"
-        android:layout_width="413dp"
-        android:layout_height="647dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mapCategorySpinner" >
+        app:layout_constraintTop_toBottomOf="@+id/mapCategorySpinner">
 
     </org.osmdroid.views.MapView>
 
