@@ -48,8 +48,6 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
             setReorderingAllowed(true)
             replace<ItemFragment>(R.id.flFragment, args = bundle)
             addToBackStack(null)
-            setFragmentResult("id", bundleOf("idKey" to observation))
-
         }
     }
 }

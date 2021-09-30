@@ -1,6 +1,7 @@
 package com.example.natureobserverapp.fragment
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -13,13 +14,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.SimpleCursorAdapter
+import android.widget.Spinner
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.*
 import androidx.lifecycle.ViewModelProvider
+import com.example.natureobserverapp.Categories
 import com.example.natureobserverapp.NatureObservationsWithWeatherInfoModel
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.model.MainViewModel
@@ -37,12 +42,20 @@ class MapFragment : Fragment(), LocationListener {
     private lateinit var map: MapView
     private lateinit var marker: Marker
     private lateinit var viewModel: MainViewModel
+    private lateinit var mapCategorySpinner: Spinner
+    private lateinit var updateButton: Button
+
+    private val sharedPrefFile = "sharedpreference"
 
     var titleId: Long = 0
     var title: String = ""
     var description: String = ""
+    var category: String = ""
     var lat: Double = 0.0
     var lon: Double = 0.0
+
+    var spinnerValue: Int = 0
+    var spinnerIndex: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,11 +72,36 @@ class MapFragment : Fragment(), LocationListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-
+        
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
+        mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
+        updateButton = view.findViewById(R.id.btnUpdate)
+
+        updateButton.setOnClickListener{
+            updateMarkers()
+        }
+
+        val aa = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            Categories.categoriesAll
+        )
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        mapCategorySpinner.adapter = aa
+
+        val sharedPreference = this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val newSpinnerValue = sharedPreference?.getInt("spinnerIndex",0)
+        if (newSpinnerValue != null) {
+            spinnerValue = newSpinnerValue
+        }
+        Log.d("DBG", "onviewcreated  spinnervalue: $newSpinnerValue")
+
+        if (newSpinnerValue != null) {
+            mapCategorySpinner.setSelection(newSpinnerValue)
+        }
+
+        //This add all markers from saved observations
         addItemMarker()
 
         Configuration.getInstance()
@@ -101,14 +139,14 @@ class MapFragment : Fragment(), LocationListener {
         viewModel.getWeatherLatLon(p0.latitude, p0.longitude)
         viewModel.hits.observe(this, {
 
-            val city = view?.findViewById<TextView>(R.id.cityView)
+/*            val city = view?.findViewById<TextView>(R.id.cityView)
             if (city != null) {
                 city.text =
                     it.name + "\ntemp: " + it.main.temp.toString() + " °C\n" + it.weather[0].description
             }
             Log.d("NATURE", it.name)
             Log.d("NATURE", "temp: " + it.main.temp.toString() + " °C")
-            Log.d("NATURE", it.weather[0].description)
+            Log.d("NATURE", it.weather[0].description)*/
 
         })
 
@@ -130,8 +168,7 @@ class MapFragment : Fragment(), LocationListener {
     }
 
 
-// when take picture this adds marker to map
-
+    // This add saved observation to map
     private fun addItemMarker() {
 
         val cmp: NatureObservationsWithWeatherInfoModel by viewModels()
@@ -140,25 +177,23 @@ class MapFragment : Fragment(), LocationListener {
             val map = view?.findViewById<MapView>(R.id.mapView)
             val items = ArrayList<OverlayItem>()
 
-            Log.d("DBG", items.size.toString())
-            Log.d("DBG", "------------------------------")
+            //Log.d("DBG", items.size.toString())
 
             for (i in it.indices) {
                 titleId = it[i].natureObservation?.id!!
                 title = it[i].natureObservation?.title.toString()
                 description = it[i].natureObservation?.description.toString()
+                category = it[i].natureObservation?.category.toString()
                 lat = it[i].natureObservation?.locationLat!!
                 lon = it[i].natureObservation?.locationLon!!
 
-                Log.d("DBG", titleId.toString())
-                Log.d("DBG", title)
-                Log.d("DBG", description)
-                Log.d("DBG", lat.toString())
-                Log.d("DBG", lon.toString())
-                Log.d("DBG", "------------------------------")
+                val categoryS = mapCategorySpinner.selectedItem.toString()
 
-                items.add(OverlayItem(title, description, GeoPoint(lat, lon)))
-                Log.d("DBG", items.size.toString())
+                if (categoryS == category) {
+                    items.add(OverlayItem(category, title, GeoPoint(lat, lon)))
+                } else if (categoryS == "All") {
+                    items.add(OverlayItem(title, description, GeoPoint(lat, lon)))
+                }
             }
 
             val mOverlay = ItemizedOverlayWithFocus(context,
@@ -169,6 +204,7 @@ class MapFragment : Fragment(), LocationListener {
 
                     override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
                         val bundle = bundleOf("pos" to it[index].natureObservation?.id)
+                        //val bundle = bundleOf("pos" to it[index].natureObservation?.id)
                         requireActivity().supportFragmentManager.commit {
                             setReorderingAllowed(true)
                             replace<ItemFragment>(R.id.flFragment, args = bundle)
@@ -179,6 +215,39 @@ class MapFragment : Fragment(), LocationListener {
                 })
             mOverlay.setFocusItemsOnTap(true)
             map?.overlays?.add(mOverlay)
+        }
+    }
+
+    private fun updateMarkers(){
+
+        val categoryS = mapCategorySpinner.selectedItem.toString()
+
+        when (categoryS) {
+            "All" -> spinnerIndex = 0
+            "Animal" -> spinnerIndex = 1
+            "Bird" -> spinnerIndex = 2
+            "Fish" -> spinnerIndex = 3
+            "Insect" -> spinnerIndex = 4
+            "Tree" -> spinnerIndex = 5
+            "Plant" -> spinnerIndex = 6
+            "Flower" -> spinnerIndex = 7
+            "Rock" -> spinnerIndex = 8
+            "Nest" -> spinnerIndex = 9
+            "Cocoon" -> spinnerIndex = 10
+            "Spider" -> spinnerIndex = 11
+        }
+
+        val sharedPreference = this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val editor = sharedPreference?.edit()
+        editor?.putInt("spinnerIndex",spinnerIndex)
+        editor?.commit()
+
+        Log.d("DBG", "updatemarker  spinnerindex: $spinnerIndex")
+
+        requireActivity().supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<MapFragment>(R.id.flFragment)
+            addToBackStack(null)
         }
     }
 }
