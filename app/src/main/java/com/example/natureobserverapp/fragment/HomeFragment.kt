@@ -84,7 +84,7 @@ class HomeFragment : Fragment(), LocationListener {
         }
 
         val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300000, 1000f, this)
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 500f, this)
 
         viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
