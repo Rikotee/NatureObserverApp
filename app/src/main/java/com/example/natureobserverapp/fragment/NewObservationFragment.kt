@@ -1,4 +1,4 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.fragment
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -22,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.example.natureobserverapp.*
+import com.example.natureobserverapp.model.WeatherViewModel
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,7 +36,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     private var sLight: Sensor? = null
     private var lightValue: Double? = 500.0
     private val db by lazy { NatureObservationDB.get(requireActivity().applicationContext) }
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: WeatherViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +59,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
         view.findViewById<ImageView>(R.id.observationImageView).setImageBitmap(imageBitmap)
 
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
         categorySpinner = view.findViewById(R.id.observationCategorySpinner)
 

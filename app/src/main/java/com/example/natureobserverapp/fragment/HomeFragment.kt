@@ -1,4 +1,4 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.fragment
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -27,12 +27,15 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.example.natureobserverapp.R
+import com.example.natureobserverapp.WeatherIconApi
+import com.example.natureobserverapp.model.WeatherViewModel
 import java.io.File
 
 class HomeFragment : Fragment(), LocationListener {
     private lateinit var mCurrentPhotoPath: String
     internal var activityCallBack: HomeFragmentListener? = null
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: WeatherViewModel
 
     interface HomeFragmentListener {
         fun onNewObservationButtonClick(picturePath: String)
@@ -83,7 +86,7 @@ class HomeFragment : Fragment(), LocationListener {
         val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 500f, this)
 
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
         val newPictureButton = view.findViewById<Button>(R.id.newPictureButton)
         newPictureButton.setOnClickListener {

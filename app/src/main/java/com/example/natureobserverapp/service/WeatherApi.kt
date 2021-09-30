@@ -1,5 +1,6 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.service
 
+import com.example.natureobserverapp.model.WeatherModel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET

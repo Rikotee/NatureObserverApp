@@ -1,4 +1,4 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.model
 
 object WeatherModel {
     data class Result (

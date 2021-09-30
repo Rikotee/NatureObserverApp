@@ -1,4 +1,4 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.fragment
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -16,6 +16,10 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.example.natureobserverapp.NatureObservationWithWeatherInfoModel
+import com.example.natureobserverapp.NatureObservationWithWeatherInfoModelFactory
+import com.example.natureobserverapp.R
+import com.example.natureobserverapp.WeatherIconApi
 
 class ItemFragment() : Fragment() {
 
