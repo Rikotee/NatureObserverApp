@@ -72,7 +72,7 @@ class MapFragment : Fragment(), LocationListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
@@ -190,9 +190,9 @@ class MapFragment : Fragment(), LocationListener {
                 val categoryS = mapCategorySpinner.selectedItem.toString()
 
                 if (categoryS == category) {
-                    items.add(OverlayItem(category, title, GeoPoint(lat, lon)))
+                    items.add(OverlayItem(titleId.toString(), title, GeoPoint(lat, lon)))
                 } else if (categoryS == "All") {
-                    items.add(OverlayItem(title, description, GeoPoint(lat, lon)))
+                    items.add(OverlayItem(titleId.toString(), title, GeoPoint(lat, lon)))
                 }
             }
 
@@ -203,7 +203,10 @@ class MapFragment : Fragment(), LocationListener {
                     }
 
                     override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
-                        val bundle = bundleOf("pos" to it[index].natureObservation?.id)
+                        val markerId = item?.title?.toLong()
+
+
+                        val bundle = bundleOf("pos" to markerId)
                         //val bundle = bundleOf("pos" to it[index].natureObservation?.id)
                         requireActivity().supportFragmentManager.commit {
                             setReorderingAllowed(true)
