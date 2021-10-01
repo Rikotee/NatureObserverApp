@@ -35,6 +35,7 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.OverlayItem
+import java.lang.Error
 import java.util.*
 
 class MapFragment : Fragment(), LocationListener {
@@ -52,7 +53,6 @@ class MapFragment : Fragment(), LocationListener {
     private var lat: Double = 0.0
     private var lon: Double = 0.0
     private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
-    private var spinnerValue: Int = 0
     private var spinnerIndex: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +73,7 @@ class MapFragment : Fragment(), LocationListener {
         mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
         updateButton = view.findViewById(R.id.btnUpdate)
 
+
         permissionCheck()
 
         updateButton.setOnClickListener {
@@ -87,12 +88,8 @@ class MapFragment : Fragment(), LocationListener {
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mapCategorySpinner.adapter = aa
 
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val newSpinnerValue = sharedPreference?.getInt("spinnerIndex", 0)
-        if (newSpinnerValue != null) {
-            mapCategorySpinner.setSelection(newSpinnerValue)
-        }
+        //This set spinner index value from sharedpreferences
+        setSpinnerValue()
 
         //This add all markers from saved observations
         addItemMarker()
@@ -100,21 +97,20 @@ class MapFragment : Fragment(), LocationListener {
         Configuration.getInstance()
             .load(context, PreferenceManager.getDefaultSharedPreferences(context))
 
-        map = view.findViewById(R.id.mapView)
-        map.setTileSource(TileSourceFactory.MAPNIK)
-        map.setMultiTouchControls(true)
-        map.controller.setZoom(14.0)
+        // This add Marker that show my location
+        myMarkerToMap()
 
-        marker = Marker(map)
-        marker.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_map_pin)
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        try {
+            val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 3f, this)
+        } catch (e: Error){
+            Log.d("DBG", "MapFragment onViewCreated: location not found")
+        }
 
-        val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 3f, this)
     }
 
     override fun onLocationChanged(p0: Location) {
-        Log.d("NATURE", "new latitude: ${p0.latitude} and longitude: ${p0.longitude}")
+        //Log.d("NATURE", "new latitude: ${p0.latitude} and longitude: ${p0.longitude}")
 
         map.controller.setCenter(GeoPoint(p0.latitude, p0.longitude))
 
@@ -227,5 +223,25 @@ class MapFragment : Fragment(), LocationListener {
             }
         }
         return categoriesList
+    }
+
+    private fun myMarkerToMap(){
+        map = view!!.findViewById(R.id.mapView)
+        map.setTileSource(TileSourceFactory.MAPNIK)
+        map.setMultiTouchControls(true)
+        map.controller.setZoom(14.0)
+
+        marker = Marker(map)
+        marker.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_map_pin)
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+    }
+
+    private fun setSpinnerValue(){
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val newSpinnerValue = sharedPreference?.getInt("spinnerIndex", 0)
+        if (newSpinnerValue != null) {
+            mapCategorySpinner.setSelection(newSpinnerValue)
+        }
     }
 }
