@@ -24,11 +24,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.example.natureobserverapp.Categories
 import com.example.natureobserverapp.model.NatureObservationsWithWeatherInfoModel
 import com.example.natureobserverapp.R
-import com.example.natureobserverapp.model.WeatherViewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -84,7 +82,7 @@ class MapFragment : Fragment(), LocationListener {
         val aa = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            Categories.categoriesAll
+            addToList()
         )
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mapCategorySpinner.adapter = aa
@@ -229,5 +227,11 @@ class MapFragment : Fragment(), LocationListener {
                 0
             )
         }
+    }
+
+    fun addToList(): MutableList<String>{
+        val categoriesList: MutableList<String> = Categories.categories.toMutableList()
+        categoriesList.add(0, "All")
+        return categoriesList
     }
 }
