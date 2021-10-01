@@ -229,7 +229,7 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
-    fun addToList(): MutableList<String>{
+    private fun addToList(): MutableList<String>{
         val categoriesList: MutableList<String> = Categories.categories.toMutableList()
         categoriesList.add(0, "All")
         return categoriesList
