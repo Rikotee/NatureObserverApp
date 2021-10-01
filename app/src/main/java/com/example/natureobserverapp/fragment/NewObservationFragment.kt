@@ -55,7 +55,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
 
         (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.new_observation_title_text)
 
-        val pictureFilePath = requireArguments().getString("picPath")
+        pictureFilePath = requireArguments().getString("picPath")
         val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
         view.findViewById<ImageView>(R.id.observationImageView).setImageBitmap(imageBitmap)
 
@@ -78,60 +78,54 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
             Log.i("SENSOR", "Your device does not have light sensor.")
         }
 
-        if ((Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED)
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                0
-            )
-        }
+        checkLocationPermission()
 
         val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 3f, this)
 
         view.findViewById<Button>(R.id.saveObservationButton).setOnClickListener {
-            val title = view.findViewById<EditText>(R.id.observationTitleEditText).text.toString()
-            val category = categorySpinner.selectedItem.toString()
-            val description =
-                view.findViewById<EditText>(R.id.observationDescriptionEditText).text.toString()
+            getDataAndSave()
+            requireActivity().supportFragmentManager.popBackStack()
+        }
+    }
 
-            val date = Calendar.getInstance().time
-            val formatter = SimpleDateFormat("dd.M.yyyy hh.mm", Locale.getDefault())
-            val currentDate = formatter.format(date)
+    private fun getDataAndSave() {
+        val title = view?.findViewById<EditText>(R.id.observationTitleEditText)?.text.toString()
+        val category = categorySpinner.selectedItem.toString()
+        val description =
+            view?.findViewById<EditText>(R.id.observationDescriptionEditText)?.text.toString()
 
-            GlobalScope.launch(Dispatchers.Main) {
-                val id = GlobalScope.async(Dispatchers.IO) {
-                    insertNatureObservationToDatabase(
-                        title, category, description, pictureFilePath!!, currentDate,
-                        currentLocation!!.latitude, currentLocation!!.longitude, lightValue!!
+        val date = Calendar.getInstance().time
+        val formatter = SimpleDateFormat("dd.M.yyyy hh.mm", Locale.getDefault())
+        val currentDate = formatter.format(date)
+
+        GlobalScope.launch(Dispatchers.Main) {
+            val id = GlobalScope.async(Dispatchers.IO) {
+                insertNatureObservationToDatabase(
+                    title, category, description, pictureFilePath!!, currentDate,
+                    currentLocation!!.latitude, currentLocation!!.longitude, lightValue!!
+                )
+            }
+
+            viewModel.getWeatherLatLon(currentLocation!!.latitude, currentLocation!!.longitude)
+            viewModel.hits.observe(requireActivity(), {
+                val description = it.weather[0].description
+                val icon = it.weather[0].icon
+                val temp = it.main.temp
+                val pressure = it.main.pressure
+                val humidity = it.main.humidity
+                val windSpeed = it.wind.speed
+                val windDeg = it.wind.deg
+                val country = it.sys.country
+                val placeName = it.name
+
+                GlobalScope.launch(Dispatchers.IO) {
+                    insertWeatherInfoToDatabase(
+                        id.await(), description, icon, temp, pressure,
+                        humidity, windSpeed, windDeg, country, placeName
                     )
                 }
-
-                viewModel.getWeatherLatLon(currentLocation!!.latitude, currentLocation!!.longitude)
-                viewModel.hits.observe(requireActivity(), {
-                    val description = it.weather[0].description
-                    val icon = it.weather[0].icon
-                    val temp = it.main.temp
-                    val pressure = it.main.pressure
-                    val humidity = it.main.humidity
-                    val windSpeed = it.wind.speed
-                    val windDeg = it.wind.deg
-                    val country = it.sys.country
-                    val placeName = it.name
-
-                    GlobalScope.launch(Dispatchers.IO) {
-                        insertWeatherInfoToDatabase(
-                            id.await(), description, icon, temp, pressure,
-                            humidity, windSpeed, windDeg, country, placeName
-                        )
-                    }
-                })
-            }
-            requireActivity().supportFragmentManager.popBackStack()
+            })
         }
     }
 
@@ -189,6 +183,9 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         currentLocation = p0
     }
 
+    override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
+    }
+
     override fun onSensorChanged(event: SensorEvent?) {
         event ?: return
         if (event.sensor == sLight) {
@@ -210,5 +207,19 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     override fun onPause() {
         super.onPause()
         sm.unregisterListener(this)
+    }
+
+    private fun checkLocationPermission() {
+        if ((Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED)
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                0
+            )
+        }
     }
 }
