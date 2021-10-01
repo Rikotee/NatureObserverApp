@@ -51,7 +51,7 @@ class MapFragment : Fragment(), LocationListener {
     private var category: String = ""
     private var lat: Double = 0.0
     private var lon: Double = 0.0
-
+    private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
     private var spinnerValue: Int = 0
     private var spinnerIndex: Int = 0
 
@@ -187,19 +187,10 @@ class MapFragment : Fragment(), LocationListener {
 
         val categoryS = mapCategorySpinner.selectedItem.toString()
 
-        when (categoryS) {
-            "All" -> spinnerIndex = 0
-            "Animal" -> spinnerIndex = 1
-            "Bird" -> spinnerIndex = 2
-            "Fish" -> spinnerIndex = 3
-            "Insect" -> spinnerIndex = 4
-            "Tree" -> spinnerIndex = 5
-            "Plant" -> spinnerIndex = 6
-            "Flower" -> spinnerIndex = 7
-            "Rock" -> spinnerIndex = 8
-            "Nest" -> spinnerIndex = 9
-            "Cocoon" -> spinnerIndex = 10
-            "Spider" -> spinnerIndex = 11
+        for (i in categoriesList.indices) {
+            if (categoryS == categoriesList[i]) {
+                spinnerIndex = i
+            }
         }
 
         val sharedPreference =
@@ -229,9 +220,12 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
-    private fun addToList(): MutableList<String>{
-        val categoriesList: MutableList<String> = Categories.categories.toMutableList()
-        categoriesList.add(0, "All")
+    private fun addToList(): MutableList<String> {
+        for (i in categoriesList.indices) {
+            if (categoriesList[0] != "All") {
+                categoriesList.add(0, "All")
+            }
+        }
         return categoriesList
     }
 }

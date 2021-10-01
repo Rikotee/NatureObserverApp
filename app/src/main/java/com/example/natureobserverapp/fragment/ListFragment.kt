@@ -37,7 +37,18 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         observationsRecyclerView.layoutManager = LinearLayoutManager(this.context)
         val nowwim: NatureObservationsWithWeatherInfoModel by viewModels()
         nowwim.getNatureObservationsWithWeatherInfo().observe(this) {
+
+
+
+
+            //list sorting here
+
+
+
             observationsRecyclerView.adapter = RecyclerViewAdapter(it, this)
+
+
+
         }
     }
 
