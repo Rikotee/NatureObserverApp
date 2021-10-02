@@ -141,4 +141,7 @@ class HomeFragment : Fragment(), LocationListener {
             }
         })
     }
+
+    override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
+    }
 }
