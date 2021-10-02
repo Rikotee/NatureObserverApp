@@ -103,12 +103,12 @@ class MapFragment : Fragment(), LocationListener {
         // This add Marker that show my location
         myMarkerToMap()
 
-        try {
+        //try {
             val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 3f, this)
-        } catch (e: Error){
-            Log.d("DBG", "MapFragment onViewCreated: location not found")
-        }
+//        } catch (e: Error){
+//            Log.d("DBG", "MapFragment onViewCreated: location not found")
+//        }
 
     }
 
@@ -118,9 +118,9 @@ class MapFragment : Fragment(), LocationListener {
         map.controller.setCenter(GeoPoint(p0.latitude, p0.longitude))
 
         marker.position = GeoPoint(p0.latitude, p0.longitude)
-        if (Geocoder.isPresent()) {
+/*        if (Geocoder.isPresent()) {
             marker.title = getAddress(p0.latitude, p0.longitude)
-        }
+        }*/
         marker.subDescription = "Lat: ${p0.latitude}, Lon: ${p0.longitude}, Alt: ${p0.altitude}"
         map.overlays.add(marker)
         map.invalidate()
@@ -129,11 +129,11 @@ class MapFragment : Fragment(), LocationListener {
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
     }
 
-    private fun getAddress(lat: Double, lng: Double): String {
+/*    private fun getAddress(lat: Double, lng: Double): String {
         val geocoder = Geocoder(context)
         val list = geocoder.getFromLocation(lat, lng, 1)
         return list[0].getAddressLine(0)
-    }
+    }*/
 
     // This add saved observation to map
     private fun addItemMarker() {
