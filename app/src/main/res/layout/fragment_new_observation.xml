@@ -78,6 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
+            android:enabled="false"
             android:text="@string/save_observation_button_text"
             app:icon="@drawable/ic_save"
             app:layout_constraintBottom_toBottomOf="parent"

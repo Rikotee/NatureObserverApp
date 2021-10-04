@@ -41,7 +41,7 @@
             android:id="@+id/newPictureButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="80dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/new_picture_button_text"
             app:icon="@drawable/ic_camera"
             app:layout_constraintBottom_toBottomOf="parent"

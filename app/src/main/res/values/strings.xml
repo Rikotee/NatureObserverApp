@@ -10,6 +10,7 @@
     <string name="observation_title_edit_text_hint">Title</string>
     <string name="observation_description_edit_text_hint">Description</string>
     <string name="save_observation_button_text">Save observation</string>
+    <string name="empty_title_edit_text_toast">Enter a title for the observation!</string>
 
     <!--    for light sensor-->
     <string name="si_lux_units_m_s_2">SI lux units (m/s^2)</string>
