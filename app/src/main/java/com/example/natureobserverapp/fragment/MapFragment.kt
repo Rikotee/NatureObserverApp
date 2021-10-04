@@ -2,7 +2,6 @@ package com.example.natureobserverapp.fragment
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -13,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
@@ -36,14 +36,12 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.OverlayItem
-import java.lang.Error
 import java.util.*
 
 class MapFragment : Fragment(), LocationListener {
     private lateinit var map: MapView
     private lateinit var marker: Marker
     private lateinit var mapCategorySpinner: Spinner
-    private lateinit var updateButton: Button
 
     private val sharedPrefFile = "sharedpreference"
 
@@ -71,17 +69,12 @@ class MapFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.map_title_text)
+        (requireActivity() as AppCompatActivity).supportActionBar?.title =
+            getString(R.string.map_title_text)
 
         mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
-        updateButton = view.findViewById(R.id.btnUpdate)
-
 
         permissionCheck()
-
-        updateButton.setOnClickListener {
-            updateMarkers()
-        }
 
         val aa = ArrayAdapter(
             requireContext(),
@@ -104,12 +97,26 @@ class MapFragment : Fragment(), LocationListener {
         myMarkerToMap()
 
         //try {
-            val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 3f, this)
+        val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 3f, this)
 //        } catch (e: Error){
 //            Log.d("DBG", "MapFragment onViewCreated: location not found")
 //        }
 
+        mapCategorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                updateSpinner()
+            }
+        }
     }
 
     override fun onLocationChanged(p0: Location) {
@@ -185,8 +192,11 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
-    private fun updateMarkers() {
+    private fun updateSpinner() {
 
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val oldSpinnerValue = sharedPreference?.getInt("spinnerIndex", 0)
         val categoryS = mapCategorySpinner.selectedItem.toString()
 
         for (i in categoriesList.indices) {
@@ -195,16 +205,16 @@ class MapFragment : Fragment(), LocationListener {
             }
         }
 
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val editor = sharedPreference?.edit()
-        editor?.putInt("spinnerIndex", spinnerIndex)
-        editor?.commit()
+        if (oldSpinnerValue != spinnerIndex) {
+            val editor = sharedPreference?.edit()
+            editor?.putInt("spinnerIndex", spinnerIndex)
+            editor?.commit()
 
-        requireActivity().supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace<MapFragment>(R.id.flFragment)
-            addToBackStack(null)
+            requireActivity().supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace<MapFragment>(R.id.flFragment)
+                addToBackStack(null)
+            }
         }
     }
 
@@ -231,7 +241,7 @@ class MapFragment : Fragment(), LocationListener {
         return categoriesList
     }
 
-    private fun myMarkerToMap(){
+    private fun myMarkerToMap() {
         map = view!!.findViewById(R.id.mapView)
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.setMultiTouchControls(true)
@@ -242,7 +252,7 @@ class MapFragment : Fragment(), LocationListener {
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
     }
 
-    private fun setSpinnerValue(){
+    private fun setSpinnerValue() {
         val sharedPreference =
             this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val newSpinnerValue = sharedPreference?.getInt("spinnerIndex", 0)
