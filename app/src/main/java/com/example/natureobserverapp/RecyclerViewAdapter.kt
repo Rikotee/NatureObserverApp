@@ -29,10 +29,7 @@ class RecyclerViewAdapter(
         holder.titleTextView.text = items?.get(position)?.natureObservation?.title
 
         holder.itemView.setOnClickListener {
-            //Log.d("DBG", "Clicked $position")
-            //Log.d("DBG", "${items?.get(position)?.weatherInfo?.temp}, ${items?.get(position)?.weatherInfo?.placeName}")
 
-            Log.d("DBG", "Clicked $position")
             clickListener.onItemClick(items?.get(position)?.natureObservation?.id)
         }
     }
