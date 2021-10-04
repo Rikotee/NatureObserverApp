@@ -34,9 +34,11 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     private lateinit var categorySpinner: Spinner
     private lateinit var sm: SensorManager
     private var sLight: Sensor? = null
-    private var lightValue: Double? = 500.0
+    private var lightValue: Double? = null
     private val db by lazy { NatureObservationDB.get(requireActivity().applicationContext) }
     private lateinit var viewModel: WeatherViewModel
+    private lateinit var saveObservationButton: Button
+    private lateinit var titleEditText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +55,11 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.new_observation_title_text)
+        (requireActivity() as AppCompatActivity).supportActionBar?.title =
+            getString(R.string.new_observation_title_text)
+
+        saveObservationButton = view.findViewById(R.id.saveObservationButton)
+        titleEditText = view.findViewById(R.id.observationTitleEditText)
 
         pictureFilePath = requireArguments().getString("picPath")
         val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
@@ -83,14 +89,22 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 3f, this)
 
-        view.findViewById<Button>(R.id.saveObservationButton).setOnClickListener {
-            getDataAndSave()
-            requireActivity().supportFragmentManager.popBackStack()
+        saveObservationButton.setOnClickListener {
+            if (titleEditText.text.isEmpty()) {
+                Toast.makeText(
+                    context,
+                    R.string.empty_title_edit_text_toast,
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                getDataAndSave()
+                requireActivity().supportFragmentManager.popBackStack()
+            }
         }
     }
 
     private fun getDataAndSave() {
-        val title = view?.findViewById<EditText>(R.id.observationTitleEditText)?.text.toString()
+        val title = titleEditText.text.toString()
         val category = categorySpinner.selectedItem.toString()
         val description =
             view?.findViewById<EditText>(R.id.observationDescriptionEditText)?.text.toString()
@@ -99,33 +113,37 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         val formatter = SimpleDateFormat("dd.M.yyyy hh.mm", Locale.getDefault())
         val currentDate = formatter.format(date)
 
-        GlobalScope.launch(Dispatchers.Main) {
-            val id = GlobalScope.async(Dispatchers.IO) {
-                insertNatureObservationToDatabase(
-                    title, category, description, pictureFilePath!!, currentDate,
-                    currentLocation!!.latitude, currentLocation!!.longitude, lightValue!!
-                )
-            }
+        val lightValue = lightValue ?: 0.0
 
-            viewModel.getWeatherLatLon(currentLocation!!.latitude, currentLocation!!.longitude)
-            viewModel.hits.observe(requireActivity(), {
-                val description = it.weather[0].description
-                val icon = it.weather[0].icon
-                val temp = it.main.temp
-                val pressure = it.main.pressure
-                val humidity = it.main.humidity
-                val windSpeed = it.wind.speed
-                val windDeg = it.wind.deg
-                val country = it.sys.country
-                val placeName = it.name
-
-                GlobalScope.launch(Dispatchers.IO) {
-                    insertWeatherInfoToDatabase(
-                        id.await(), description, icon, temp, pressure,
-                        humidity, windSpeed, windDeg, country, placeName
+        if (pictureFilePath != null && currentLocation != null) {
+            GlobalScope.launch(Dispatchers.Main) {
+                val id = GlobalScope.async(Dispatchers.IO) {
+                    insertNatureObservationToDatabase(
+                        title, category, description, pictureFilePath!!, currentDate,
+                        currentLocation!!.latitude, currentLocation!!.longitude, lightValue
                     )
                 }
-            })
+
+                viewModel.getWeatherLatLon(currentLocation!!.latitude, currentLocation!!.longitude)
+                viewModel.hits.observe(requireActivity(), {
+                    val description = it.weather[0].description
+                    val icon = it.weather[0].icon
+                    val temp = it.main.temp
+                    val pressure = it.main.pressure
+                    val humidity = it.main.humidity
+                    val windSpeed = it.wind.speed
+                    val windDeg = it.wind.deg
+                    val country = it.sys.country
+                    val placeName = it.name
+
+                    GlobalScope.launch(Dispatchers.IO) {
+                        insertWeatherInfoToDatabase(
+                            id.await(), description, icon, temp, pressure,
+                            humidity, windSpeed, windDeg, country, placeName
+                        )
+                    }
+                })
+            }
         }
     }
 
@@ -181,6 +199,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
 
     override fun onLocationChanged(p0: Location) {
         currentLocation = p0
+        saveObservationButton.isEnabled = true
     }
 
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {

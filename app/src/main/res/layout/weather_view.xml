@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="4dp"
-                android:textSize="28sp"
+                android:textSize="26sp"
                 android:textStyle="bold"
                 tools:text="15 °C" />
 
