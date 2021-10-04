@@ -2,7 +2,6 @@ package com.example.natureobserverapp.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,12 +15,9 @@ import androidx.fragment.app.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.natureobserverapp.Categories
-import com.example.natureobserverapp.NatureObservationWithWeatherInfo
 import com.example.natureobserverapp.model.NatureObservationsWithWeatherInfoModel
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.RecyclerViewAdapter
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.overlay.OverlayItem
 
 class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
 
@@ -29,7 +25,6 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
     private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
     private var spinnerIndex: Int = 0
     private val sharedPrefFile = "sharedpreference"
-    private lateinit var filterButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +42,6 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         listSpinner = view.findViewById(R.id.listSpinner)
-        filterButton = view.findViewById(R.id.filterBtn)
 
         val aa = ArrayAdapter(
             requireContext(),
@@ -57,23 +51,32 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         listSpinner.adapter = aa
 
-
-
-
-
-
-
         setSpinnerValue()
 
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.list_title_text)
 
-        filterButton.setOnClickListener {
-            updateSpinner()
-        }
+        listSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
 
-        val observationsRecyclerView = view.findViewById<RecyclerView>(R.id.rv_obs_list)
-        observationsRecyclerView.layoutManager = LinearLayoutManager(this.context)
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                getList()
+            }
+        }
+    }
+
+    private fun getList() {
+        val observationsRecyclerView = view?.findViewById<RecyclerView>(R.id.rv_obs_list)
+        if (observationsRecyclerView != null) {
+            observationsRecyclerView.layoutManager = LinearLayoutManager(this.context)
+        }
         val nowwim: NatureObservationsWithWeatherInfoModel by viewModels()
         nowwim.getNatureObservationsWithWeatherInfo().observe(this) { it ->
 
@@ -81,9 +84,13 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
             val filtered = it.filter { categoryS == it.natureObservation?.category ?: 0 }
 
             if (categoryS == "All") {
-                observationsRecyclerView.adapter = RecyclerViewAdapter(it, this)
+                if (observationsRecyclerView != null) {
+                    observationsRecyclerView.adapter = RecyclerViewAdapter(it, this)
+                }
             } else {
-                observationsRecyclerView.adapter = RecyclerViewAdapter(filtered, this)
+                if (observationsRecyclerView != null) {
+                    observationsRecyclerView.adapter = RecyclerViewAdapter(filtered, this)
+                }
             }
         }
     }
