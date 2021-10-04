@@ -10,7 +10,7 @@ import com.example.natureobserverapp.NatureObservationDB
 import com.example.natureobserverapp.NatureObservationWithWeatherInfo
 import com.example.natureobserverapp.WeatherInfo
 
-class NatureObservationModel(application: Application) : AndroidViewModel(application) {
+class NatureObservationsModel(application: Application) : AndroidViewModel(application) {
     private val natureObservations: LiveData<List<NatureObservation>> =
         NatureObservationDB.get(getApplication()).natureObservationDao().getAll()
 
@@ -35,7 +35,7 @@ class NatureObservationsWithWeatherInfoModel(application: Application) :
     fun getNatureObservationsWithWeatherInfo() = natureObservationsWithWeatherInfo
 }
 
-class WeatherInfoModel(application: Application, natureObservationId: Long) :
+class WeatherInfosModel(application: Application, natureObservationId: Long) :
     AndroidViewModel(application) {
     private val weatherInfos: LiveData<List<WeatherInfo>> =
         NatureObservationDB.get(getApplication()).weatherInfoDao()
@@ -53,11 +53,11 @@ class NatureObservationWithWeatherInfoModelFactory(
         NatureObservationWithWeatherInfoModel(application, natureObservationId) as T
 }
 
-class WeatherInfoModelFactory(
+class WeatherInfosModelFactory(
     private val application: Application,
     private val natureObservationId: Long
 ) :
     ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-        WeatherInfoModel(application, natureObservationId) as T
+        WeatherInfosModel(application, natureObservationId) as T
 }

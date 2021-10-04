@@ -6,6 +6,7 @@
     <string name="map_title_text">Observation Locations</string>
     <string name="list_title_text">My Nature Observations</string>
     <string name="item_title_text">Nature Observation</string>
+    <string name="chart_title_text">My Observations By Category</string>
     <string name="observation_info_text">Enter the observation details</string>
     <string name="observation_title_edit_text_hint">Title</string>
     <string name="observation_description_edit_text_hint">Description</string>

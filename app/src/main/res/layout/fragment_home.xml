@@ -14,28 +14,24 @@
         <LinearLayout
             android:id="@+id/weatherViewContainerLayout"
             android:layout_width="0dp"
-            android:layout_height="160dp"
-            android:layout_margin="16dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.488"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
-        <TextView
-            android:id="@+id/placeholderGraphView"
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChart"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="16dp"
-            android:background="@android:color/darker_gray"
-            android:gravity="center"
-            android:text="Graph placeholder"
-            android:textAlignment="center"
-            android:textSize="24sp"
+            android:layout_margin="8dp"
+            android:background="@color/pie_chart_background"
             app:layout_constraintBottom_toTopOf="@+id/newPictureButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weatherViewContainerLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/chartTitleTextView" />
 
         <Button
             android:id="@+id/newPictureButton"
@@ -47,6 +43,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/chartTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/chart_title_text"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weatherViewContainerLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

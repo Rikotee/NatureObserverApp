@@ -2,6 +2,7 @@ package com.example.natureobserverapp.fragment
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -9,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,17 +24,28 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.natureobserverapp.Categories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.WeatherIconApi
+import com.example.natureobserverapp.model.NatureObservationsModel
 import com.example.natureobserverapp.model.WeatherViewModel
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.utils.ColorTemplate
 import java.io.File
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.formatter.DefaultValueFormatter
 
 class HomeFragment : Fragment(), LocationListener {
     internal var activityCallBack: HomeFragmentListener? = null
     private lateinit var viewModel: WeatherViewModel
+    private lateinit var pieChart: PieChart
 
     interface HomeFragmentListener {
         fun onNewObservationButtonClick(picturePath: String, photoURI: Uri)
@@ -69,6 +80,9 @@ class HomeFragment : Fragment(), LocationListener {
 
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.home_title_text)
+
+        pieChart = view.findViewById(R.id.pieChart)
+        createPieChart()
 
         checkLocationPermission()
 
@@ -124,7 +138,6 @@ class HomeFragment : Fragment(), LocationListener {
                 }
             })
         }
-
     }
 
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
@@ -141,6 +154,79 @@ class HomeFragment : Fragment(), LocationListener {
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
                 0
             )
+        }
+    }
+
+    private fun createPieChart() {
+        pieChart.description.isEnabled = false
+        pieChart.animateY(1400, Easing.EaseInOutQuad)
+        val legend = pieChart.legend
+        legend.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
+        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+        legend.orientation = Legend.LegendOrientation.VERTICAL
+        legend.yEntrySpace = 10f
+        legend.textSize = 14f
+        pieChart.setEntryLabelColor(Color.BLACK)
+        pieChart.setEntryLabelTextSize(16f)
+
+        val nom: NatureObservationsModel by viewModels()
+        nom.getNatureObservations().observe(this) {
+            val observations = it
+            val categories = Categories.categories.toMutableList()
+            val observationCategoryCountsList = MutableList(categories.size) { 0 }
+            val indicesOfZeroValue = mutableListOf<Int>()
+
+            for (i in categories.indices) {
+                for (observation in observations) {
+                    if (observation.category == categories[i]) {
+                        val sumOfObs = observationCategoryCountsList[i] + 1
+                        observationCategoryCountsList[i] = sumOfObs
+                    }
+                }
+
+                if (observationCategoryCountsList[i] == 0) {
+                    indicesOfZeroValue.add(i)
+                }
+            }
+
+            var indexSubtractionValue = 0
+
+            for (i in indicesOfZeroValue.indices) {
+                if (i > 0) {
+                    indexSubtractionValue++
+                }
+
+                observationCategoryCountsList.removeAt(indicesOfZeroValue[i] - indexSubtractionValue)
+                categories.removeAt(indicesOfZeroValue[i] - indexSubtractionValue)
+            }
+
+            val numberOfObservationsByCategory = mutableListOf<PieEntry>()
+
+            for (i in observationCategoryCountsList.indices) {
+                numberOfObservationsByCategory.add(
+                    PieEntry(
+                        observationCategoryCountsList[i].toFloat(), categories[i]
+                    )
+                )
+            }
+
+            val dataSet = PieDataSet(numberOfObservationsByCategory, "Observations")
+            val colors = mutableListOf<Int>()
+
+            for (color in ColorTemplate.MATERIAL_COLORS) {
+                colors.add(color)
+            }
+
+            for (color in ColorTemplate.VORDIPLOM_COLORS) {
+                colors.add(color)
+            }
+
+            dataSet.colors = colors
+            val data = PieData(dataSet)
+            data.setValueFormatter(DefaultValueFormatter(0))
+            data.setValueTextSize(14f)
+            pieChart.data = data
+            pieChart.invalidate()
         }
     }
 }
