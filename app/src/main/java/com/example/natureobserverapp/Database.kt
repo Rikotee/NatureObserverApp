@@ -51,6 +51,9 @@ interface NatureObservationDao {
     fun getAll(): LiveData<List<NatureObservation>>
 
     @Query("SELECT * FROM natureobservation WHERE natureobservation.id = :natureObservationId")
+    fun getNatureObservation(natureObservationId: Long): LiveData<NatureObservation>
+
+    @Query("SELECT * FROM natureobservation WHERE natureobservation.id = :natureObservationId")
     fun getNatureObservationWithWeatherInfo(natureObservationId: Long): LiveData<NatureObservationWithWeatherInfo>
 
     @Query("SELECT * FROM natureobservation")
@@ -62,8 +65,11 @@ interface NatureObservationDao {
     @Update
     fun update(natureobservation: NatureObservation)
 
-    @Delete
+    @Delete()
     fun delete(natureobservation: NatureObservation)
+
+    @Query("DELETE FROM natureobservation WHERE natureobservation.id = :natureObservationId")
+    fun deleteNatureObservation(natureObservationId: Long)
 }
 
 @Dao
@@ -82,6 +88,9 @@ interface WeatherInfoDao {
 
     @Delete
     fun delete(weatherinfo: WeatherInfo)
+
+    @Query("DELETE FROM weatherinfo WHERE weatherinfo.observationId = :natureObservationId")
+    fun deleteWeatherInfo(natureObservationId: Long)
 }
 
 @Database(entities = [(NatureObservation::class), (WeatherInfo::class)], version = 1)

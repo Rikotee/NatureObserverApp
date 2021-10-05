@@ -17,6 +17,15 @@ class NatureObservationsModel(application: Application) : AndroidViewModel(appli
     fun getNatureObservations() = natureObservations
 }
 
+class NatureObservationModel(application: Application, natureObservationId: Long) :
+    AndroidViewModel(application) {
+    private val natureObservation: LiveData<NatureObservation> =
+        NatureObservationDB.get(getApplication()).natureObservationDao()
+            .getNatureObservation(natureObservationId)
+
+    fun getNatureObservation() = natureObservation
+}
+
 class NatureObservationWithWeatherInfoModel(application: Application, natureObservationId: Long) :
     AndroidViewModel(application) {
     private val natureObservationWithWeatherInfo: LiveData<NatureObservationWithWeatherInfo> =
@@ -42,6 +51,15 @@ class WeatherInfosModel(application: Application, natureObservationId: Long) :
             .getWeatherInfosOfNatureObservation(natureObservationId)
 
     fun getWeatherInfos() = weatherInfos
+}
+
+class NatureObservationModelFactory(
+    private val application: Application,
+    private val natureObservationId: Long
+) :
+    ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T =
+        NatureObservationModel(application, natureObservationId) as T
 }
 
 class NatureObservationWithWeatherInfoModelFactory(

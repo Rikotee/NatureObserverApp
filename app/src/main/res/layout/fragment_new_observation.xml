@@ -40,7 +40,7 @@
             android:layout_marginBottom="16dp"
             android:ems="10"
             android:hint="@string/observation_title_edit_text_hint"
-            android:inputType="textPersonName"
+            android:inputType="textCapSentences"
             app:layout_constraintBottom_toTopOf="@+id/observationCategorySpinner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
