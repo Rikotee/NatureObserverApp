@@ -39,6 +39,8 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     private lateinit var viewModel: WeatherViewModel
     private lateinit var saveObservationButton: Button
     private lateinit var titleEditText: EditText
+    private lateinit var addCategoryEditText: EditText
+    private val sharedPrefFile = "sharedpreference"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +62,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
 
         saveObservationButton = view.findViewById(R.id.saveObservationButton)
         titleEditText = view.findViewById(R.id.observationTitleEditText)
+        addCategoryEditText = view.findViewById(R.id.addCategoryEditText)
 
         pictureFilePath = requireArguments().getString("picPath")
         val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
@@ -104,8 +107,32 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     }
 
     private fun getDataAndSave() {
+
+        val newCategoriesSet = HashSet<String>()
+
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+        val categoriesSet = sharedPreference?.getStringSet("newCategories", newCategoriesSet)
+
         val title = titleEditText.text.toString()
-        val category = categorySpinner.selectedItem.toString()
+        val addedCategory = addCategoryEditText.text.toString()
+        var category = categorySpinner.selectedItem.toString()
+
+        if (categoriesSet != null) {
+            newCategoriesSet.addAll(categoriesSet)
+        }
+
+        if (addedCategory != "") {
+            category = addedCategory
+
+            newCategoriesSet.add(category)
+
+            val editor = sharedPreference?.edit()
+            editor?.putStringSet("newCategories", newCategoriesSet)
+            editor?.apply()
+        }
+
         val description =
             view?.findViewById<EditText>(R.id.observationDescriptionEditText)?.text.toString()
 

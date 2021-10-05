@@ -233,11 +233,28 @@ class MapFragment : Fragment(), LocationListener {
     }
 
     private fun addToList(): MutableList<String> {
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+        val newCategoriesSet = HashSet<String>()
+
+        val oldCategories = sharedPreference?.getStringSet(
+            "newCategories",
+            newCategoriesSet
+        )
+
+        Log.d("DBG", oldCategories.toString())
+
         for (i in categoriesList.indices) {
             if (categoriesList[0] != "All") {
                 categoriesList.add(0, "All")
             }
         }
+
+        if (oldCategories != null) {
+            categoriesList.addAll(oldCategories)
+        }
+
         return categoriesList
     }
 
