@@ -280,8 +280,6 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
             newCategoriesSet
         )
 
-        Log.d("DBG", oldCategories.toString())
-
         for (i in categoriesList.indices) {
             if (categoriesList[0] != "All") {
                 categoriesList.add(0, "All")
@@ -289,11 +287,11 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         }
 
         if (oldCategories != null) {
-            categoriesList.addAll(oldCategories)
+            for (item in oldCategories){
+                if (item !in categoriesList) { categoriesList.add(item) }
+            }
         }
 
-        val noDuplicates = categoriesList.distinct()
-
-        return noDuplicates.toMutableList()
+        return categoriesList
     }
 }

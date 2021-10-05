@@ -117,8 +117,6 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
             newCategoriesSet
         )
 
-        Log.d("DBG", oldCategories.toString())
-
         for (i in categoriesList.indices) {
             if (categoriesList[0] != "All") {
                 categoriesList.add(0, "All")
@@ -126,12 +124,12 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         }
 
         if (oldCategories != null) {
-            categoriesList.addAll(oldCategories)
+            for (item in oldCategories){
+                if (item !in categoriesList) { categoriesList.add(item) }
+            }
         }
 
-        val noDuplicates = categoriesList.distinct()
-
-        return noDuplicates.toMutableList()
+        return categoriesList
     }
 
     private fun setSpinnerValue() {
