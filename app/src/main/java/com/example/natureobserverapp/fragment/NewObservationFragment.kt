@@ -41,6 +41,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     private lateinit var titleEditText: EditText
     private lateinit var addCategoryEditText: EditText
     private val sharedPrefFile = "sharedpreference"
+    private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +76,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         val aa = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            Categories.categories
+            addToList()
         )
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = aa
@@ -266,5 +267,33 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
                 0
             )
         }
+    }
+
+    private fun addToList(): MutableList<String> {
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+        val newCategoriesSet = HashSet<String>()
+
+        val oldCategories = sharedPreference?.getStringSet(
+            "newCategories",
+            newCategoriesSet
+        )
+
+        Log.d("DBG", oldCategories.toString())
+
+        for (i in categoriesList.indices) {
+            if (categoriesList[0] != "All") {
+                categoriesList.add(0, "All")
+            }
+        }
+
+        if (oldCategories != null) {
+            categoriesList.addAll(oldCategories)
+        }
+
+        val noDuplicates = categoriesList.distinct()
+
+        return noDuplicates.toMutableList()
     }
 }

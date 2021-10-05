@@ -129,7 +129,9 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
             categoriesList.addAll(oldCategories)
         }
 
-        return categoriesList
+        val noDuplicates = categoriesList.distinct()
+
+        return noDuplicates.toMutableList()
     }
 
     private fun setSpinnerValue() {

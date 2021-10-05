@@ -255,7 +255,9 @@ class MapFragment : Fragment(), LocationListener {
             categoriesList.addAll(oldCategories)
         }
 
-        return categoriesList
+        val noDuplicates = categoriesList.distinct()
+
+        return noDuplicates.toMutableList()
     }
 
     private fun myMarkerToMap() {
