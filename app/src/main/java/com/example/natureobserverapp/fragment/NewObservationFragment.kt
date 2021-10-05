@@ -107,24 +107,23 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     }
 
     private fun getDataAndSave() {
-
-        val newCategoriesSet = HashSet<String>()
-
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-
-        val categoriesSet = sharedPreference?.getStringSet("newCategories", newCategoriesSet)
-
         val title = titleEditText.text.toString()
         val addedCategory = addCategoryEditText.text.toString()
         var category = categorySpinner.selectedItem.toString()
 
-        if (categoriesSet != null) {
-            newCategoriesSet.addAll(categoriesSet)
-        }
-
         if (addedCategory != "") {
             category = addedCategory
+
+            val newCategoriesSet = HashSet<String>()
+
+            val sharedPreference =
+                this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+            val categoriesSet = sharedPreference?.getStringSet("newCategories", newCategoriesSet)
+
+            if (categoriesSet != null) {
+                newCategoriesSet.addAll(categoriesSet)
+            }
 
             newCategoriesSet.add(category)
 
