@@ -55,7 +55,6 @@ class MapFragment : Fragment(), LocationListener {
     private var lon: Double = 0.0
     private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
     private var spinnerIndex: Int = 0
-    private lateinit var updateButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +75,6 @@ class MapFragment : Fragment(), LocationListener {
             getString(R.string.map_title_text)
 
         mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
-        updateButton = view.findViewById(R.id.updateBtn)
 
         permissionCheck()
 
@@ -105,10 +103,6 @@ class MapFragment : Fragment(), LocationListener {
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 3f, this)
 //        } catch (e: Error){
 //            Log.d("DBG", "MapFragment onViewCreated: location not found")
-//        }
-
-//        updateButton.setOnClickListener{
-//            updateSpinner()
 //        }
 
         mapCategorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
