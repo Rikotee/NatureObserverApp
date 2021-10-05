@@ -1,6 +1,5 @@
 package com.example.natureobserverapp
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,10 +22,12 @@ class RecyclerViewAdapter(
 
     inner class ObservationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var titleTextView: TextView = view.findViewById(R.id.titleTextView)
+        var dayTextView: TextView = view.findViewById(R.id.dayTextView)
     }
 
     override fun onBindViewHolder(holder: ObservationViewHolder, position: Int) {
         holder.titleTextView.text = items?.get(position)?.natureObservation?.title
+        holder.dayTextView.text = items?.get(position)?.natureObservation?.dateAndTime
 
         holder.itemView.setOnClickListener {
 
