@@ -41,11 +41,14 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import java.io.File
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
+import java.util.HashSet
 
 class HomeFragment : Fragment(), LocationListener {
     internal var activityCallBack: HomeFragmentListener? = null
     private lateinit var viewModel: WeatherViewModel
     private lateinit var pieChart: PieChart
+    private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
+    private val sharedPrefFile = "sharedpreference"
 
     interface HomeFragmentListener {
         fun onNewObservationButtonClick(picturePath: String, photoURI: Uri)
@@ -81,6 +84,7 @@ class HomeFragment : Fragment(), LocationListener {
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.home_title_text)
 
+        addToList()
         pieChart = view.findViewById(R.id.pieChart)
         createPieChart()
 
@@ -172,7 +176,7 @@ class HomeFragment : Fragment(), LocationListener {
         val nom: NatureObservationsModel by viewModels()
         nom.getNatureObservations().observe(this) {
             val observations = it
-            val categories = Categories.categories.toMutableList()
+            val categories = categoriesList
             val observationCategoryCountsList = MutableList(categories.size) { 0 }
             val indicesOfZeroValue = mutableListOf<Int>()
 
@@ -228,5 +232,31 @@ class HomeFragment : Fragment(), LocationListener {
             pieChart.data = data
             pieChart.invalidate()
         }
+    }
+
+    private fun addToList(): MutableList<String> {
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+        val newCategoriesSet = HashSet<String>()
+
+        val oldCategories = sharedPreference?.getStringSet(
+            "newCategories",
+            newCategoriesSet
+        )
+
+        for (i in categoriesList.indices) {
+            if (categoriesList[0] != "All") {
+                categoriesList.add(0, "All")
+            }
+        }
+
+        if (oldCategories != null) {
+            for (item in oldCategories){
+                if (item !in categoriesList) { categoriesList.add(item) }
+            }
+        }
+
+        return categoriesList
     }
 }
