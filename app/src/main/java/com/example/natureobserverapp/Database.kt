@@ -65,7 +65,7 @@ interface NatureObservationDao {
     @Update
     fun update(natureobservation: NatureObservation)
 
-    @Delete()
+    @Delete
     fun delete(natureobservation: NatureObservation)
 
     @Query("DELETE FROM natureobservation WHERE natureobservation.id = :natureObservationId")
