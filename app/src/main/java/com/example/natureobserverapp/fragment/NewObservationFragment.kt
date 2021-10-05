@@ -39,6 +39,9 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     private lateinit var viewModel: WeatherViewModel
     private lateinit var saveObservationButton: Button
     private lateinit var titleEditText: EditText
+    private lateinit var addCategoryEditText: EditText
+    private val sharedPrefFile = "sharedpreference"
+    private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +63,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
 
         saveObservationButton = view.findViewById(R.id.saveObservationButton)
         titleEditText = view.findViewById(R.id.observationTitleEditText)
+        addCategoryEditText = view.findViewById(R.id.addCategoryEditText)
 
         pictureFilePath = requireArguments().getString("picPath")
         val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
@@ -72,7 +76,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         val aa = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            Categories.categories
+            addToList()
         )
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = aa
@@ -105,7 +109,30 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
 
     private fun getDataAndSave() {
         val title = titleEditText.text.toString()
-        val category = categorySpinner.selectedItem.toString()
+        val addedCategory = addCategoryEditText.text.toString()
+        var category = categorySpinner.selectedItem.toString()
+
+        if (addedCategory != "") {
+            category = addedCategory
+
+            val newCategoriesSet = HashSet<String>()
+
+            val sharedPreference =
+                this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+            val categoriesSet = sharedPreference?.getStringSet("newCategories", newCategoriesSet)
+
+            if (categoriesSet != null) {
+                newCategoriesSet.addAll(categoriesSet)
+            }
+
+            newCategoriesSet.add(category)
+
+            val editor = sharedPreference?.edit()
+            editor?.putStringSet("newCategories", newCategoriesSet)
+            editor?.apply()
+        }
+
         val description =
             view?.findViewById<EditText>(R.id.observationDescriptionEditText)?.text.toString()
 
@@ -240,5 +267,31 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
                 0
             )
         }
+    }
+
+    private fun addToList(): MutableList<String> {
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+        val newCategoriesSet = HashSet<String>()
+
+        val oldCategories = sharedPreference?.getStringSet(
+            "newCategories",
+            newCategoriesSet
+        )
+
+        for (i in categoriesList.indices) {
+            if (categoriesList[0] != "All") {
+                categoriesList.add(0, "All")
+            }
+        }
+
+        if (oldCategories != null) {
+            for (item in oldCategories){
+                if (item !in categoriesList) { categoriesList.add(item) }
+            }
+        }
+
+        return categoriesList
     }
 }

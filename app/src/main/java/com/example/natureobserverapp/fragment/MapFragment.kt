@@ -36,6 +36,7 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.OverlayItem
+import java.lang.Error
 import java.util.*
 
 class MapFragment : Fragment(), LocationListener {
@@ -44,6 +45,7 @@ class MapFragment : Fragment(), LocationListener {
     private lateinit var mapCategorySpinner: Spinner
 
     private val sharedPrefFile = "sharedpreference"
+    private val sharedPrefFileSpinner = "sharedpreferenceSpinner"
 
     private var titleId: Long = 0
     var title: String = ""
@@ -114,7 +116,7 @@ class MapFragment : Fragment(), LocationListener {
                 position: Int,
                 id: Long
             ) {
-                updateSpinner()
+        updateSpinner()
             }
         }
     }
@@ -144,7 +146,6 @@ class MapFragment : Fragment(), LocationListener {
 
     // This add saved observation to map
     private fun addItemMarker() {
-
         val cmp: NatureObservationsWithWeatherInfoModel by viewModels()
         cmp.getNatureObservationsWithWeatherInfo().observe(this) {
 
@@ -193,12 +194,10 @@ class MapFragment : Fragment(), LocationListener {
     }
 
     private fun updateSpinner() {
-
         val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+            this.activity?.getSharedPreferences(sharedPrefFileSpinner, Context.MODE_PRIVATE)
         val oldSpinnerValue = sharedPreference?.getInt("spinnerIndex", 0)
         val categoryS = mapCategorySpinner.selectedItem.toString()
-
         for (i in categoriesList.indices) {
             if (categoryS == categoriesList[i]) {
                 spinnerIndex = i
@@ -233,11 +232,28 @@ class MapFragment : Fragment(), LocationListener {
     }
 
     private fun addToList(): MutableList<String> {
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+        val newCategoriesSet = HashSet<String>()
+
+        val oldCategories = sharedPreference?.getStringSet(
+            "newCategories",
+            newCategoriesSet
+        )
+
         for (i in categoriesList.indices) {
             if (categoriesList[0] != "All") {
                 categoriesList.add(0, "All")
             }
         }
+
+        if (oldCategories != null) {
+            for (item in oldCategories){
+                if (item !in categoriesList) { categoriesList.add(item) }
+            }
+        }
+
         return categoriesList
     }
 
@@ -254,7 +270,7 @@ class MapFragment : Fragment(), LocationListener {
 
     private fun setSpinnerValue() {
         val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+            this.activity?.getSharedPreferences(sharedPrefFileSpinner, Context.MODE_PRIVATE)
         val newSpinnerValue = sharedPreference?.getInt("spinnerIndex", 0)
         if (newSpinnerValue != null) {
             mapCategorySpinner.setSelection(newSpinnerValue)

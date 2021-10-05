@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
@@ -19,6 +18,7 @@ import com.example.natureobserverapp.Categories
 import com.example.natureobserverapp.model.NatureObservationsWithWeatherInfoModel
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.RecyclerViewAdapter
+import java.util.HashSet
 
 class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
 
@@ -107,11 +107,28 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
     }
 
     private fun addToList(): MutableList<String> {
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+        val newCategoriesSet = HashSet<String>()
+
+        val oldCategories = sharedPreference?.getStringSet(
+            "newCategories",
+            newCategoriesSet
+        )
+
         for (i in categoriesList.indices) {
             if (categoriesList[0] != "All") {
                 categoriesList.add(0, "All")
             }
         }
+
+        if (oldCategories != null) {
+            for (item in oldCategories){
+                if (item !in categoriesList) { categoriesList.add(item) }
+            }
+        }
+
         return categoriesList
     }
 
