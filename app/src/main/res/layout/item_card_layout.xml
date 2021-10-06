@@ -84,6 +84,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 tools:text="Observation Description" />
 
+            <TextView
+                android:id="@+id/lightInfoTextView"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:textSize="16sp"
+                android:text="@string/light_info"
+                app:layout_constraintTop_toBottomOf="@+id/infoTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"/>
+
             <LinearLayout
                 android:id="@+id/cardWeatherInfoContainer"
                 android:layout_width="0dp"

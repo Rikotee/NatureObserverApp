@@ -23,6 +23,7 @@ import kotlinx.coroutines.withContext
 
 class ItemFragment() : Fragment() {
     private var observationId: Long? = null
+    var lightText: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,13 +76,18 @@ class ItemFragment() : Fragment() {
                     onItemClick(observationId)
                 }
 
+                it.natureObservation?.lightValue?.let { it1 -> lightValueToText(it1) }
+
                 val name = view.findViewById<TextView>(R.id.observationNameView)
                 val category = view.findViewById<TextView>(R.id.categoryView)
                 val description = view.findViewById<TextView>(R.id.infoTextView)
+                val light = view.findViewById<TextView>(R.id.lightInfoTextView)
 
                 name?.text = it.natureObservation?.title.toString()
                 category?.text = it.natureObservation?.category.toString()
                 description?.text = it.natureObservation?.description.toString()
+
+                light?.text = getString(R.string.light_description_text, lightText)
 
                 view.findViewById<TextView>(R.id.descriptionTextView)?.text =
                     it.weatherInfo?.description
@@ -148,6 +154,23 @@ class ItemFragment() : Fragment() {
             setReorderingAllowed(true)
             replace<ImageFragment>(R.id.flFragment, args = bundle)
             addToBackStack(null)
+        }
+    }
+
+    private fun lightValueToText(lightValue: Double){
+
+        when (lightValue) {
+            in 0.0..3.0 -> lightText = getText(R.string.Darkness).toString()
+            in 3.0..200.0 -> lightText = getText(R.string.Very_dark_overcast_day).toString()
+            in 200.0..320.0 -> lightText = getText(R.string.Train_station_platforms).toString()
+            in 320.0..500.0 -> lightText = getText(R.string.Office_lighting).toString()
+            in 500.0..1000.0 -> lightText =
+                getText(R.string.Sunrise_or_sunset_on_a_clear_day).toString()
+            in 1000.0..10000.0 -> lightText =
+                getText(R.string.Overcast_day_or_typical_TV_studio_lighting).toString()
+            in 10000.0..25000.0 -> lightText =
+                getText(R.string.Full_daylight_but_not_direct_sun).toString()
+            in 25000.0..100000.0 -> lightText = getText(R.string.Direct_sunlight).toString()
         }
     }
 }
