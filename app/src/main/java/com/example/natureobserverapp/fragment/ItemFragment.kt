@@ -13,10 +13,10 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModel
-import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModelFactory
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.WeatherIconApi
+import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModel
+import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -68,6 +68,12 @@ class ItemFragment() : Fragment() {
                 val pictureFilePath = it.natureObservation?.picturePath
                 val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
                 view.findViewById<ImageView>(R.id.photoView).setImageBitmap(imageBitmap)
+
+                val imageView = view.findViewById(R.id.photoView) as ImageView
+
+                imageView.setOnClickListener {
+                    onItemClick(observationId)
+                }
 
                 val name = view.findViewById<TextView>(R.id.observationNameView)
                 val category = view.findViewById<TextView>(R.id.categoryView)
@@ -132,6 +138,16 @@ class ItemFragment() : Fragment() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun onItemClick(observation: Long?) {
+        val bundle = bundleOf("imageId" to observation)
+
+        requireActivity().supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<ImageFragment>(R.id.flFragment, args = bundle)
+            addToBackStack(null)
         }
     }
 }
