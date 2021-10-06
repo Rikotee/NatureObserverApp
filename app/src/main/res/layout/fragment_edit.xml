@@ -14,67 +14,101 @@
             android:id="@+id/editFragmentTitleEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="60dp"
             android:ems="10"
             android:hint="@string/observation_title_edit_text_hint"
-            android:inputType="textCapSentences"
             android:importantForAutofill="no"
+            android:inputType="textCapSentences"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Spinner
-            android:id="@+id/editFragmentCategorySpinner"
-            android:layout_width="160dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="60dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editFragmentTitleEditText" />
-
-        <EditText
-            android:id="@+id/editFragmentCategoryEditText"
-            android:layout_width="160dp"
+        <LinearLayout
+            android:id="@+id/categorySelectLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_marginEnd="16dp"
-            android:ems="10"
-            android:hint="@string/add_category_edit_text_hint"
-            android:inputType="textCapSentences"
-            android:importantForAutofill="no"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="24dp"
+            android:background="@color/light_gray_background"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editFragmentTitleEditText" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editFragmentTitleEditText">
+
+            <RadioGroup
+                android:id="@+id/editFragmentCategoryOptionRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/editFragmentSelectCategoryRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:checked="true"
+                    android:text="@string/select_category_radio_button_text" />
+
+                <RadioButton
+                    android:id="@+id/editFragmentAddCategoryRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:text="@string/add_category_radio_button_text" />
+            </RadioGroup>
+
+            <Spinner
+                android:id="@+id/editFragmentCategorySpinner"
+                android:layout_width="160dp"
+                android:layout_height="44dp"
+                android:layout_margin="16dp" />
+
+            <EditText
+                android:id="@+id/editFragmentCategoryEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_margin="16dp"
+                android:ems="10"
+                android:hint="@string/add_category_edit_text_hint"
+                android:importantForAutofill="no"
+                android:inputType="textCapSentences"
+                android:visibility="gone" />
+
+        </LinearLayout>
 
         <EditText
             android:id="@+id/editFragmentDescriptionEditText"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="16dp"
             android:ems="10"
             android:gravity="start|top"
             android:hint="@string/observation_description_edit_text_hint"
+            android:importantForAutofill="no"
             android:inputType="textMultiLine"
             android:scrollbars="vertical"
-            android:importantForAutofill="no"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editFragmentCategorySpinner" />
+            app:layout_constraintTop_toBottomOf="@+id/categorySelectLayout" />
 
         <Button
             android:id="@+id/editFragmentSaveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:text="@string/save_observation_button_text"
+            android:text="@string/save_changes_button_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editFragmentDescriptionEditText"
-            app:layout_constraintVertical_bias="0.316" />
+            app:layout_constraintVertical_bias="0.329" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

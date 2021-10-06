@@ -14,11 +14,14 @@
     <string name="add_category_edit_text_hint">Add category</string>
     <string name="save_observation_button_text">Save observation</string>
     <string name="empty_title_edit_text_toast">Enter a title for the observation!</string>
+    <string name="empty_category_edit_text_toast">Enter or select a category for the observation!</string>
     <string name="delete_dialog_title">Delete nature observation</string>
     <string name="delete_dialog_text">Are you sure you want to delete this nature observation?</string>
     <string name="delete_text">Delete</string>
     <string name="cancel_text">Cancel</string>
     <string name="save_changes_button_text">Save changes</string>
+    <string name="select_category_radio_button_text">Select category</string>
+    <string name="add_category_radio_button_text">Add category</string>
 
     <!--    for light sensor-->
     <string name="si_lux_units_m_s_2">SI lux units (m/s^2)</string>

@@ -28,6 +28,7 @@ class EditFragment : Fragment() {
     private val sharedPrefFile = "sharedpreference"
     private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
     private val db by lazy { NatureObservationDB.get(requireActivity().applicationContext) }
+    private var usePredefinedCategory = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,11 +72,31 @@ class EditFragment : Fragment() {
                     R.string.empty_title_edit_text_toast,
                     Toast.LENGTH_SHORT
                 ).show()
+            } else if (!usePredefinedCategory && categoryEditText.text.isEmpty()) {
+                Toast.makeText(
+                    context,
+                    R.string.empty_category_edit_text_toast,
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 getDataAndSave()
                 requireActivity().supportFragmentManager.popBackStack()
             }
         }
+
+        view.findViewById<RadioGroup>(R.id.editFragmentCategoryOptionRadioGroup)
+            .setOnCheckedChangeListener { group, checkedId ->
+                if (checkedId == R.id.editFragmentSelectCategoryRadioButton) {
+                    categoryEditText.visibility = View.GONE
+                    categorySpinner.visibility = View.VISIBLE
+                    categoryEditText.text.clear()
+                    usePredefinedCategory = true
+                } else {
+                    categorySpinner.visibility = View.GONE
+                    categoryEditText.visibility = View.VISIBLE
+                    usePredefinedCategory = false
+                }
+            }
     }
 
     private fun setCurrentObservationValues() {
@@ -106,11 +127,12 @@ class EditFragment : Fragment() {
 
     private fun getDataAndSave() {
         val title = titleEditText.text.toString()
-        val addedCategory = categoryEditText.text.toString()
-        var category = categorySpinner.selectedItem.toString()
+        val category: String
 
-        if (addedCategory != "") {
-            category = addedCategory
+        if (usePredefinedCategory) {
+            category = categorySpinner.selectedItem.toString()
+        } else {
+            category = categoryEditText.text.toString()
 
             val newCategoriesSet = HashSet<String>()
 

@@ -37,39 +37,72 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:ems="10"
             android:hint="@string/observation_title_edit_text_hint"
-            android:inputType="textCapSentences"
             android:importantForAutofill="no"
-            app:layout_constraintBottom_toTopOf="@+id/observationCategorySpinner"
+            android:inputType="textCapSentences"
+            app:layout_constraintBottom_toTopOf="@+id/categorySelectLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Spinner
-            android:id="@+id/observationCategorySpinner"
-            android:layout_width="180dp"
-            android:layout_height="40dp"
+        <LinearLayout
+            android:id="@+id/categorySelectLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/observationDescriptionEditText"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <EditText
-            android:id="@+id/addCategoryEditText"
-            android:layout_width="175dp"
-            android:layout_height="38dp"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="24dp"
-            android:ems="10"
-            android:hint="@string/add_category_edit_text_hint"
-            android:inputType="textPersonName"
-            android:importantForAutofill="no"
+            android:layout_marginBottom="8dp"
+            android:background="@color/light_gray_background"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@+id/observationDescriptionEditText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/observationCategorySpinner"
-            app:layout_constraintTop_toBottomOf="@+id/observationTitleEditText" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <RadioGroup
+                android:id="@+id/categoryOptionRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/selectCategoryRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:checked="true"
+                    android:text="@string/select_category_radio_button_text" />
+
+                <RadioButton
+                    android:id="@+id/addCategoryRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/add_category_radio_button_text" />
+            </RadioGroup>
+
+            <Spinner
+                android:id="@+id/observationCategorySpinner"
+                android:layout_width="160dp"
+                android:layout_height="44dp" />
+
+            <EditText
+                android:id="@+id/addCategoryEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:ems="10"
+                android:hint="@string/add_category_edit_text_hint"
+                android:importantForAutofill="no"
+                android:inputType="textCapSentences"
+                android:visibility="gone" />
+
+        </LinearLayout>
 
         <EditText
             android:id="@+id/observationDescriptionEditText"
@@ -93,7 +126,7 @@
             android:id="@+id/saveObservationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="20dp"
             android:enabled="false"
             android:text="@string/save_observation_button_text"
             app:icon="@drawable/ic_save"
