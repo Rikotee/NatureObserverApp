@@ -18,11 +18,14 @@ data class NatureObservation(
     val lightValue: Double
 )
 
-@Entity(foreignKeys = [ForeignKey(
-    entity = NatureObservation::class,
-    onDelete = ForeignKey.CASCADE,
-    parentColumns = ["id"],
-    childColumns = ["observationId"])])
+@Entity(
+    foreignKeys = [ForeignKey(
+        entity = NatureObservation::class,
+        onDelete = ForeignKey.CASCADE,
+        parentColumns = ["id"],
+        childColumns = ["observationId"]
+    )]
+)
 data class WeatherInfo(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
@@ -41,6 +44,7 @@ data class WeatherInfo(
 class NatureObservationWithWeatherInfo {
     @Embedded
     var natureObservation: NatureObservation? = null
+
     @Relation(parentColumn = "id", entityColumn = "observationId")
     var weatherInfo: WeatherInfo? = null
 }
@@ -64,6 +68,14 @@ interface NatureObservationDao {
 
     @Update
     fun update(natureobservation: NatureObservation)
+
+    @Query("UPDATE natureobservation SET title = :title, category = :category, description = :description WHERE id = :natureObservationId")
+    fun updateNatureObservationDetails(
+        natureObservationId: Long,
+        title: String,
+        category: String,
+        description: String
+    )
 
     @Delete
     fun delete(natureobservation: NatureObservation)
@@ -94,17 +106,20 @@ interface WeatherInfoDao {
 }
 
 @Database(entities = [(NatureObservation::class), (WeatherInfo::class)], version = 1)
-abstract class NatureObservationDB: RoomDatabase() {
+abstract class NatureObservationDB : RoomDatabase() {
     abstract fun natureObservationDao(): NatureObservationDao
     abstract fun weatherInfoDao(): WeatherInfoDao
 
     companion object {
         private var sInstance: NatureObservationDB? = null
+
         @Synchronized
         fun get(context: Context): NatureObservationDB {
             if (sInstance == null) {
-                sInstance = Room.databaseBuilder(context.applicationContext, NatureObservationDB::class.java,
-                    "nature_observations.db").build()
+                sInstance = Room.databaseBuilder(
+                    context.applicationContext, NatureObservationDB::class.java,
+                    "nature_observations.db"
+                ).build()
             }
             return sInstance!!
         }

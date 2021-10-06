@@ -16,7 +16,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
             android:ems="10"
+            android:hint="@string/observation_title_edit_text_hint"
             android:inputType="textCapSentences"
+            android:importantForAutofill="no"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +40,9 @@
             android:layout_marginTop="60dp"
             android:layout_marginEnd="16dp"
             android:ems="10"
+            android:hint="@string/add_category_edit_text_hint"
             android:inputType="textCapSentences"
+            android:importantForAutofill="no"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editFragmentTitleEditText" />
 
@@ -50,7 +54,11 @@
             android:layout_marginTop="60dp"
             android:layout_marginEnd="16dp"
             android:ems="10"
+            android:gravity="start|top"
+            android:hint="@string/observation_description_edit_text_hint"
             android:inputType="textMultiLine"
+            android:scrollbars="vertical"
+            android:importantForAutofill="no"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,10 +70,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
             android:text="@string/save_observation_button_text"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editFragmentDescriptionEditText" />
+            app:layout_constraintTop_toBottomOf="@+id/editFragmentDescriptionEditText"
+            app:layout_constraintVertical_bias="0.316" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

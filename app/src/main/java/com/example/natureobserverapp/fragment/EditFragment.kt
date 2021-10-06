@@ -1,29 +1,33 @@
 package com.example.natureobserverapp.fragment
 
-import android.graphics.BitmapFactory
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import com.example.natureobserverapp.Categories
+import com.example.natureobserverapp.NatureObservationDB
 import com.example.natureobserverapp.R
-import com.example.natureobserverapp.WeatherIconApi
 import com.example.natureobserverapp.model.NatureObservationModel
 import com.example.natureobserverapp.model.NatureObservationModelFactory
-import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModel
-import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModelFactory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.util.*
 
 class EditFragment : Fragment() {
     var observationId: Long? = null
+    private lateinit var titleEditText: EditText
+    private lateinit var categorySpinner: Spinner
+    private lateinit var categoryEditText: EditText
+    private lateinit var descriptionEditText: EditText
+    private val sharedPrefFile = "sharedpreference"
+    private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
+    private val db by lazy { NatureObservationDB.get(requireActivity().applicationContext) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +48,34 @@ class EditFragment : Fragment() {
 
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.edit_title_text)
+
+        titleEditText = view.findViewById(R.id.editFragmentTitleEditText)
+        categorySpinner = view.findViewById(R.id.editFragmentCategorySpinner)
+        categoryEditText = view.findViewById(R.id.editFragmentCategoryEditText)
+        descriptionEditText = view.findViewById(R.id.editFragmentDescriptionEditText)
+
+        val aa = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            addToList()
+        )
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        categorySpinner.adapter = aa
+
         setCurrentObservationValues()
+
+        view.findViewById<Button>(R.id.editFragmentSaveButton).setOnClickListener {
+            if (titleEditText.text.isEmpty()) {
+                Toast.makeText(
+                    context,
+                    R.string.empty_title_edit_text_toast,
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                getDataAndSave()
+                requireActivity().supportFragmentManager.popBackStack()
+            }
+        }
     }
 
     private fun setCurrentObservationValues() {
@@ -57,11 +88,83 @@ class EditFragment : Fragment() {
             }
 
             nom.getNatureObservation().observe(viewLifecycleOwner) {
-                view?.findViewById<EditText>(R.id.editFragmentTitleEditText)?.setText(it.title)
-                view?.findViewById<EditText>(R.id.editFragmentDescriptionEditText)
-                    ?.setText(it.description)
+                titleEditText.setText(it.title)
 
+                val currentCategory = it.category
+
+                for (i in categoriesList.indices) {
+                    if (categoriesList[i] == currentCategory) {
+                        categorySpinner.setSelection(i)
+                        break
+                    }
+                }
+
+                descriptionEditText.setText(it.description)
             }
         }
+    }
+
+    private fun getDataAndSave() {
+        val title = titleEditText.text.toString()
+        val addedCategory = categoryEditText.text.toString()
+        var category = categorySpinner.selectedItem.toString()
+
+        if (addedCategory != "") {
+            category = addedCategory
+
+            val newCategoriesSet = HashSet<String>()
+
+            val sharedPreference =
+                this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+            val categoriesSet = sharedPreference?.getStringSet("newCategories", newCategoriesSet)
+
+            if (categoriesSet != null) {
+                newCategoriesSet.addAll(categoriesSet)
+            }
+
+            newCategoriesSet.add(category)
+
+            val editor = sharedPreference?.edit()
+            editor?.putStringSet("newCategories", newCategoriesSet)
+            editor?.apply()
+        }
+
+        val description = descriptionEditText.text.toString()
+
+        if (observationId != null) {
+            GlobalScope.launch(Dispatchers.IO) {
+                db.natureObservationDao()
+                    .updateNatureObservationDetails(observationId!!, title, category, description)
+            }
+        }
+    }
+
+    private fun addToList(): MutableList<String> {
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+        val newCategoriesSet = HashSet<String>()
+
+        val oldCategories = sharedPreference?.getStringSet(
+            "newCategories",
+            newCategoriesSet
+        )
+
+        for (i in categoriesList.indices) {
+            if (categoriesList[0] != "All") {
+                categoriesList.add(0, "All")
+            }
+        }
+
+        if (oldCategories != null) {
+            for (item in oldCategories) {
+                if (item !in categoriesList) {
+                    categoriesList.add(item)
+                }
+            }
+        }
+
+        return categoriesList
     }
 }

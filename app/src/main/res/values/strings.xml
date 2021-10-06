@@ -11,6 +11,7 @@
     <string name="observation_info_text">Enter the observation details</string>
     <string name="observation_title_edit_text_hint">Title</string>
     <string name="observation_description_edit_text_hint">Description</string>
+    <string name="add_category_edit_text_hint">Add category</string>
     <string name="save_observation_button_text">Save observation</string>
     <string name="empty_title_edit_text_toast">Enter a title for the observation!</string>
     <string name="delete_dialog_title">Delete nature observation</string>
