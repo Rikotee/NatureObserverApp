@@ -31,20 +31,24 @@ import java.util.*
 class NewObservationFragment : Fragment(), LocationListener, SensorEventListener {
     private var pictureFilePath: String? = null
     private var currentLocation: Location? = null
-    private lateinit var categorySpinner: Spinner
     private lateinit var sm: SensorManager
     private var sLight: Sensor? = null
     private var lightValue: Double? = null
     private val db by lazy { NatureObservationDB.get(requireActivity().applicationContext) }
     private lateinit var viewModel: WeatherViewModel
-    private lateinit var saveObservationButton: Button
     private lateinit var titleEditText: EditText
+    private lateinit var categorySpinner: Spinner
     private lateinit var addCategoryEditText: EditText
+    private lateinit var descriptionEditText: EditText
+    private lateinit var saveObservationButton: Button
     private val sharedPrefFile = "sharedpreference"
     private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
+    private var usePredefinedCategory = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        pictureFilePath = requireArguments().getString("picPath")
     }
 
     override fun onCreateView(
@@ -61,17 +65,14 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.new_observation_title_text)
 
-        saveObservationButton = view.findViewById(R.id.saveObservationButton)
-        titleEditText = view.findViewById(R.id.observationTitleEditText)
-        addCategoryEditText = view.findViewById(R.id.addCategoryEditText)
-
-        pictureFilePath = requireArguments().getString("picPath")
         val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
         view.findViewById<ImageView>(R.id.observationImageView).setImageBitmap(imageBitmap)
 
-        viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
-
+        titleEditText = view.findViewById(R.id.observationTitleEditText)
         categorySpinner = view.findViewById(R.id.observationCategorySpinner)
+        addCategoryEditText = view.findViewById(R.id.addCategoryEditText)
+        descriptionEditText = view.findViewById(R.id.observationDescriptionEditText)
+        saveObservationButton = view.findViewById(R.id.saveObservationButton)
 
         val aa = ArrayAdapter(
             requireContext(),
@@ -80,6 +81,8 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         )
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = aa
+
+        viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
         sm = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
         if (sm.getDefaultSensor(Sensor.TYPE_LIGHT) != null) {
@@ -100,20 +103,41 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
                     R.string.empty_title_edit_text_toast,
                     Toast.LENGTH_SHORT
                 ).show()
+            } else if (!usePredefinedCategory && addCategoryEditText.text.isEmpty()) {
+                Toast.makeText(
+                    context,
+                    R.string.empty_category_edit_text_toast,
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 getDataAndSave()
-                requireActivity().supportFragmentManager.popBackStack()
             }
         }
+
+        view.findViewById<RadioGroup>(R.id.categoryOptionRadioGroup)
+            .setOnCheckedChangeListener { group, checkedId ->
+                if (checkedId == R.id.selectCategoryRadioButton) {
+                    addCategoryEditText.visibility = View.GONE
+                    categorySpinner.visibility = View.VISIBLE
+                    addCategoryEditText.text.clear()
+                    usePredefinedCategory = true
+                } else {
+                    categorySpinner.visibility = View.GONE
+                    addCategoryEditText.visibility = View.VISIBLE
+                    usePredefinedCategory = false
+                }
+            }
     }
 
     private fun getDataAndSave() {
         val title = titleEditText.text.toString()
-        val addedCategory = addCategoryEditText.text.toString()
-        var category = categorySpinner.selectedItem.toString()
 
-        if (addedCategory != "") {
-            category = addedCategory
+        val category: String
+
+        if (usePredefinedCategory) {
+            category = categorySpinner.selectedItem.toString()
+        } else {
+            category = addCategoryEditText.text.toString()
 
             val newCategoriesSet = HashSet<String>()
 
@@ -133,8 +157,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
             editor?.apply()
         }
 
-        val description =
-            view?.findViewById<EditText>(R.id.observationDescriptionEditText)?.text.toString()
+        val description = descriptionEditText.text.toString()
 
         val date = Calendar.getInstance().time
         val formatter = SimpleDateFormat("dd.M.yyyy hh.mm", Locale.getDefault())
@@ -168,6 +191,8 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
                             id.await(), description, icon, temp, pressure,
                             humidity, windSpeed, windDeg, country, placeName
                         )
+
+                        requireActivity().supportFragmentManager.popBackStack()
                     }
                 })
             }
@@ -287,8 +312,10 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         }
 
         if (oldCategories != null) {
-            for (item in oldCategories){
-                if (item !in categoriesList) { categoriesList.add(item) }
+            for (item in oldCategories) {
+                if (item !in categoriesList) {
+                    categoriesList.add(item)
+                }
             }
         }
 
