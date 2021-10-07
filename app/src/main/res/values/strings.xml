@@ -22,6 +22,7 @@
     <string name="save_changes_button_text">Save changes</string>
     <string name="select_category_radio_button_text">Select category</string>
     <string name="add_category_radio_button_text">Add category</string>
+    <string name="time_frame_filter_text">Filter by:</string>
 
     <!--    for light sensor-->
     <string name="si_lux_units_m_s_2">SI lux units (m/s^2)</string>

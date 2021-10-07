@@ -77,7 +77,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         val aa = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            addToList()
+            getCategoriesListWithAddedCategories()
         )
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = aa
@@ -160,7 +160,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         val description = descriptionEditText.text.toString()
 
         val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat("dd.M.yyyy hh.mm", Locale.getDefault())
+        val formatter = SimpleDateFormat("d.M.yyyy hh.mm", Locale.getDefault())
         val currentDate = formatter.format(date)
 
         val lightValue = lightValue ?: 0.0
@@ -294,7 +294,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         }
     }
 
-    private fun addToList(): MutableList<String> {
+    private fun getCategoriesListWithAddedCategories(): MutableList<String> {
         val sharedPreference =
             this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
 
@@ -304,12 +304,6 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
             "newCategories",
             newCategoriesSet
         )
-
-        for (i in categoriesList.indices) {
-            if (categoriesList[0] != "All") {
-                categoriesList.add(0, "All")
-            }
-        }
 
         if (oldCategories != null) {
             for (item in oldCategories) {
