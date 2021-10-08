@@ -44,7 +44,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class HomeFragment : Fragment(), LocationListener {
-    internal var activityCallBack: HomeFragmentListener? = null
+    private var activityCallBack: HomeFragmentListener? = null
     private lateinit var viewModel: WeatherViewModel
     private lateinit var pieChart: PieChart
     private lateinit var timeFrameFilterSpinner: Spinner
@@ -58,10 +58,6 @@ class HomeFragment : Fragment(), LocationListener {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         activityCallBack = context as HomeFragmentListener
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -353,6 +349,6 @@ class HomeFragment : Fragment(), LocationListener {
             this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val editor = sharedPreference?.edit()
         editor?.putInt("homeTimeFrameFilterSpinnerIndex", spinnerIndex)
-        editor?.commit()
+        editor?.apply()
     }
 }

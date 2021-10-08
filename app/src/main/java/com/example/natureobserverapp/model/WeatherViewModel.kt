@@ -28,7 +28,7 @@ class WeatherViewModel : ViewModel() {
 
         hits = liveData(Dispatchers.IO) {
             try {
-                val retrievedWeather = repository.getCustomPosts(searchLat, searchLon)
+                val retrievedWeather = repository.getWeatherPosts(searchLat, searchLon)
                 emit(retrievedWeather)
             } catch (t: Throwable) {
                 Log.d("WEATHER", t.toString())

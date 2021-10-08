@@ -14,9 +14,6 @@ object WeatherApi {
         @GET("data/2.5/weather?&units=metric&APPID=b208e0a34797d6a37c6c9dd719be6cc4")
         suspend fun getWeather(
 
-            // city
-            //@Query("q") q: String,
-
             // latitude, longitude
             @Query("lat") lat: Double,
             @Query("lon") lon: Double,

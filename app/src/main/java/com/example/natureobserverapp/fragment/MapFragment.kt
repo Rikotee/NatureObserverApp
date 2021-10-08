@@ -8,13 +8,11 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -26,8 +24,8 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import com.example.natureobserverapp.Categories
-import com.example.natureobserverapp.model.NatureObservationsWithWeatherInfoModel
 import com.example.natureobserverapp.R
+import com.example.natureobserverapp.model.NatureObservationsWithWeatherInfoModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -36,7 +34,6 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.OverlayItem
-import java.lang.Error
 import java.util.*
 
 class MapFragment : Fragment(), LocationListener {
@@ -55,10 +52,6 @@ class MapFragment : Fragment(), LocationListener {
     private var lon: Double = 0.0
     private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
     private var spinnerIndex: Int = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

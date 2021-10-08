@@ -157,6 +157,6 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
             this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val editor = sharedPreference?.edit()
         editor?.putInt("listSpinnerIndex", spinnerIndex)
-        editor?.commit()
+        editor?.apply()
     }
 }

@@ -24,9 +24,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class ItemFragment() : Fragment() {
+class ItemFragment : Fragment() {
     private var observationId: Long? = null
-    var lightText: String? = ""
+    private var lightText: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -185,7 +185,7 @@ class ItemFragment() : Fragment() {
         }
     }
 
-    fun Bitmap.rotate(degrees: Float): Bitmap {
+    private fun Bitmap.rotate(degrees: Float): Bitmap {
         val matrix = Matrix().apply { postRotate(degrees) }
         return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
     }

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class EditFragment : Fragment() {
-    var observationId: Long? = null
+    private var observationId: Long? = null
     private lateinit var titleEditText: EditText
     private lateinit var categorySpinner: Spinner
     private lateinit var categoryEditText: EditText
@@ -85,7 +85,7 @@ class EditFragment : Fragment() {
         }
 
         view.findViewById<RadioGroup>(R.id.editFragmentCategoryOptionRadioGroup)
-            .setOnCheckedChangeListener { group, checkedId ->
+            .setOnCheckedChangeListener { _, checkedId ->
                 if (checkedId == R.id.editFragmentSelectCategoryRadioButton) {
                     categoryEditText.visibility = View.GONE
                     categorySpinner.visibility = View.VISIBLE

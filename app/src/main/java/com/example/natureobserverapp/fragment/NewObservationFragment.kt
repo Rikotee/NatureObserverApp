@@ -77,7 +77,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         }else{
             view.findViewById<ImageView>(R.id.observationImageView).setImageBitmap(imageBitmap)
         }
-        
+
         titleEditText = view.findViewById(R.id.observationTitleEditText)
         categorySpinner = view.findViewById(R.id.observationCategorySpinner)
         addCategoryEditText = view.findViewById(R.id.addCategoryEditText)
