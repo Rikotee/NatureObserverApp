@@ -18,44 +18,28 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.fragment.app.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.natureobserverapp.Categories
 import com.example.natureobserverapp.NatureObservation
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.WeatherIconApi
 import com.example.natureobserverapp.model.NatureObservationsModel
 import com.example.natureobserverapp.model.WeatherViewModel
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.utils.ColorTemplate
-import java.io.File
-import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
-import java.util.HashSet
-import android.graphics.BitmapFactory
-
-import android.graphics.Bitmap
-import android.graphics.Matrix
-
-import java.io.InputStream
-
-import java.io.IOException
-import android.media.ExifInterface
-import android.hardware.camera2.CameraCharacteristics
-
-import androidx.core.content.ContextCompat.getSystemService
-
-import android.hardware.camera2.CameraManager
-import android.util.Log
-
+import com.github.mikephil.charting.utils.ColorTemplate
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
