@@ -212,7 +212,6 @@ class MapFragment : Fragment(), LocationListener {
             requireActivity().supportFragmentManager.commit {
                 setReorderingAllowed(true)
                 replace<MapFragment>(R.id.flFragment)
-                addToBackStack(null)
             }
         }
     }

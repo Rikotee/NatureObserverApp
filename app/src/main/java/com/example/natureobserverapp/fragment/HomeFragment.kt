@@ -13,10 +13,7 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -25,6 +22,7 @@ import androidx.fragment.app.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.natureobserverapp.Categories
+import com.example.natureobserverapp.NatureObservation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -58,11 +56,14 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.hardware.camera2.CameraManager
 import android.util.Log
 
+import java.text.SimpleDateFormat
+import java.util.*
 
 class HomeFragment : Fragment(), LocationListener {
     internal var activityCallBack: HomeFragmentListener? = null
     private lateinit var viewModel: WeatherViewModel
     private lateinit var pieChart: PieChart
+    private lateinit var timeFrameFilterSpinner: Spinner
     private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
     private val sharedPrefFile = "sharedpreference"
 
@@ -100,9 +101,22 @@ class HomeFragment : Fragment(), LocationListener {
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.home_title_text)
 
-        addToList()
         pieChart = view.findViewById(R.id.pieChart)
-        createPieChart()
+
+        timeFrameFilterSpinner = view.findViewById(R.id.pieChartTimeFrameFilterSpinner)
+
+        val timeFrames = listOf("All time", "This year", "This month", "This week", "Today")
+
+        val aa = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            timeFrames
+        )
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        timeFrameFilterSpinner.adapter = aa
+
+        setSpinnerValue()
+        addUserAddedCategoriesToCategoriesList()
 
         checkLocationPermission()
 
@@ -112,6 +126,7 @@ class HomeFragment : Fragment(), LocationListener {
         viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
         val newPictureButton = view.findViewById<Button>(R.id.newPictureButton)
+
         newPictureButton.setOnClickListener {
             val fileName = "nature_observation_picture"
             val imgPath = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -126,6 +141,22 @@ class HomeFragment : Fragment(), LocationListener {
             val mCurrentPhotoPath = imageFile.absolutePath
             activityCallBack!!.onNewObservationButtonClick(mCurrentPhotoPath, photoURI)
         }
+
+        timeFrameFilterSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    filterObservationsByTimeFrame(position)
+                    updateSpinner(position)
+                }
+            }
     }
 
     override fun onLocationChanged(p0: Location) {
@@ -177,7 +208,65 @@ class HomeFragment : Fragment(), LocationListener {
         }
     }
 
-    private fun createPieChart() {
+    private fun filterObservationsByTimeFrame(spinnerIndex: Int) {
+        val nom: NatureObservationsModel by viewModels()
+        nom.getNatureObservations().observe(this) {
+            val observations = it
+            val selectedTimeFrame = timeFrameFilterSpinner.getItemAtPosition(spinnerIndex)
+
+            val currentDateCalendar = Calendar.getInstance()
+            val currentYear = currentDateCalendar.get(Calendar.YEAR)
+            val currentMonth = currentDateCalendar.get(Calendar.MONTH)
+            val currentWeek = currentDateCalendar.get(Calendar.WEEK_OF_YEAR)
+            val currentDay = currentDateCalendar.get(Calendar.DAY_OF_YEAR)
+
+            val formatter = SimpleDateFormat("d.M.yyyy hh.mm", Locale.getDefault())
+            val observationDateCalendar = Calendar.getInstance()
+            val filteredObservations = mutableListOf<NatureObservation>()
+
+            for (observation in observations) {
+                val observationDate = formatter.parse(observation.dateAndTime)
+
+                if (observationDate != null) {
+                    observationDateCalendar.time = observationDate
+                    val observationYear = observationDateCalendar.get(Calendar.YEAR)
+                    val observationMonth = observationDateCalendar.get(Calendar.MONTH)
+                    val observationWeek = observationDateCalendar.get(Calendar.WEEK_OF_YEAR)
+                    val observationDay = observationDateCalendar.get(Calendar.DAY_OF_YEAR)
+
+                    when (selectedTimeFrame) {
+                        "This year" -> {
+                            if (observationYear == currentYear) {
+                                filteredObservations.add(observation)
+                            }
+                        }
+                        "This month" -> {
+                            if (observationYear == currentYear && observationMonth == currentMonth) {
+                                filteredObservations.add(observation)
+                            }
+                        }
+                        "This week" -> {
+                            if (observationYear == currentYear && observationWeek == currentWeek) {
+                                filteredObservations.add(observation)
+                            }
+                        }
+                        "Today" -> {
+                            if (observationYear == currentYear && observationDay == currentDay) {
+                                filteredObservations.add(observation)
+                            }
+                        }
+                        else -> {
+                            filteredObservations.add(observation)
+                        }
+                    }
+                }
+            }
+
+            createPieChart(filteredObservations)
+        }
+    }
+
+    private fun createPieChart(observations: List<NatureObservation>) {
         pieChart.description.isEnabled = false
         pieChart.animateY(1400, Easing.EaseInOutQuad)
         val legend = pieChart.legend
@@ -189,68 +278,64 @@ class HomeFragment : Fragment(), LocationListener {
         pieChart.setEntryLabelColor(Color.BLACK)
         pieChart.setEntryLabelTextSize(16f)
 
-        val nom: NatureObservationsModel by viewModels()
-        nom.getNatureObservations().observe(this) {
-            val observations = it
-            val categories = categoriesList
-            val observationCategoryCountsList = MutableList(categories.size) { 0 }
-            val indicesOfZeroValue = mutableListOf<Int>()
+        val categories = categoriesList.toMutableList()
+        val observationCategoryCountsList = MutableList(categories.size) { 0 }
+        val indicesOfZeroValue = mutableListOf<Int>()
 
-            for (i in categories.indices) {
-                for (observation in observations) {
-                    if (observation.category == categories[i]) {
-                        val sumOfObs = observationCategoryCountsList[i] + 1
-                        observationCategoryCountsList[i] = sumOfObs
-                    }
-                }
-
-                if (observationCategoryCountsList[i] == 0) {
-                    indicesOfZeroValue.add(i)
+        for (i in categories.indices) {
+            for (observation in observations) {
+                if (observation.category == categories[i]) {
+                    val sumOfObs = observationCategoryCountsList[i] + 1
+                    observationCategoryCountsList[i] = sumOfObs
                 }
             }
 
-            var indexSubtractionValue = 0
-
-            for (i in indicesOfZeroValue.indices) {
-                if (i > 0) {
-                    indexSubtractionValue++
-                }
-
-                observationCategoryCountsList.removeAt(indicesOfZeroValue[i] - indexSubtractionValue)
-                categories.removeAt(indicesOfZeroValue[i] - indexSubtractionValue)
+            if (observationCategoryCountsList[i] == 0) {
+                indicesOfZeroValue.add(i)
             }
-
-            val numberOfObservationsByCategory = mutableListOf<PieEntry>()
-
-            for (i in observationCategoryCountsList.indices) {
-                numberOfObservationsByCategory.add(
-                    PieEntry(
-                        observationCategoryCountsList[i].toFloat(), categories[i]
-                    )
-                )
-            }
-
-            val dataSet = PieDataSet(numberOfObservationsByCategory, "Observations")
-            val colors = mutableListOf<Int>()
-
-            for (color in ColorTemplate.MATERIAL_COLORS) {
-                colors.add(color)
-            }
-
-            for (color in ColorTemplate.VORDIPLOM_COLORS) {
-                colors.add(color)
-            }
-
-            dataSet.colors = colors
-            val data = PieData(dataSet)
-            data.setValueFormatter(DefaultValueFormatter(0))
-            data.setValueTextSize(14f)
-            pieChart.data = data
-            pieChart.invalidate()
         }
+
+        var indexSubtractionValue = 0
+
+        for (i in indicesOfZeroValue.indices) {
+            if (i > 0) {
+                indexSubtractionValue++
+            }
+
+            observationCategoryCountsList.removeAt(indicesOfZeroValue[i] - indexSubtractionValue)
+            categories.removeAt(indicesOfZeroValue[i] - indexSubtractionValue)
+        }
+
+        val numberOfObservationsByCategory = mutableListOf<PieEntry>()
+
+        for (i in observationCategoryCountsList.indices) {
+            numberOfObservationsByCategory.add(
+                PieEntry(
+                    observationCategoryCountsList[i].toFloat(), categories[i]
+                )
+            )
+        }
+
+        val dataSet = PieDataSet(numberOfObservationsByCategory, "Observations")
+        val colors = mutableListOf<Int>()
+
+        for (color in ColorTemplate.MATERIAL_COLORS) {
+            colors.add(color)
+        }
+
+        for (color in ColorTemplate.VORDIPLOM_COLORS) {
+            colors.add(color)
+        }
+
+        dataSet.colors = colors
+        val data = PieData(dataSet)
+        data.setValueFormatter(DefaultValueFormatter(0))
+        data.setValueTextSize(14f)
+        pieChart.data = data
+        pieChart.invalidate()
     }
 
-    private fun addToList(): MutableList<String> {
+    private fun addUserAddedCategoriesToCategoriesList() {
         val sharedPreference =
             this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
 
@@ -261,12 +346,6 @@ class HomeFragment : Fragment(), LocationListener {
             newCategoriesSet
         )
 
-        for (i in categoriesList.indices) {
-            if (categoriesList[0] != "All") {
-                categoriesList.add(0, "All")
-            }
-        }
-
         if (oldCategories != null) {
             for (item in oldCategories) {
                 if (item !in categoriesList) {
@@ -274,7 +353,22 @@ class HomeFragment : Fragment(), LocationListener {
                 }
             }
         }
+    }
 
-        return categoriesList
+    private fun setSpinnerValue() {
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val newSpinnerValue = sharedPreference?.getInt("homeTimeFrameFilterSpinnerIndex", 0)
+        if (newSpinnerValue != null) {
+            timeFrameFilterSpinner.setSelection(newSpinnerValue)
+        }
+    }
+
+    private fun updateSpinner(spinnerIndex: Int) {
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val editor = sharedPreference?.edit()
+        editor?.putInt("homeTimeFrameFilterSpinnerIndex", spinnerIndex)
+        editor?.commit()
     }
 }

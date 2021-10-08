@@ -69,6 +69,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
                 id: Long
             ) {
                 getList()
+                updateSpinner()
             }
         }
     }
@@ -142,7 +143,6 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
     }
 
     private fun updateSpinner() {
-
         val categoryS = listSpinner.selectedItem.toString()
 
         for (i in categoriesList.indices) {
@@ -156,11 +156,5 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         val editor = sharedPreference?.edit()
         editor?.putInt("listSpinnerIndex", spinnerIndex)
         editor?.commit()
-
-        requireActivity().supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace<ListFragment>(R.id.flFragment)
-            addToBackStack(null)
-        }
     }
 }

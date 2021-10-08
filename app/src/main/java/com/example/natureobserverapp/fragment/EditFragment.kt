@@ -58,7 +58,7 @@ class EditFragment : Fragment() {
         val aa = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            addToList()
+            getCategoriesListWithAddedCategories()
         )
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = aa
@@ -162,7 +162,7 @@ class EditFragment : Fragment() {
         }
     }
 
-    private fun addToList(): MutableList<String> {
+    private fun getCategoriesListWithAddedCategories(): MutableList<String> {
         val sharedPreference =
             this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
 
@@ -172,12 +172,6 @@ class EditFragment : Fragment() {
             "newCategories",
             newCategoriesSet
         )
-
-        for (i in categoriesList.indices) {
-            if (categoriesList[0] != "All") {
-                categoriesList.add(0, "All")
-            }
-        }
 
         if (oldCategories != null) {
             for (item in oldCategories) {
