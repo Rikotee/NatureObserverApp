@@ -24,64 +24,17 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/chartTitleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:text="@string/chart_title_text"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weatherViewContainerLayout" />
-
-        <LinearLayout
-            android:id="@+id/pieChartTimeFrameFilterContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chartTitleTextView">
-
-            <TextView
-                android:id="@+id/pieChartTimeFrameFilterTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="@string/time_frame_filter_text"
-                android:textSize="16sp" />
-
-            <Spinner
-                android:id="@+id/pieChartTimeFrameFilterSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp" />
-        </LinearLayout>
-
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/pieChart"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="8dp"
-            android:background="@color/light_gray_background"
-            app:layout_constraintBottom_toTopOf="@+id/newPictureButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pieChartTimeFrameFilterContainer" />
-
         <Button
             android:id="@+id/newPictureButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:text="@string/new_picture_button_text"
             app:icon="@drawable/ic_camera"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weatherViewContainerLayout"
+            app:layout_constraintVertical_bias="0.807" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
