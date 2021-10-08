@@ -1,5 +1,6 @@
 package com.example.natureobserverapp.fragment
 
+import android.R.attr
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
@@ -20,6 +21,13 @@ import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.graphics.Bitmap
+
+import android.R.attr.height
+
+import android.R.attr.width
+import android.graphics.Matrix
+
 
 class ItemFragment() : Fragment() {
     private var observationId: Long? = null
@@ -68,7 +76,15 @@ class ItemFragment() : Fragment() {
             nowwim.getNatureObservationWithWeatherInfo().observe(viewLifecycleOwner) {
                 val pictureFilePath = it.natureObservation?.picturePath
                 val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
-                view.findViewById<ImageView>(R.id.photoView).setImageBitmap(imageBitmap)
+
+                if (imageBitmap.height <= imageBitmap.width ){
+
+                    val rotatedBitmap = imageBitmap.rotate(90f)
+
+                    view.findViewById<ImageView>(R.id.photoView).setImageBitmap(rotatedBitmap)
+                }else{
+                    view.findViewById<ImageView>(R.id.photoView).setImageBitmap(imageBitmap)
+                }
 
                 val imageView = view.findViewById(R.id.photoView) as ImageView
 
@@ -172,5 +188,10 @@ class ItemFragment() : Fragment() {
                 getText(R.string.Full_daylight_but_not_direct_sun).toString()
             in 25000.0..100000.0 -> lightText = getText(R.string.Direct_sunlight).toString()
         }
+    }
+
+    fun Bitmap.rotate(degrees: Float): Bitmap {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
     }
 }

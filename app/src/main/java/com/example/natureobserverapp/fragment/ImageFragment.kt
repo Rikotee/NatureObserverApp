@@ -1,6 +1,8 @@
 package com.example.natureobserverapp.fragment
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -46,8 +48,22 @@ class ImageFragment : Fragment() {
             nowwim.getNatureObservationWithWeatherInfo().observe(viewLifecycleOwner) {
                 val pictureFilePath = it.natureObservation?.picturePath
                 val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
-                view.findViewById<ImageView>(R.id.fr_imageView).setImageBitmap(imageBitmap)
+
+
+                if (imageBitmap.height <= imageBitmap.width ){
+
+                    val rotatedBitmap = imageBitmap.rotate(90f)
+
+                    view.findViewById<ImageView>(R.id.fr_imageView).setImageBitmap(rotatedBitmap)
+                }else{
+                    view.findViewById<ImageView>(R.id.fr_imageView).setImageBitmap(imageBitmap)
+                }
             }
         }
+    }
+
+    fun Bitmap.rotate(degrees: Float): Bitmap {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
     }
 }

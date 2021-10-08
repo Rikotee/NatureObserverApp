@@ -42,6 +42,22 @@ import java.io.File
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import java.util.HashSet
+import android.graphics.BitmapFactory
+
+import android.graphics.Bitmap
+import android.graphics.Matrix
+
+import java.io.InputStream
+
+import java.io.IOException
+import android.media.ExifInterface
+import android.hardware.camera2.CameraCharacteristics
+
+import androidx.core.content.ContextCompat.getSystemService
+
+import android.hardware.camera2.CameraManager
+import android.util.Log
+
 
 class HomeFragment : Fragment(), LocationListener {
     internal var activityCallBack: HomeFragmentListener? = null
@@ -252,8 +268,10 @@ class HomeFragment : Fragment(), LocationListener {
         }
 
         if (oldCategories != null) {
-            for (item in oldCategories){
-                if (item !in categoriesList) { categoriesList.add(item) }
+            for (item in oldCategories) {
+                if (item !in categoriesList) {
+                    categoriesList.add(item)
+                }
             }
         }
 
