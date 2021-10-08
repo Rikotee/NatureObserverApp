@@ -49,7 +49,6 @@ class ImageFragment : Fragment() {
                 val pictureFilePath = it.natureObservation?.picturePath
                 val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
 
-
                 if (imageBitmap.height <= imageBitmap.width ){
 
                     val rotatedBitmap = imageBitmap.rotate(90f)
@@ -62,7 +61,7 @@ class ImageFragment : Fragment() {
         }
     }
 
-    fun Bitmap.rotate(degrees: Float): Bitmap {
+    private fun Bitmap.rotate(degrees: Float): Bitmap {
         val matrix = Matrix().apply { postRotate(degrees) }
         return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
     }

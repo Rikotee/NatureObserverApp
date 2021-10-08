@@ -2,7 +2,9 @@ package com.example.natureobserverapp.fragment
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -66,8 +68,16 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
             getString(R.string.new_observation_title_text)
 
         val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
-        view.findViewById<ImageView>(R.id.observationImageView).setImageBitmap(imageBitmap)
 
+        if (imageBitmap.height <= imageBitmap.width ){
+
+            val rotatedBitmap = imageBitmap.rotate(90f)
+
+            view.findViewById<ImageView>(R.id.observationImageView).setImageBitmap(rotatedBitmap)
+        }else{
+            view.findViewById<ImageView>(R.id.observationImageView).setImageBitmap(imageBitmap)
+        }
+        
         titleEditText = view.findViewById(R.id.observationTitleEditText)
         categorySpinner = view.findViewById(R.id.observationCategorySpinner)
         addCategoryEditText = view.findViewById(R.id.addCategoryEditText)
@@ -314,5 +324,10 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         }
 
         return categoriesList
+    }
+
+    private fun Bitmap.rotate(degrees: Float): Bitmap {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
     }
 }
