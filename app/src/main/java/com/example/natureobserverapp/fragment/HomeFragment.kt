@@ -99,6 +99,7 @@ class HomeFragment : Fragment(), LocationListener {
         timeFrameFilterSpinner.adapter = aa
 
         setSpinnerValue()
+        addUserAddedCategoriesToCategoriesList()
 
         checkLocationPermission()
 
@@ -260,7 +261,7 @@ class HomeFragment : Fragment(), LocationListener {
         pieChart.setEntryLabelColor(Color.BLACK)
         pieChart.setEntryLabelTextSize(16f)
 
-        val categories = getCategoriesListWithAddedCategories()
+        val categories = categoriesList.toMutableList()
         val observationCategoryCountsList = MutableList(categories.size) { 0 }
         val indicesOfZeroValue = mutableListOf<Int>()
 
@@ -317,7 +318,7 @@ class HomeFragment : Fragment(), LocationListener {
         pieChart.invalidate()
     }
 
-    private fun getCategoriesListWithAddedCategories(): MutableList<String> {
+    private fun addUserAddedCategoriesToCategoriesList() {
         val sharedPreference =
             this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
 
@@ -335,8 +336,6 @@ class HomeFragment : Fragment(), LocationListener {
                 }
             }
         }
-
-        return categoriesList
     }
 
     private fun setSpinnerValue() {
