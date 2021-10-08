@@ -46,7 +46,6 @@
     <string name="wind_speed_text">Wind speed: %s m/s</string>
     <string name="wind_direction_text">Wind direction: %s °</string>
     <string name="light_description_text">Light: %s</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="light_info">Light Info</string>
     <string name="nature_image">Nature Image</string>
