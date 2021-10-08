@@ -48,7 +48,8 @@
                 app:layout_constraintBottom_toTopOf="@+id/categoryView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/observationNameView" />
+                app:layout_constraintTop_toBottomOf="@+id/observationNameView"
+                android:contentDescription="@string/nature_image" />
 
             <TextView
                 android:id="@+id/categoryView"
