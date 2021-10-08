@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
         val homeFragment = HomeFragment()
         val mapFragment = MapFragment()
         val listFragment = ListFragment()
-        val chartFragment = ChartFragment()
+        val statisticsFragment = StatisticsFragment()
 
         setCurrentFragment(homeFragment)
 
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
                 R.id.home -> setCurrentFragment(homeFragment)
                 R.id.map -> setCurrentFragment(mapFragment)
                 R.id.list -> setCurrentFragment(listFragment)
-                R.id.chart -> setCurrentFragment(chartFragment)
+                R.id.statistics -> setCurrentFragment(statisticsFragment)
             }
             true
         }

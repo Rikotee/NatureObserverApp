@@ -2,12 +2,10 @@ package com.example.natureobserverapp.fragment
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
@@ -19,29 +17,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.natureobserverapp.Categories
-import com.example.natureobserverapp.NatureObservation
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.WeatherIconApi
-import com.example.natureobserverapp.model.NatureObservationsModel
 import com.example.natureobserverapp.model.WeatherViewModel
-import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.DefaultValueFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 
 class HomeFragment : Fragment(), LocationListener {
     private var activityCallBack: HomeFragmentListener? = null
@@ -84,9 +68,9 @@ class HomeFragment : Fragment(), LocationListener {
 
         viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
-        val newPictureButton = view.findViewById<Button>(R.id.newPictureButton)
+        val newObservationButton = view.findViewById<Button>(R.id.newObservationButton)
 
-        newPictureButton.setOnClickListener {
+        newObservationButton.setOnClickListener {
             val fileName = "nature_observation_picture"
             val imgPath = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             val imageFile = File.createTempFile(fileName, ".jpg", imgPath)

@@ -2,40 +2,31 @@ package com.example.natureobserverapp.fragment
 
 import android.content.Context
 import android.graphics.Color
-import android.location.LocationManager
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.example.natureobserverapp.Categories
 import com.example.natureobserverapp.NatureObservation
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.model.NatureObservationsModel
-import com.example.natureobserverapp.model.WeatherViewModel
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ChartFragment : Fragment() {
+class StatisticsFragment : Fragment() {
     private lateinit var pieChart: PieChart
     private lateinit var timeFrameFilterSpinner: Spinner
     private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
@@ -50,14 +41,14 @@ class ChartFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chart, container, false)
+        return inflater.inflate(R.layout.fragment_statistics, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
-            getString(R.string.chart_title_text)
+            getString(R.string.statistics_title_text)
 
         pieChart = view.findViewById(R.id.pieChart)
 
@@ -153,15 +144,14 @@ class ChartFragment : Fragment() {
 
     private fun createPieChart(observations: List<NatureObservation>) {
         pieChart.description.isEnabled = false
-        pieChart.animateY(1400, Easing.EaseInOutQuad)
-        val legend = pieChart.legend
-        legend.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
-        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-        legend.orientation = Legend.LegendOrientation.VERTICAL
-        legend.yEntrySpace = 10f
-        legend.textSize = 14f
+        pieChart.animateY(1000, Easing.EaseInOutQuad)
+        pieChart.legend.isEnabled = false
         pieChart.setEntryLabelColor(Color.BLACK)
         pieChart.setEntryLabelTextSize(16f)
+        pieChart.isRotationEnabled = false
+        pieChart.isHighlightPerTapEnabled = false
+        pieChart.setExtraOffsets(10f, 0f, 10f, 0f)
+        pieChart.setHoleColor(Color.parseColor("#F1F1F1"))
 
         val categories = categoriesList.toMutableList()
         val observationCategoryCountsList = MutableList(categories.size) { 0 }
