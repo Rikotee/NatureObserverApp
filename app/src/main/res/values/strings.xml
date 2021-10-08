@@ -51,4 +51,9 @@
     <string name="light_info">Light Info</string>
     <string name="nature_image">Nature Image</string>
     <string name="weather_icon">Weather icon</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="home">Home</string>
+    <string name="map">Map</string>
+    <string name="list">List</string>
 </resources>
