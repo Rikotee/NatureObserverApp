@@ -89,11 +89,11 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
 
             if (categoryS == "All") {
                 if (observationsRecyclerView != null) {
-                    observationsRecyclerView.adapter = RecyclerViewAdapter(it, this)
+                    observationsRecyclerView.adapter = RecyclerViewAdapter(it.reversed(), this)
                 }
             } else {
                 if (observationsRecyclerView != null) {
-                    observationsRecyclerView.adapter = RecyclerViewAdapter(filtered, this)
+                    observationsRecyclerView.adapter = RecyclerViewAdapter(filtered.reversed(), this)
                 }
             }
         }
