@@ -46,10 +46,6 @@ import java.util.*
 class HomeFragment : Fragment(), LocationListener {
     private var activityCallBack: HomeFragmentListener? = null
     private lateinit var viewModel: WeatherViewModel
-    private lateinit var pieChart: PieChart
-    private lateinit var timeFrameFilterSpinner: Spinner
-    private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
-    private val sharedPrefFile = "sharedpreference"
 
     interface HomeFragmentListener {
         fun onNewObservationButtonClick(picturePath: String, photoURI: Uri)
@@ -81,23 +77,6 @@ class HomeFragment : Fragment(), LocationListener {
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.home_title_text)
 
-        pieChart = view.findViewById(R.id.pieChart)
-
-        timeFrameFilterSpinner = view.findViewById(R.id.pieChartTimeFrameFilterSpinner)
-
-        val timeFrames = listOf("All time", "This year", "This month", "This week", "Today")
-
-        val aa = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_item,
-            timeFrames
-        )
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        timeFrameFilterSpinner.adapter = aa
-
-        setSpinnerValue()
-        addUserAddedCategoriesToCategoriesList()
-
         checkLocationPermission()
 
         val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -121,22 +100,6 @@ class HomeFragment : Fragment(), LocationListener {
             val mCurrentPhotoPath = imageFile.absolutePath
             activityCallBack!!.onNewObservationButtonClick(mCurrentPhotoPath, photoURI)
         }
-
-        timeFrameFilterSpinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
-
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    filterObservationsByTimeFrame(position)
-                    updateSpinner(position)
-                }
-            }
     }
 
     override fun onLocationChanged(p0: Location) {
@@ -175,7 +138,7 @@ class HomeFragment : Fragment(), LocationListener {
     }
 
     private fun checkLocationPermission() {
-        if ((Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(
+        if ((ContextCompat.checkSelfPermission(
                 requireContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED)
@@ -186,169 +149,5 @@ class HomeFragment : Fragment(), LocationListener {
                 0
             )
         }
-    }
-
-    private fun filterObservationsByTimeFrame(spinnerIndex: Int) {
-        val nom: NatureObservationsModel by viewModels()
-        nom.getNatureObservations().observe(this) {
-            val observations = it
-            val selectedTimeFrame = timeFrameFilterSpinner.getItemAtPosition(spinnerIndex)
-
-            val currentDateCalendar = Calendar.getInstance()
-            val currentYear = currentDateCalendar.get(Calendar.YEAR)
-            val currentMonth = currentDateCalendar.get(Calendar.MONTH)
-            val currentWeek = currentDateCalendar.get(Calendar.WEEK_OF_YEAR)
-            val currentDay = currentDateCalendar.get(Calendar.DAY_OF_YEAR)
-
-            val formatter = SimpleDateFormat("d.M.yyyy hh.mm", Locale.getDefault())
-            val observationDateCalendar = Calendar.getInstance()
-            val filteredObservations = mutableListOf<NatureObservation>()
-
-            for (observation in observations) {
-                val observationDate = formatter.parse(observation.dateAndTime)
-
-                if (observationDate != null) {
-                    observationDateCalendar.time = observationDate
-                    val observationYear = observationDateCalendar.get(Calendar.YEAR)
-                    val observationMonth = observationDateCalendar.get(Calendar.MONTH)
-                    val observationWeek = observationDateCalendar.get(Calendar.WEEK_OF_YEAR)
-                    val observationDay = observationDateCalendar.get(Calendar.DAY_OF_YEAR)
-
-                    when (selectedTimeFrame) {
-                        "This year" -> {
-                            if (observationYear == currentYear) {
-                                filteredObservations.add(observation)
-                            }
-                        }
-                        "This month" -> {
-                            if (observationYear == currentYear && observationMonth == currentMonth) {
-                                filteredObservations.add(observation)
-                            }
-                        }
-                        "This week" -> {
-                            if (observationYear == currentYear && observationWeek == currentWeek) {
-                                filteredObservations.add(observation)
-                            }
-                        }
-                        "Today" -> {
-                            if (observationYear == currentYear && observationDay == currentDay) {
-                                filteredObservations.add(observation)
-                            }
-                        }
-                        else -> {
-                            filteredObservations.add(observation)
-                        }
-                    }
-                }
-            }
-
-            createPieChart(filteredObservations)
-        }
-    }
-
-    private fun createPieChart(observations: List<NatureObservation>) {
-        pieChart.description.isEnabled = false
-        pieChart.animateY(1400, Easing.EaseInOutQuad)
-        val legend = pieChart.legend
-        legend.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
-        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-        legend.orientation = Legend.LegendOrientation.VERTICAL
-        legend.yEntrySpace = 10f
-        legend.textSize = 14f
-        pieChart.setEntryLabelColor(Color.BLACK)
-        pieChart.setEntryLabelTextSize(16f)
-
-        val categories = categoriesList.toMutableList()
-        val observationCategoryCountsList = MutableList(categories.size) { 0 }
-        val indicesOfZeroValue = mutableListOf<Int>()
-
-        for (i in categories.indices) {
-            for (observation in observations) {
-                if (observation.category == categories[i]) {
-                    val sumOfObs = observationCategoryCountsList[i] + 1
-                    observationCategoryCountsList[i] = sumOfObs
-                }
-            }
-
-            if (observationCategoryCountsList[i] == 0) {
-                indicesOfZeroValue.add(i)
-            }
-        }
-
-        var indexSubtractionValue = 0
-
-        for (i in indicesOfZeroValue.indices) {
-            if (i > 0) {
-                indexSubtractionValue++
-            }
-
-            observationCategoryCountsList.removeAt(indicesOfZeroValue[i] - indexSubtractionValue)
-            categories.removeAt(indicesOfZeroValue[i] - indexSubtractionValue)
-        }
-
-        val numberOfObservationsByCategory = mutableListOf<PieEntry>()
-
-        for (i in observationCategoryCountsList.indices) {
-            numberOfObservationsByCategory.add(
-                PieEntry(
-                    observationCategoryCountsList[i].toFloat(), categories[i]
-                )
-            )
-        }
-
-        val dataSet = PieDataSet(numberOfObservationsByCategory, "Observations")
-        val colors = mutableListOf<Int>()
-
-        for (color in ColorTemplate.MATERIAL_COLORS) {
-            colors.add(color)
-        }
-
-        for (color in ColorTemplate.VORDIPLOM_COLORS) {
-            colors.add(color)
-        }
-
-        dataSet.colors = colors
-        val data = PieData(dataSet)
-        data.setValueFormatter(DefaultValueFormatter(0))
-        data.setValueTextSize(14f)
-        pieChart.data = data
-        pieChart.invalidate()
-    }
-
-    private fun addUserAddedCategoriesToCategoriesList() {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-
-        val newCategoriesSet = HashSet<String>()
-
-        val oldCategories = sharedPreference?.getStringSet(
-            "newCategories",
-            newCategoriesSet
-        )
-
-        if (oldCategories != null) {
-            for (item in oldCategories) {
-                if (item !in categoriesList) {
-                    categoriesList.add(item)
-                }
-            }
-        }
-    }
-
-    private fun setSpinnerValue() {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val newSpinnerValue = sharedPreference?.getInt("homeTimeFrameFilterSpinnerIndex", 0)
-        if (newSpinnerValue != null) {
-            timeFrameFilterSpinner.setSelection(newSpinnerValue)
-        }
-    }
-
-    private fun updateSpinner(spinnerIndex: Int) {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val editor = sharedPreference?.edit()
-        editor?.putInt("homeTimeFrameFilterSpinnerIndex", spinnerIndex)
-        editor?.apply()
     }
 }

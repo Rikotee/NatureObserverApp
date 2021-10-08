@@ -9,10 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
-import com.example.natureobserverapp.fragment.HomeFragment
-import com.example.natureobserverapp.fragment.ListFragment
-import com.example.natureobserverapp.fragment.MapFragment
-import com.example.natureobserverapp.fragment.NewObservationFragment
+import com.example.natureobserverapp.fragment.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
@@ -30,6 +27,7 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
         val homeFragment = HomeFragment()
         val mapFragment = MapFragment()
         val listFragment = ListFragment()
+        val chartFragment = ChartFragment()
 
         setCurrentFragment(homeFragment)
 
@@ -38,6 +36,7 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
                 R.id.home -> setCurrentFragment(homeFragment)
                 R.id.map -> setCurrentFragment(mapFragment)
                 R.id.list -> setCurrentFragment(listFragment)
+                R.id.chart -> setCurrentFragment(chartFragment)
             }
             true
         }
