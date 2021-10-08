@@ -1,7 +1,8 @@
 package com.example.natureobserverapp.fragment
 
-import android.R.attr
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
@@ -21,12 +22,6 @@ import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import android.graphics.Bitmap
-
-import android.R.attr.height
-
-import android.R.attr.width
-import android.graphics.Matrix
 
 
 class ItemFragment() : Fragment() {
