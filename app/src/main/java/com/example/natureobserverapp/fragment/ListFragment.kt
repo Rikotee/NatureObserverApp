@@ -103,9 +103,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
                 ) {
                     timeSpinnerIndex = position
                     getList()
-
                     updateTimeSpinner(position)
-                    //timeSpinnerIndex = position
                 }
             }
     }
