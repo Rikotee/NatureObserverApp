@@ -13,7 +13,7 @@
         android:title="@string/list"
         android:icon="@drawable/ic_list"/>
     <item
-        android:id="@+id/chart"
-        android:title="@string/chart"
+        android:id="@+id/statistics"
+        android:title="Statistics"
         android:icon="@drawable/ic_chart"/>
 </menu>
