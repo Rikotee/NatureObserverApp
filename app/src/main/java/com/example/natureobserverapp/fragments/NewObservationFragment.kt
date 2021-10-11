@@ -1,4 +1,4 @@
-package com.example.natureobserverapp.fragment
+package com.example.natureobserverapp.fragments
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -24,7 +24,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.natureobserverapp.*
-import com.example.natureobserverapp.model.WeatherViewModel
+import com.example.natureobserverapp.models.WeatherViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -45,7 +46,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     private lateinit var descriptionEditText: EditText
     private lateinit var saveObservationButton: Button
     private val sharedPrefFile = "sharedpreference"
-    private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
+    private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
     private var usePredefinedCategory = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +66,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.GONE
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.new_observation_title_text)
 
@@ -190,6 +192,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
                 }
 
                 weatherViewModel.getWeatherLatLon(
+                    requireContext(),
                     currentLocation!!.latitude,
                     currentLocation!!.longitude
                 )

@@ -23,8 +23,18 @@
     <string name="select_category_radio_button_text">Select category</string>
     <string name="add_category_radio_button_text">Add category</string>
     <string name="time_frame_filter_text">Filter by:</string>
+    <string name="light_info">Light Info</string>
+    <string name="nature_image">Nature Image</string>
+    <string name="weather_icon">Weather icon</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="home">Home</string>
+    <string name="map">Map</string>
+    <string name="list">List</string>
+    <string name="chart">Chart</string>
+    <string name="date">date</string>
 
-    <!--    for light sensor-->
+    <!-- For light sensor -->
     <string name="si_lux_units_m_s_2">SI lux units (m/s^2)</string>
     <string name="Lux">Lux</string>
     <string name="_0">0</string>
@@ -46,16 +56,5 @@
     <string name="wind_speed_text">Wind speed: %s m/s</string>
     <string name="wind_direction_text">Wind direction: %s °</string>
     <string name="light_description_text">Light: %s</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="light_info">Light Info</string>
-    <string name="nature_image">Nature Image</string>
-    <string name="weather_icon">Weather icon</string>
-    <string name="delete">Delete</string>
-    <string name="edit">Edit</string>
-    <string name="home">Home</string>
-    <string name="map">Map</string>
-    <string name="list">List</string>
-    <string name="chart">Chart</string>
-    <string name="date">date</string>
     <string name="loading_text">Loading</string>
 </resources>

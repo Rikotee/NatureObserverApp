@@ -1,4 +1,4 @@
-package com.example.natureobserverapp.fragment
+package com.example.natureobserverapp.fragments
 
 import android.content.Context
 import android.graphics.Color
@@ -12,10 +12,10 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
-import com.example.natureobserverapp.Categories
+import com.example.natureobserverapp.PredefinedLists
 import com.example.natureobserverapp.NatureObservation
 import com.example.natureobserverapp.R
-import com.example.natureobserverapp.model.NatureObservationsModel
+import com.example.natureobserverapp.models.NatureObservationsModel
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -29,7 +29,7 @@ import java.util.*
 class StatisticsFragment : Fragment() {
     private lateinit var pieChart: PieChart
     private lateinit var timeFrameFilterSpinner: Spinner
-    private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
+    private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
     private val sharedPrefFile = "sharedpreference"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +57,7 @@ class StatisticsFragment : Fragment() {
         val aa = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            Categories.timeFrames
+            PredefinedLists.timeFrames
         )
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         timeFrameFilterSpinner.adapter = aa

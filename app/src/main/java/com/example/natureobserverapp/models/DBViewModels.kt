@@ -1,4 +1,4 @@
-package com.example.natureobserverapp.model
+package com.example.natureobserverapp.models
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

@@ -48,6 +48,10 @@
                 android:resource="@xml/file_paths">
             </meta-data>
         </provider>
+        <meta-data
+            android:name="openWeatherMapApiKeyValue"
+            android:value="${OpenWeatherMapApiKey}">
+        </meta-data>
     </application>
 
 </manifest>

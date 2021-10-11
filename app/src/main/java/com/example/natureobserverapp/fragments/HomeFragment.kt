@@ -1,4 +1,4 @@
-package com.example.natureobserverapp.fragment
+package com.example.natureobserverapp.fragments
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -20,8 +20,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.natureobserverapp.R
-import com.example.natureobserverapp.WeatherIconApi
-import com.example.natureobserverapp.model.WeatherViewModel
+import com.example.natureobserverapp.services.WeatherIconApi
+import com.example.natureobserverapp.models.WeatherViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -110,6 +110,7 @@ class HomeFragment : Fragment(), LocationListener {
         if (isAdded) {
             if (currentLocation != null) {
                 weatherViewModel.getWeatherLatLon(
+                    requireContext(),
                     currentLocation!!.latitude,
                     currentLocation!!.longitude
                 )

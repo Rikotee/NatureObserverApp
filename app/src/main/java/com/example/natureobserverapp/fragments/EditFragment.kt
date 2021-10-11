@@ -1,4 +1,4 @@
-package com.example.natureobserverapp.fragment
+package com.example.natureobserverapp.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
-import com.example.natureobserverapp.Categories
+import com.example.natureobserverapp.PredefinedLists
 import com.example.natureobserverapp.NatureObservationDB
 import com.example.natureobserverapp.R
-import com.example.natureobserverapp.model.NatureObservationModel
-import com.example.natureobserverapp.model.NatureObservationModelFactory
+import com.example.natureobserverapp.models.NatureObservationModel
+import com.example.natureobserverapp.models.NatureObservationModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ class EditFragment : Fragment() {
     private lateinit var categoryEditText: EditText
     private lateinit var descriptionEditText: EditText
     private val sharedPrefFile = "sharedpreference"
-    private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
+    private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
     private val db by lazy { NatureObservationDB.get(requireActivity().applicationContext) }
     private var usePredefinedCategory = true
 
