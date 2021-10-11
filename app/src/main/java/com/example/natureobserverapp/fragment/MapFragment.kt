@@ -26,7 +26,6 @@ import androidx.fragment.app.viewModels
 import com.example.natureobserverapp.Categories
 import com.example.natureobserverapp.NatureObservationWithWeatherInfo
 import com.example.natureobserverapp.R
-import com.example.natureobserverapp.RecyclerViewAdapter
 import com.example.natureobserverapp.model.NatureObservationsWithWeatherInfoModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -46,19 +45,16 @@ class MapFragment : Fragment(), LocationListener {
     private lateinit var timeFrameFilterSpinner: Spinner
     private var timeSpinnerIndex: Int = 0
     private val observationList = mutableListOf<NatureObservationWithWeatherInfo>()
-
-    private val sharedPrefFile = "sharedpreference"
-    private val sharedPrefFileSpinner = "sharedpreferenceSpinner"
-
     private var titleId: Long = 0
     var title: String = ""
     var description: String = ""
-    var date: String = "no date"
     private var category: String = ""
     private var lat: Double = 0.0
     private var lon: Double = 0.0
     private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
     private var spinnerIndex: Int = 0
+    private val sharedPrefFile = "sharedpreference"
+    private val sharedPrefFileSpinner = "sharedpreferenceSpinner"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -178,20 +174,22 @@ class MapFragment : Fragment(), LocationListener {
     // This add saved observation to map
     private fun addItemMarker() {
         val cmp: NatureObservationsWithWeatherInfoModel by viewModels()
-        cmp.getNatureObservationsWithWeatherInfo().observe(this) {
+        cmp.getNatureObservationsWithWeatherInfo().observe(this) { it ->
 
             filterObservationsByTimeFrame(timeSpinnerIndex, it)
 
             val map = view?.findViewById<MapView>(R.id.mapView)
             val items = ArrayList<OverlayItem>()
 
-            for (i in observationList.indices) {
-                titleId = observationList[i].natureObservation?.id!!
-                title = observationList[i].natureObservation?.title.toString()
-                description = observationList[i].natureObservation?.description.toString()
-                category = observationList[i].natureObservation?.category.toString()
-                lat = observationList[i].natureObservation?.locationLat!!
-                lon = observationList[i].natureObservation?.locationLon!!
+            val sorted = observationList.sortedBy { it.natureObservation?.category }
+
+            for (i in sorted.indices) {
+                titleId = sorted[i].natureObservation?.id!!
+                title = sorted[i].natureObservation?.title.toString()
+                description = sorted[i].natureObservation?.description.toString()
+                category = sorted[i].natureObservation?.category.toString()
+                lat = sorted[i].natureObservation?.locationLat!!
+                lon = sorted[i].natureObservation?.locationLon!!
 
                 val categoryS = mapCategorySpinner.selectedItem.toString()
 
