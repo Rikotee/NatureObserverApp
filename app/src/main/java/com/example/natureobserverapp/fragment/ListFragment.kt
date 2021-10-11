@@ -49,8 +49,6 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         timeFrameFilterSpinner = view.findViewById(R.id.timeFrameFilterSpinner)
         listSpinner = view.findViewById(R.id.listSpinner)
 
-        val timeFrames = listOf("All time", "This year", "This month", "This week", "Today")
-
         val aa = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
@@ -62,7 +60,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         val aaT = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            timeFrames
+            Categories.timeFrames
         )
         aaT.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         timeFrameFilterSpinner.adapter = aaT

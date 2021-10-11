@@ -73,8 +73,6 @@ class MapFragment : Fragment(), LocationListener {
         mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
         timeFrameFilterSpinner = view.findViewById(R.id.mapTimeFrameFilterSpinner)
 
-        val timeFrames = listOf("All time", "This year", "This month", "This week", "Today")
-
         permissionCheck()
 
         val aa = ArrayAdapter(
@@ -91,7 +89,7 @@ class MapFragment : Fragment(), LocationListener {
         val aaT = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            timeFrames
+            Categories.timeFrames
         )
         aaT.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         timeFrameFilterSpinner.adapter = aaT

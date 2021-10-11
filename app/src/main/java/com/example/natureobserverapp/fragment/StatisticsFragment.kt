@@ -54,12 +54,10 @@ class StatisticsFragment : Fragment() {
 
         timeFrameFilterSpinner = view.findViewById(R.id.pieChartTimeFrameFilterSpinner)
 
-        val timeFrames = listOf("All time", "This year", "This month", "This week", "Today")
-
         val aa = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            timeFrames
+            Categories.timeFrames
         )
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         timeFrameFilterSpinner.adapter = aa
