@@ -56,4 +56,5 @@
     <string name="map">Map</string>
     <string name="list">List</string>
     <string name="chart">Chart</string>
+    <string name="date">date</string>
 </resources>
