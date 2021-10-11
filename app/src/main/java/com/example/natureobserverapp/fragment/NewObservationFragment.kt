@@ -12,7 +12,6 @@ import android.hardware.SensorManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -33,11 +32,13 @@ import java.util.*
 class NewObservationFragment : Fragment(), LocationListener, SensorEventListener {
     private var pictureFilePath: String? = null
     private var currentLocation: Location? = null
+    private lateinit var lm: LocationManager
+    private var gpsLocationFound = false
     private lateinit var sm: SensorManager
     private var sLight: Sensor? = null
     private var lightValue: Double? = null
     private val db by lazy { NatureObservationDB.get(requireActivity().applicationContext) }
-    private lateinit var viewModel: WeatherViewModel
+    private lateinit var weatherViewModel: WeatherViewModel
     private lateinit var titleEditText: EditText
     private lateinit var categorySpinner: Spinner
     private lateinit var addCategoryEditText: EditText
@@ -68,14 +69,13 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
             getString(R.string.new_observation_title_text)
 
         val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
+        val observationImageView = view.findViewById<ImageView>(R.id.observationImageView)
 
-        if (imageBitmap.height <= imageBitmap.width ){
-
+        if (imageBitmap.height <= imageBitmap.width) {
             val rotatedBitmap = imageBitmap.rotate(90f)
-
-            view.findViewById<ImageView>(R.id.observationImageView).setImageBitmap(rotatedBitmap)
-        }else{
-            view.findViewById<ImageView>(R.id.observationImageView).setImageBitmap(imageBitmap)
+            observationImageView.setImageBitmap(rotatedBitmap)
+        } else {
+            observationImageView.setImageBitmap(imageBitmap)
         }
 
         titleEditText = view.findViewById(R.id.observationTitleEditText)
@@ -92,7 +92,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = aa
 
-        viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
+        weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
         sm = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
         if (sm.getDefaultSensor(Sensor.TYPE_LIGHT) != null) {
@@ -103,8 +103,13 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
 
         checkLocationPermission()
 
-        val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 3f, this)
+        lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
+        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 5f, this)
+
+        if (currentLocation != null) {
+            saveObservationButton.isEnabled = true
+        }
 
         saveObservationButton.setOnClickListener {
             if (titleEditText.text.isEmpty()) {
@@ -184,8 +189,11 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
                     )
                 }
 
-                viewModel.getWeatherLatLon(currentLocation!!.latitude, currentLocation!!.longitude)
-                viewModel.hits.observe(requireActivity(), {
+                weatherViewModel.getWeatherLatLon(
+                    currentLocation!!.latitude,
+                    currentLocation!!.longitude
+                )
+                weatherViewModel.weatherInfo.observe(requireActivity(), {
                     val description = it.weather[0].description
                     val icon = it.weather[0].icon
                     val temp = it.main.temp
@@ -262,6 +270,14 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     override fun onLocationChanged(p0: Location) {
         currentLocation = p0
         saveObservationButton.isEnabled = true
+
+        // When GPS location is found, the network location request is removed
+        if (p0.provider == LocationManager.GPS_PROVIDER && !gpsLocationFound) {
+            lm.removeUpdates(this)
+            checkLocationPermission()
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
+            gpsLocationFound = true
+        }
     }
 
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
@@ -290,11 +306,16 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         sm.unregisterListener(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        lm.removeUpdates(this)
+    }
+
     private fun checkLocationPermission() {
-        if ((Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(
+        if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED)
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 requireActivity(),

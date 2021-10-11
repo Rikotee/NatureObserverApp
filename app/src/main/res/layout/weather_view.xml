@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="2dp"
+                android:text="@string/loading_text"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 tools:text="15 °C" />
@@ -43,6 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
+            android:text="@string/loading_text"
             android:textSize="18sp"
             tools:text="broken clouds" />
 
@@ -51,6 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
+            android:text="@string/loading_text"
             android:textSize="16sp"
             tools:text="Helsinki, FI" />
 
@@ -68,6 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
+            android:text="@string/loading_text"
             android:textSize="14sp"
             tools:text="Pressure: 1032 hPa" />
 
@@ -76,6 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
+            android:text="@string/loading_text"
             android:textSize="14sp"
             tools:text="Humidity: 64 %" />
 
@@ -84,6 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
+            android:text="@string/loading_text"
             android:textSize="14sp"
             tools:text="Wind speed: 0.45 m/s" />
 
@@ -92,6 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
+            android:text="@string/loading_text"
             android:textSize="14sp"
             tools:text="Wind direction: 179 °" />
     </LinearLayout>

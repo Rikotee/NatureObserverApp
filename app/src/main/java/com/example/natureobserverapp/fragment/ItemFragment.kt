@@ -39,7 +39,7 @@ class ItemFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.item_card_layout, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_item, container, false)
 
         val cardWeatherInfoContainer =
             rootView.findViewById<LinearLayout>(R.id.cardWeatherInfoContainer)
