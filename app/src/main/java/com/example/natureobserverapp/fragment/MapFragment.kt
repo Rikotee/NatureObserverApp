@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.LayoutInflater
@@ -40,6 +39,9 @@ class MapFragment : Fragment(), LocationListener {
     private lateinit var map: MapView
     private lateinit var marker: Marker
     private lateinit var mapCategorySpinner: Spinner
+    private lateinit var lm: LocationManager
+    private var currentLocation: Location? = null
+    private var gpsLocationFound = false
 
     private val sharedPrefFile = "sharedpreference"
     private val sharedPrefFileSpinner = "sharedpreferenceSpinner"
@@ -69,8 +71,6 @@ class MapFragment : Fragment(), LocationListener {
 
         mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
 
-        permissionCheck()
-
         val aa = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
@@ -89,18 +89,16 @@ class MapFragment : Fragment(), LocationListener {
             .load(context, PreferenceManager.getDefaultSharedPreferences(context))
 
         // This add Marker that show my location
-        myMarkerToMap()
+        initializeMapAndMarker()
 
-        //try {
-        val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 3f, this)
-//        } catch (e: Error){
-//            Log.d("DBG", "MapFragment onViewCreated: location not found")
-//        }
+        checkLocationPermission()
+
+        lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
+        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 5f, this)
 
         mapCategorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
             }
 
             override fun onItemSelected(
@@ -109,23 +107,42 @@ class MapFragment : Fragment(), LocationListener {
                 position: Int,
                 id: Long
             ) {
-        updateSpinner()
+                updateSpinner()
             }
         }
     }
 
     override fun onLocationChanged(p0: Location) {
-        //Log.d("NATURE", "new latitude: ${p0.latitude} and longitude: ${p0.longitude}")
+        currentLocation = p0
+        setOwnLocationMarker()
 
-        map.controller.setCenter(GeoPoint(p0.latitude, p0.longitude))
+        // When GPS location is found, the network location request is removed
+        if (p0.provider == LocationManager.GPS_PROVIDER && !gpsLocationFound) {
+            lm.removeUpdates(this)
+            checkLocationPermission()
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
+            gpsLocationFound = true
+        }
+    }
 
-        marker.position = GeoPoint(p0.latitude, p0.longitude)
+    private fun setOwnLocationMarker() {
+        if (currentLocation != null) {
+            map.controller.setCenter(
+                GeoPoint(
+                    currentLocation!!.latitude,
+                    currentLocation!!.longitude
+                )
+            )
+
+            marker.position = GeoPoint(currentLocation!!.latitude, currentLocation!!.longitude)
 /*        if (Geocoder.isPresent()) {
             marker.title = getAddress(p0.latitude, p0.longitude)
         }*/
-        marker.subDescription = "Lat: ${p0.latitude}, Lon: ${p0.longitude}, Alt: ${p0.altitude}"
-        map.overlays.add(marker)
-        map.invalidate()
+            marker.subDescription =
+                "Lat: ${currentLocation!!.latitude}, Lon: ${currentLocation!!.longitude}, Alt: ${currentLocation!!.altitude}"
+            map.overlays.add(marker)
+            map.invalidate()
+        }
     }
 
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
@@ -139,8 +156,8 @@ class MapFragment : Fragment(), LocationListener {
 
     // This add saved observation to map
     private fun addItemMarker() {
-        val cmp: NatureObservationsWithWeatherInfoModel by viewModels()
-        cmp.getNatureObservationsWithWeatherInfo().observe(this) {
+        val nowwim: NatureObservationsWithWeatherInfoModel by viewModels()
+        nowwim.getNatureObservationsWithWeatherInfo().observe(this) {
 
             val map = view?.findViewById<MapView>(R.id.mapView)
             val items = ArrayList<OverlayItem>()
@@ -209,11 +226,11 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
-    private fun permissionCheck() {
-        if ((Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(
+    private fun checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED)
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 requireActivity(),
@@ -241,15 +258,17 @@ class MapFragment : Fragment(), LocationListener {
         }
 
         if (oldCategories != null) {
-            for (item in oldCategories){
-                if (item !in categoriesList) { categoriesList.add(item) }
+            for (item in oldCategories) {
+                if (item !in categoriesList) {
+                    categoriesList.add(item)
+                }
             }
         }
 
         return categoriesList
     }
 
-    private fun myMarkerToMap() {
+    private fun initializeMapAndMarker() {
         map = view!!.findViewById(R.id.mapView)
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.setMultiTouchControls(true)
@@ -267,5 +286,10 @@ class MapFragment : Fragment(), LocationListener {
         if (newSpinnerValue != null) {
             mapCategorySpinner.setSelection(newSpinnerValue)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lm.removeUpdates(this)
     }
 }

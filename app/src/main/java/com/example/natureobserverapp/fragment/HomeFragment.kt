@@ -29,7 +29,10 @@ import java.io.File
 
 class HomeFragment : Fragment(), LocationListener {
     private var activityCallBack: HomeFragmentListener? = null
-    private lateinit var viewModel: WeatherViewModel
+    private lateinit var weatherViewModel: WeatherViewModel
+    private var currentLocation: Location? = null
+    private lateinit var lm: LocationManager
+    private var gpsLocationFound = false
 
     interface HomeFragmentListener {
         fun onNewObservationButtonClick(picturePath: String, photoURI: Uri)
@@ -61,12 +64,13 @@ class HomeFragment : Fragment(), LocationListener {
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.home_title_text)
 
+        weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
+
         checkLocationPermission()
 
-        val lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 500f, this)
-
-        viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
+        lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 500f, this)
+        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000, 500f, this)
 
         val newObservationButton = view.findViewById<Button>(R.id.newObservationButton)
 
@@ -87,45 +91,63 @@ class HomeFragment : Fragment(), LocationListener {
     }
 
     override fun onLocationChanged(p0: Location) {
-        if (isAdded) {
-            viewModel.getWeatherLatLon(p0.latitude, p0.longitude)
-            viewModel.hits.observe(requireActivity(), {
-                view?.findViewById<TextView>(R.id.descriptionTextView)?.text =
-                    it.weather[0].description
-                view?.findViewById<TextView>(R.id.temperatureTextView)?.text =
-                    getString(R.string.temperature_text, String.format("%.0f", it.main.temp))
-                view?.findViewById<TextView>(R.id.pressureTextView)?.text =
-                    getString(R.string.pressure_text, it.main.pressure.toString())
-                view?.findViewById<TextView>(R.id.humidityTextView)?.text =
-                    getString(R.string.humidity_text, it.main.humidity.toString())
-                view?.findViewById<TextView>(R.id.windSpeedTextView)?.text =
-                    getString(R.string.wind_speed_text, it.wind.speed.toString())
-                view?.findViewById<TextView>(R.id.windDirectionTextView)?.text =
-                    getString(R.string.wind_direction_text, it.wind.deg.toString())
-                view?.findViewById<TextView>(R.id.placeNameCountryTextView)?.text =
-                    getString(R.string.place_name_country_text, it.name, it.sys.country)
+        currentLocation = p0
+        getWeatherInfo()
 
-                lifecycleScope.launch(Dispatchers.Main) {
-                    val iconImageBitmap = withContext(Dispatchers.IO) {
-                        WeatherIconApi.getWeatherIcon(it.weather[0].icon)
-                    }
-                    if (iconImageBitmap != null) {
-                        view?.findViewById<ImageView>(R.id.iconImageView)
-                            ?.setImageBitmap(iconImageBitmap)
-                    }
-                }
-            })
+        // When GPS location is found, the network location request is removed
+        if (p0.provider == LocationManager.GPS_PROVIDER && !gpsLocationFound) {
+            lm.removeUpdates(this)
+            checkLocationPermission()
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 500f, this)
+            gpsLocationFound = true
         }
     }
 
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
     }
 
+    private fun getWeatherInfo() {
+        if (isAdded) {
+            if (currentLocation != null) {
+                weatherViewModel.getWeatherLatLon(
+                    currentLocation!!.latitude,
+                    currentLocation!!.longitude
+                )
+                weatherViewModel.weatherInfo.observe(requireActivity(), {
+                    view?.findViewById<TextView>(R.id.descriptionTextView)?.text =
+                        it.weather[0].description
+                    view?.findViewById<TextView>(R.id.temperatureTextView)?.text =
+                        getString(R.string.temperature_text, String.format("%.0f", it.main.temp))
+                    view?.findViewById<TextView>(R.id.pressureTextView)?.text =
+                        getString(R.string.pressure_text, it.main.pressure.toString())
+                    view?.findViewById<TextView>(R.id.humidityTextView)?.text =
+                        getString(R.string.humidity_text, it.main.humidity.toString())
+                    view?.findViewById<TextView>(R.id.windSpeedTextView)?.text =
+                        getString(R.string.wind_speed_text, it.wind.speed.toString())
+                    view?.findViewById<TextView>(R.id.windDirectionTextView)?.text =
+                        getString(R.string.wind_direction_text, it.wind.deg.toString())
+                    view?.findViewById<TextView>(R.id.placeNameCountryTextView)?.text =
+                        getString(R.string.place_name_country_text, it.name, it.sys.country)
+
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        val iconImageBitmap = withContext(Dispatchers.IO) {
+                            WeatherIconApi.getWeatherIcon(it.weather[0].icon)
+                        }
+                        if (iconImageBitmap != null) {
+                            view?.findViewById<ImageView>(R.id.iconImageView)
+                                ?.setImageBitmap(iconImageBitmap)
+                        }
+                    }
+                })
+            }
+        }
+    }
+
     private fun checkLocationPermission() {
-        if ((ContextCompat.checkSelfPermission(
+        if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED)
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 requireActivity(),
@@ -133,5 +155,10 @@ class HomeFragment : Fragment(), LocationListener {
                 0
             )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lm.removeUpdates(this)
     }
 }

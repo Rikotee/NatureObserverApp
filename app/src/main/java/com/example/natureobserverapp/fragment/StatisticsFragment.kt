@@ -233,7 +233,7 @@ class StatisticsFragment : Fragment() {
     private fun setSpinnerValue() {
         val sharedPreference =
             this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val newSpinnerValue = sharedPreference?.getInt("homeTimeFrameFilterSpinnerIndex", 0)
+        val newSpinnerValue = sharedPreference?.getInt("statisticsTimeFrameFilterSpinnerIndex", 0)
         if (newSpinnerValue != null) {
             timeFrameFilterSpinner.setSelection(newSpinnerValue)
         }
@@ -243,7 +243,7 @@ class StatisticsFragment : Fragment() {
         val sharedPreference =
             this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val editor = sharedPreference?.edit()
-        editor?.putInt("homeTimeFrameFilterSpinnerIndex", spinnerIndex)
+        editor?.putInt("statisticsTimeFrameFilterSpinnerIndex", spinnerIndex)
         editor?.apply()
     }
 }
