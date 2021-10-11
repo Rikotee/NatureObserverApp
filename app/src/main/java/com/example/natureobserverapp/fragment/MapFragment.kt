@@ -24,7 +24,9 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import com.example.natureobserverapp.Categories
+import com.example.natureobserverapp.NatureObservationWithWeatherInfo
 import com.example.natureobserverapp.R
+import com.example.natureobserverapp.RecyclerViewAdapter
 import com.example.natureobserverapp.model.NatureObservationsWithWeatherInfoModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -34,12 +36,16 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.OverlayItem
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MapFragment : Fragment(), LocationListener {
     private lateinit var map: MapView
     private lateinit var marker: Marker
     private lateinit var mapCategorySpinner: Spinner
+    private lateinit var timeFrameFilterSpinner: Spinner
+    private var timeSpinnerIndex: Int = 0
+    private val observationList = mutableListOf<NatureObservationWithWeatherInfo>()
 
     private val sharedPrefFile = "sharedpreference"
     private val sharedPrefFileSpinner = "sharedpreferenceSpinner"
@@ -47,6 +53,7 @@ class MapFragment : Fragment(), LocationListener {
     private var titleId: Long = 0
     var title: String = ""
     var description: String = ""
+    var date: String = "no date"
     private var category: String = ""
     private var lat: Double = 0.0
     private var lon: Double = 0.0
@@ -68,6 +75,9 @@ class MapFragment : Fragment(), LocationListener {
             getString(R.string.map_title_text)
 
         mapCategorySpinner = view.findViewById(R.id.mapCategorySpinner)
+        timeFrameFilterSpinner = view.findViewById(R.id.mapTimeFrameFilterSpinner)
+
+        val timeFrames = listOf("All time", "This year", "This month", "This week", "Today")
 
         permissionCheck()
 
@@ -80,6 +90,16 @@ class MapFragment : Fragment(), LocationListener {
         mapCategorySpinner.adapter = aa
 
         //This set spinner index value from sharedpreferences
+        setSpinnerValue()
+
+        val aaT = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            timeFrames
+        )
+        aaT.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        timeFrameFilterSpinner.adapter = aaT
+
         setSpinnerValue()
 
         //This add all markers from saved observations
@@ -109,9 +129,27 @@ class MapFragment : Fragment(), LocationListener {
                 position: Int,
                 id: Long
             ) {
-        updateSpinner()
+                updateSpinner()
             }
         }
+
+        setTimeSpinnerValue()
+
+        timeFrameFilterSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    timeSpinnerIndex = position
+                    updateTimeSpinner(position)
+                }
+            }
     }
 
     override fun onLocationChanged(p0: Location) {
@@ -142,16 +180,18 @@ class MapFragment : Fragment(), LocationListener {
         val cmp: NatureObservationsWithWeatherInfoModel by viewModels()
         cmp.getNatureObservationsWithWeatherInfo().observe(this) {
 
+            filterObservationsByTimeFrame(timeSpinnerIndex, it)
+
             val map = view?.findViewById<MapView>(R.id.mapView)
             val items = ArrayList<OverlayItem>()
 
-            for (i in it.indices) {
-                titleId = it[i].natureObservation?.id!!
-                title = it[i].natureObservation?.title.toString()
-                description = it[i].natureObservation?.description.toString()
-                category = it[i].natureObservation?.category.toString()
-                lat = it[i].natureObservation?.locationLat!!
-                lon = it[i].natureObservation?.locationLon!!
+            for (i in observationList.indices) {
+                titleId = observationList[i].natureObservation?.id!!
+                title = observationList[i].natureObservation?.title.toString()
+                description = observationList[i].natureObservation?.description.toString()
+                category = observationList[i].natureObservation?.category.toString()
+                lat = observationList[i].natureObservation?.locationLat!!
+                lon = observationList[i].natureObservation?.locationLon!!
 
                 val categoryS = mapCategorySpinner.selectedItem.toString()
 
@@ -184,6 +224,7 @@ class MapFragment : Fragment(), LocationListener {
             mOverlay.setFocusItemsOnTap(true)
             map?.overlays?.add(mOverlay)
         }
+        observationList.clear()
     }
 
     private fun updateSpinner() {
@@ -241,8 +282,10 @@ class MapFragment : Fragment(), LocationListener {
         }
 
         if (oldCategories != null) {
-            for (item in oldCategories){
-                if (item !in categoriesList) { categoriesList.add(item) }
+            for (item in oldCategories) {
+                if (item !in categoriesList) {
+                    categoriesList.add(item)
+                }
             }
         }
 
@@ -267,5 +310,89 @@ class MapFragment : Fragment(), LocationListener {
         if (newSpinnerValue != null) {
             mapCategorySpinner.setSelection(newSpinnerValue)
         }
+    }
+
+    private fun setTimeSpinnerValue() {
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val newSpinnerValue = sharedPreference?.getInt("mapTimeFrameFilterSpinnerIndex", 0)
+        if (newSpinnerValue != null) {
+            timeSpinnerIndex = newSpinnerValue
+            timeFrameFilterSpinner.setSelection(newSpinnerValue)
+        }
+    }
+
+    private fun updateTimeSpinner(spinnerIndex: Int) {
+        val sharedPreference =
+            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val oldSpinnerValue = sharedPreference?.getInt("mapTimeFrameFilterSpinnerIndex", 0)
+        val editor = sharedPreference?.edit()
+        editor?.putInt("mapTimeFrameFilterSpinnerIndex", spinnerIndex)
+        editor?.apply()
+
+        if (oldSpinnerValue != spinnerIndex) {
+            editor?.putInt("mapTimeFrameFilterSpinnerIndex", spinnerIndex)
+            editor?.commit()
+
+            requireActivity().supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace<MapFragment>(R.id.flFragment)
+            }
+        }
+    }
+
+    private fun filterObservationsByTimeFrame(
+        spinnerIndex: Int,
+        list: List<NatureObservationWithWeatherInfo>
+    ): MutableList<NatureObservationWithWeatherInfo> {
+        val selectedTimeFrame = timeFrameFilterSpinner.getItemAtPosition(spinnerIndex)
+
+        val currentDateCalendar = Calendar.getInstance()
+        val currentYear = currentDateCalendar.get(Calendar.YEAR)
+        val currentMonth = currentDateCalendar.get(Calendar.MONTH)
+        val currentWeek = currentDateCalendar.get(Calendar.WEEK_OF_YEAR)
+        val currentDay = currentDateCalendar.get(Calendar.DAY_OF_YEAR)
+
+        val formatter = SimpleDateFormat("d.M.yyyy hh.mm", Locale.getDefault())
+        val observationDateCalendar = Calendar.getInstance()
+
+        for (observation in list) {
+            val observationDate = formatter.parse(observation.natureObservation!!.dateAndTime)
+
+            if (observationDate != null) {
+                observationDateCalendar.time = observationDate
+                val observationYear = observationDateCalendar.get(Calendar.YEAR)
+                val observationMonth = observationDateCalendar.get(Calendar.MONTH)
+                val observationWeek = observationDateCalendar.get(Calendar.WEEK_OF_YEAR)
+                val observationDay = observationDateCalendar.get(Calendar.DAY_OF_YEAR)
+
+                when (selectedTimeFrame) {
+                    "This year" -> {
+                        if (observationYear == currentYear) {
+                            observationList.add(observation)
+                        }
+                    }
+                    "This month" -> {
+                        if (observationYear == currentYear && observationMonth == currentMonth) {
+                            observationList.add(observation)
+                        }
+                    }
+                    "This week" -> {
+                        if (observationYear == currentYear && observationWeek == currentWeek) {
+                            observationList.add(observation)
+                        }
+                    }
+                    "Today" -> {
+                        if (observationYear == currentYear && observationDay == currentDay) {
+                            observationList.add(observation)
+                        }
+                    }
+                    else -> {
+                        observationList.add(observation)
+                    }
+                }
+            }
+        }
+        return observationList
     }
 }
