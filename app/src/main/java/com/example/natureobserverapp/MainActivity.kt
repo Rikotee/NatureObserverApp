@@ -2,6 +2,7 @@ package com.example.natureobserverapp
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import androidx.activity.result.contract.ActivityResultContracts
@@ -60,12 +61,26 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
             if (result) {
                 val bundle = bundleOf("picPath" to picPath)
                 supportFragmentManager.commit {
+                    setCustomAnimations(
+                        R.anim.slide_in,
+                        R.anim.fade_out,
+                        R.anim.fade_in,
+                        R.anim.slide_out
+                    )
                     setReorderingAllowed(true)
                     replace<NewObservationFragment>(R.id.fragmentContainer, args = bundle)
                     addToBackStack(null)
                 }
             }
         }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onBackPressed() {
         super.onBackPressed()

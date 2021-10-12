@@ -1,5 +1,6 @@
 package com.example.natureobserverapp
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class RecyclerViewAdapter(
     private val items: List<NatureObservationWithWeatherInfo>?,
-    private val clickListener: ClickListener
+    private val clickListener: ClickListener,
+    private val imageBitmapList: List<Bitmap>
 ) :
     RecyclerView.Adapter<RecyclerViewAdapter.ObservationViewHolder>() {
 
@@ -29,11 +31,11 @@ class RecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ObservationViewHolder, position: Int) {
-        val pictureFilePath = items?.get(position)?.natureObservation?.picturePath
-        val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
+        /*val pictureFilePath = items?.get(position)?.natureObservation?.picturePath
+        val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)*/
         holder.titleTextView.text = items?.get(position)?.natureObservation?.title
         holder.dayTextView.text = items?.get(position)?.natureObservation?.dateAndTime
-        holder.oImageView.setImageBitmap(imageBitmap)
+        holder.oImageView.setImageBitmap(imageBitmapList[position])
 
         holder.itemView.setOnClickListener {
             clickListener.onItemClick(items?.get(position)?.natureObservation?.id)

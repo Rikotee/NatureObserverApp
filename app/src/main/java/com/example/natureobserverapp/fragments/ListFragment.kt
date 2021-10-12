@@ -1,6 +1,8 @@
 package com.example.natureobserverapp.fragments
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +50,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.list_title_text)
 
@@ -120,17 +123,54 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
 
             if (categoryS == "All categories") {
                 if (observationsRecyclerView != null) {
-
                     filterObservationsByTimeFrame(timeSpinnerIndex, it)
+
+                    val imageBitmapList = mutableListOf<Bitmap>()
+                    for (observation in it) {
+                        val imageBitmap = BitmapFactory.decodeFile(observation.natureObservation?.picturePath)
+                        val maxSize = 160
+                        var width = imageBitmap.width
+                        var height = imageBitmap.height
+                        val bitmapRatio = width.toFloat() / height.toFloat()
+                        if (bitmapRatio > 1) {
+                            width = maxSize
+                            height = (width / bitmapRatio).toInt()
+                        } else {
+                            height = maxSize
+                            width = (height * bitmapRatio).toInt()
+                        }
+                        val scaledBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, true)
+                        imageBitmapList.add(scaledBitmap)
+                    }
+
                     observationsRecyclerView.adapter =
-                        RecyclerViewAdapter(observationList.reversed(), this)
+                        RecyclerViewAdapter(observationList.reversed(), this, imageBitmapList.reversed())
                     observationList.clear()
                 }
             } else {
                 if (observationsRecyclerView != null) {
                     filterObservationsByTimeFrame(timeSpinnerIndex, filtered)
+
+                    val imageBitmapList = mutableListOf<Bitmap>()
+                    for (observation in filtered) {
+                        val imageBitmap = BitmapFactory.decodeFile(observation.natureObservation?.picturePath)
+                        val maxSize = 160
+                        var width = imageBitmap.width
+                        var height = imageBitmap.height
+                        val bitmapRatio = width.toFloat() / height.toFloat()
+                        if (bitmapRatio > 1) {
+                            width = maxSize
+                            height = (width / bitmapRatio).toInt()
+                        } else {
+                            height = maxSize
+                            width = (height * bitmapRatio).toInt()
+                        }
+                        val scaledBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, true)
+                        imageBitmapList.add(scaledBitmap)
+                    }
+
                     observationsRecyclerView.adapter =
-                        RecyclerViewAdapter(observationList.reversed(), this)
+                        RecyclerViewAdapter(observationList.reversed(), this, imageBitmapList.reversed())
                     observationList.clear()
                 }
             }
@@ -141,6 +181,12 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         val bundle = bundleOf("pos" to observation)
 
         requireActivity().supportFragmentManager.commit {
+            setCustomAnimations(
+                R.anim.slide_in,
+                R.anim.fade_out,
+                R.anim.fade_in,
+                R.anim.slide_out
+            )
             setReorderingAllowed(true)
             replace<ItemFragment>(R.id.fragmentContainer, args = bundle)
             addToBackStack(null)
