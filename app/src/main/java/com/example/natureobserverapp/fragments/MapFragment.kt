@@ -219,10 +219,6 @@ class MapFragment : Fragment(), LocationListener {
             val mOverlay = ItemizedOverlayWithFocus(context,
                 items, object : ItemizedIconOverlay.OnItemGestureListener<OverlayItem?> {
                     override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
-                        return true
-                    }
-
-                    override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
                         val markerId = item?.title?.toLong()
 
                         val bundle = bundleOf("pos" to markerId)
@@ -232,6 +228,10 @@ class MapFragment : Fragment(), LocationListener {
                             replace<ItemFragment>(R.id.flFragment, args = bundle)
                             addToBackStack(null)
                         }
+                        return true
+                    }
+
+                    override fun onItemLongPress(index: Int, item: OverlayItem?): Boolean {
                         return false
                     }
                 })

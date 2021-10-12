@@ -12,9 +12,8 @@
 
         <LinearLayout
             android:id="@+id/pieChartTimeFrameFilterContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -23,17 +22,18 @@
             <TextView
                 android:id="@+id/pieChartTimeFrameFilterTextView"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="8dp"
                 android:text="@string/time_frame_filter_text"
+                android:textAlignment="center"
                 android:textSize="16sp" />
 
             <Spinner
                 android:id="@+id/pieChartTimeFrameFilterSpinner"
-                android:contentDescription="@string/select_time_period"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/select_time_period" />
         </LinearLayout>
 
         <com.github.mikephil.charting.charts.PieChart
