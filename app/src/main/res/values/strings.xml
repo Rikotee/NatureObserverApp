@@ -81,4 +81,5 @@
     <string name="add_category">add category</string>
     <string name="select_category">select category_from_list</string>
     <string name="select_time_period">select time period</string>
+    <string name="select_category_or_add_new_one">select category or add new one</string>
 </resources>
