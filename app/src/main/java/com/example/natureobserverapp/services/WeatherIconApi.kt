@@ -1,4 +1,4 @@
-package com.example.natureobserverapp
+package com.example.natureobserverapp.services
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -9,7 +9,7 @@ object WeatherIconApi {
     private const val baseURL = "http://openweathermap.org/img/wn/"
 
     fun getWeatherIcon(iconName: String) : Bitmap? {
-        val URL = URL("${baseURL}${iconName}@2x.png")
+        val URL = URL("$baseURL${iconName}@2x.png")
         return try {
             val connection = URL.openConnection()
             val istream = connection.getInputStream()

@@ -2,6 +2,7 @@ package com.example.natureobserverapp
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
-import com.example.natureobserverapp.fragment.*
+import com.example.natureobserverapp.fragments.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
@@ -65,4 +66,12 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
                 }
             }
         }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            bottomNavigationView.visibility = View.VISIBLE
+        }
+    }
 }

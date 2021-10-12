@@ -1,4 +1,4 @@
-package com.example.natureobserverapp.fragment
+package com.example.natureobserverapp.fragments
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -11,8 +11,8 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.natureobserverapp.R
-import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModel
-import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModelFactory
+import com.example.natureobserverapp.models.NatureObservationWithWeatherInfoModel
+import com.example.natureobserverapp.models.NatureObservationWithWeatherInfoModelFactory
 
 class ImageFragment : Fragment() {
     private var imageId: Long? = null

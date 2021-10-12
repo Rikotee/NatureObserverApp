@@ -1,4 +1,4 @@
-package com.example.natureobserverapp.fragment
+package com.example.natureobserverapp.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -17,7 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.natureobserverapp.*
-import com.example.natureobserverapp.model.NatureObservationsWithWeatherInfoModel
+import com.example.natureobserverapp.models.NatureObservationsWithWeatherInfoModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,7 +25,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
 
     private lateinit var listSpinner: Spinner
     private lateinit var timeFrameFilterSpinner: Spinner
-    private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
+    private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
     private val observationList = mutableListOf<NatureObservationWithWeatherInfo>()
     private var spinnerIndex: Int = 0
     private var timeSpinnerIndex: Int = 0
@@ -60,7 +60,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         val aaT = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            Categories.timeFrames
+            PredefinedLists.timeFrames
         )
         aaT.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         timeFrameFilterSpinner.adapter = aaT
@@ -117,7 +117,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
             val categoryS = listSpinner.selectedItem.toString()
             val filtered = it.filter { categoryS == it.natureObservation?.category ?: 0 }
 
-            if (categoryS == "All") {
+            if (categoryS == "All categories") {
                 if (observationsRecyclerView != null) {
 
                     filterObservationsByTimeFrame(timeSpinnerIndex, it)
@@ -158,8 +158,8 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         )
 
         for (i in categoriesList.indices) {
-            if (categoriesList[0] != "All") {
-                categoriesList.add(0, "All")
+            if (categoriesList[0] != "All categories") {
+                categoriesList.add(0, "All categories")
             }
         }
 

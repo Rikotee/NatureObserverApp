@@ -1,4 +1,4 @@
-package com.example.natureobserverapp.fragment
+package com.example.natureobserverapp.fragments
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -16,9 +16,10 @@ import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.natureobserverapp.R
-import com.example.natureobserverapp.WeatherIconApi
-import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModel
-import com.example.natureobserverapp.model.NatureObservationWithWeatherInfoModelFactory
+import com.example.natureobserverapp.services.WeatherIconApi
+import com.example.natureobserverapp.models.NatureObservationWithWeatherInfoModel
+import com.example.natureobserverapp.models.NatureObservationWithWeatherInfoModelFactory
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -57,6 +58,7 @@ class ItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.GONE
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.item_title_text)
 

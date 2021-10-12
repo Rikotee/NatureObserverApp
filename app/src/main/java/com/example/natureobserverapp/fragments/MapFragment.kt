@@ -1,4 +1,4 @@
-package com.example.natureobserverapp.fragment
+package com.example.natureobserverapp.fragments
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -22,10 +22,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
-import com.example.natureobserverapp.Categories
+import com.example.natureobserverapp.PredefinedLists
 import com.example.natureobserverapp.NatureObservationWithWeatherInfo
 import com.example.natureobserverapp.R
-import com.example.natureobserverapp.model.NatureObservationsWithWeatherInfoModel
+import com.example.natureobserverapp.models.NatureObservationsWithWeatherInfoModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -54,7 +54,7 @@ class MapFragment : Fragment(), LocationListener {
     private var category: String = ""
     private var lat: Double = 0.0
     private var lon: Double = 0.0
-    private val categoriesList: MutableList<String> = Categories.categories.toMutableList()
+    private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
     private var spinnerIndex: Int = 0
     private val sharedPrefFile = "sharedpreference"
     private val sharedPrefFileSpinner = "sharedpreferenceSpinner"
@@ -90,7 +90,7 @@ class MapFragment : Fragment(), LocationListener {
         val aaT = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            Categories.timeFrames
+            PredefinedLists.timeFrames
         )
         aaT.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         timeFrameFilterSpinner.adapter = aaT
@@ -211,7 +211,7 @@ class MapFragment : Fragment(), LocationListener {
 
                 if (categoryS == category) {
                     items.add(OverlayItem(titleId.toString(), title, GeoPoint(lat, lon)))
-                } else if (categoryS == "All") {
+                } else if (categoryS == "All categories") {
                     items.add(OverlayItem(titleId.toString(), title, GeoPoint(lat, lon)))
                 }
             }
@@ -290,8 +290,8 @@ class MapFragment : Fragment(), LocationListener {
         )
 
         for (i in categoriesList.indices) {
-            if (categoriesList[0] != "All") {
-                categoriesList.add(0, "All")
+            if (categoriesList[0] != "All categories") {
+                categoriesList.add(0, "All categories")
             }
         }
 
