@@ -38,6 +38,7 @@
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/pieChart"
+            android:contentDescription="@string/pie_chart_of_observations"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="16dp"
