@@ -12,6 +12,7 @@
 
         <Button
             android:id="@+id/newObservationButton"
+            android:contentDescription="@string/take_picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -31,6 +32,7 @@
 
         <ImageView
             android:id="@+id/bRimageView"
+            android:contentDescription="@string/backround_forest"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:cropToPadding="false"
@@ -45,6 +47,7 @@
 
         <LinearLayout
             android:id="@+id/weatherViewContainerLayout"
+            android:contentDescription="@string/weather_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -58,6 +61,7 @@
 
         <ImageView
             android:id="@+id/logoImageView"
+            android:contentDescription="@string/logo"
             android:layout_width="388dp"
             android:layout_height="233dp"
             android:layout_marginStart="8dp"

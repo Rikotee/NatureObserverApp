@@ -57,4 +57,12 @@
     <string name="wind_direction_text">Wind direction: %s °</string>
     <string name="light_description_text">Light: %s</string>
     <string name="loading_text">Loading</string>
+    <string name="add_title">add title</string>
+    <string name="observation_title">observation title</string>
+    <string name="observation_date">observation date</string>
+    <string name="observation_image">observation image</string>
+    <string name="take_picture">take picture</string>
+    <string name="logo">logo</string>
+    <string name="backround_forest">backround forest</string>
+    <string name="weather_info">weather info</string>
 </resources>
