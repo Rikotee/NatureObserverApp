@@ -26,6 +26,7 @@ import com.example.natureobserverapp.PredefinedLists
 import com.example.natureobserverapp.NatureObservationWithWeatherInfo
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.models.NatureObservationsWithWeatherInfoModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -46,8 +47,8 @@ class MapFragment : Fragment(), LocationListener {
     private val observationList = mutableListOf<NatureObservationWithWeatherInfo>()
     private lateinit var lm: LocationManager
     private var currentLocation: Location? = null
-    private var gpsLocationFound = false
-    private var firstOwnLocation = true
+    private var gpsLocationFound: Boolean? = null
+    private var firstOwnLocation: Boolean? = null
 
     private var titleId: Long = 0
     var title: String = ""
@@ -71,6 +72,7 @@ class MapFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.map_title_text)
 
@@ -97,6 +99,9 @@ class MapFragment : Fragment(), LocationListener {
         timeFrameFilterSpinner.adapter = aaT
 
         setSpinnerValue()
+
+        gpsLocationFound = false
+        firstOwnLocation = true
 
         //This add all markers from saved observations
         addItemMarker()
@@ -150,37 +155,43 @@ class MapFragment : Fragment(), LocationListener {
         currentLocation = p0
         setOwnLocationMarker()
 
-        // When GPS location is found, the network location request is removed
-        if (p0.provider == LocationManager.GPS_PROVIDER && !gpsLocationFound) {
+        /* When GPS location is found, the network location request is removed and the map is centered
+        on the user location for a more precise location */
+        if (p0.provider == LocationManager.GPS_PROVIDER && gpsLocationFound == false) {
             lm.removeUpdates(this)
             checkLocationPermission()
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
+            centerMapOnOwnLocation()
             gpsLocationFound = true
         }
     }
 
     private fun setOwnLocationMarker() {
         if (currentLocation != null) {
-            if (firstOwnLocation) {
-                map.controller.setCenter(
-                    GeoPoint(
-                        currentLocation!!.latitude,
-                        currentLocation!!.longitude
-                    )
-                )
-
+            // The map is centered on user location only on the first location update
+            if (firstOwnLocation == true) {
+                centerMapOnOwnLocation()
                 firstOwnLocation = false
             }
 
             marker.position = GeoPoint(currentLocation!!.latitude, currentLocation!!.longitude)
-/*        if (Geocoder.isPresent()) {
-            marker.title = getAddress(p0.latitude, p0.longitude)
-        }*/
+            /*if (Geocoder.isPresent()) {
+                marker.title = getAddress(p0.latitude, p0.longitude)
+            }*/
             marker.subDescription =
                 "Lat: ${currentLocation!!.latitude}, Lon: ${currentLocation!!.longitude}, Alt: ${currentLocation!!.altitude}"
             map.overlays.add(marker)
             map.invalidate()
         }
+    }
+
+    private fun centerMapOnOwnLocation() {
+        map.controller.setCenter(
+            GeoPoint(
+                currentLocation!!.latitude,
+                currentLocation!!.longitude
+            )
+        )
     }
 
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
@@ -277,11 +288,13 @@ class MapFragment : Fragment(), LocationListener {
                 )
             } != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                0
-            )
+            activity?.let {
+                ActivityCompat.requestPermissions(
+                    it,
+                    arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                    0
+                )
+            }
         }
     }
 

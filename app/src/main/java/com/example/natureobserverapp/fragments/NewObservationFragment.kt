@@ -322,11 +322,13 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
                 )
             } != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                0
-            )
+            activity?.let {
+                ActivityCompat.requestPermissions(
+                    it,
+                    arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                    0
+                )
+            }
         }
     }
 
