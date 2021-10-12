@@ -1,8 +1,6 @@
 package com.example.natureobserverapp.fragments
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -121,58 +119,16 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
             val categoryS = listSpinner.selectedItem.toString()
             val filtered = it.filter { categoryS == it.natureObservation?.category ?: 0 }
 
-            if (categoryS == "All categories") {
-                if (observationsRecyclerView != null) {
+            if (observationsRecyclerView != null) {
+                if (categoryS == "All categories") {
                     filterObservationsByTimeFrame(timeSpinnerIndex, it)
-
-                    val imageBitmapList = mutableListOf<Bitmap>()
-                    for (observation in it) {
-                        val imageBitmap = BitmapFactory.decodeFile(observation.natureObservation?.picturePath)
-                        val maxSize = 160
-                        var width = imageBitmap.width
-                        var height = imageBitmap.height
-                        val bitmapRatio = width.toFloat() / height.toFloat()
-                        if (bitmapRatio > 1) {
-                            width = maxSize
-                            height = (width / bitmapRatio).toInt()
-                        } else {
-                            height = maxSize
-                            width = (height * bitmapRatio).toInt()
-                        }
-                        val scaledBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, true)
-                        imageBitmapList.add(scaledBitmap)
-                    }
-
-                    observationsRecyclerView.adapter =
-                        RecyclerViewAdapter(observationList.reversed(), this, imageBitmapList.reversed())
-                    observationList.clear()
-                }
-            } else {
-                if (observationsRecyclerView != null) {
+                } else {
                     filterObservationsByTimeFrame(timeSpinnerIndex, filtered)
-
-                    val imageBitmapList = mutableListOf<Bitmap>()
-                    for (observation in filtered) {
-                        val imageBitmap = BitmapFactory.decodeFile(observation.natureObservation?.picturePath)
-                        val maxSize = 160
-                        var width = imageBitmap.width
-                        var height = imageBitmap.height
-                        val bitmapRatio = width.toFloat() / height.toFloat()
-                        if (bitmapRatio > 1) {
-                            width = maxSize
-                            height = (width / bitmapRatio).toInt()
-                        } else {
-                            height = maxSize
-                            width = (height * bitmapRatio).toInt()
-                        }
-                        val scaledBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, true)
-                        imageBitmapList.add(scaledBitmap)
-                    }
-
-                    observationsRecyclerView.adapter =
-                        RecyclerViewAdapter(observationList.reversed(), this, imageBitmapList.reversed())
-                    observationList.clear()
                 }
+
+                observationsRecyclerView.adapter =
+                    RecyclerViewAdapter(observationList.reversed(), this)
+                observationList.clear()
             }
         }
     }
