@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.natureobserverapp.*
 import com.example.natureobserverapp.models.NatureObservationsWithWeatherInfoModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,6 +47,10 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
+        (requireActivity() as AppCompatActivity).supportActionBar?.title =
+            getString(R.string.list_title_text)
+
         timeFrameFilterSpinner = view.findViewById(R.id.timeFrameFilterSpinner)
         listSpinner = view.findViewById(R.id.listSpinner)
 
@@ -67,12 +72,8 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
 
         setSpinnerValue()
 
-        (requireActivity() as AppCompatActivity).supportActionBar?.title =
-            getString(R.string.list_title_text)
-
         listSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
             }
 
             override fun onItemSelected(
@@ -141,7 +142,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
 
         requireActivity().supportFragmentManager.commit {
             setReorderingAllowed(true)
-            replace<ItemFragment>(R.id.flFragment, args = bundle)
+            replace<ItemFragment>(R.id.fragmentContainer, args = bundle)
             addToBackStack(null)
         }
     }

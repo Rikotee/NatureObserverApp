@@ -22,6 +22,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.services.WeatherIconApi
 import com.example.natureobserverapp.models.WeatherViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,8 +62,9 @@ class HomeFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
-            getString(R.string.home_title_text)
+            getString(R.string.app_name)
 
         weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
@@ -145,10 +147,12 @@ class HomeFragment : Fragment(), LocationListener {
     }
 
     private fun checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+        if (context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            } != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 requireActivity(),

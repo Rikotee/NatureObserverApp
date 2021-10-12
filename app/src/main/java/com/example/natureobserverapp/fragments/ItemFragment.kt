@@ -145,7 +145,7 @@ class ItemFragment : Fragment() {
 
                 requireActivity().supportFragmentManager.commit {
                     setReorderingAllowed(true)
-                    replace<EditFragment>(R.id.flFragment, args = bundle)
+                    replace<EditFragment>(R.id.fragmentContainer, args = bundle)
                     addToBackStack(null)
                 }
                 true
@@ -167,7 +167,7 @@ class ItemFragment : Fragment() {
 
         requireActivity().supportFragmentManager.commit {
             setReorderingAllowed(true)
-            replace<ImageFragment>(R.id.flFragment, args = bundle)
+            replace<ImageFragment>(R.id.fragmentContainer, args = bundle)
             addToBackStack(null)
         }
     }

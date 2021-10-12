@@ -15,7 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
     private lateinit var bottomNavigationView: BottomNavigationView
-    private lateinit var flFragment: FrameLayout
+    private lateinit var fragmentContainer: FrameLayout
     private lateinit var picPath: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
         setContentView(R.layout.activity_main)
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
-        flFragment = findViewById(R.id.flFragment)
+        fragmentContainer = findViewById(R.id.fragmentContainer)
 
         val homeFragment = HomeFragment()
         val mapFragment = MapFragment()
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
     private fun setCurrentFragment(fragment: Fragment) {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
-            replace(R.id.flFragment, fragment)
+            replace(R.id.fragmentContainer, fragment)
         }
     }
 
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
                 val bundle = bundleOf("picPath" to picPath)
                 supportFragmentManager.commit {
                     setReorderingAllowed(true)
-                    replace<NewObservationFragment>(R.id.flFragment, args = bundle)
+                    replace<NewObservationFragment>(R.id.fragmentContainer, args = bundle)
                     addToBackStack(null)
                 }
             }
