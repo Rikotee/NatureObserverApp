@@ -17,6 +17,7 @@
 
             <TextView
                 android:id="@+id/observationNameView"
+                android:contentDescription="@string/observation_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -29,6 +30,7 @@
 
             <TextView
                 android:id="@+id/dateTextView"
+                android:contentDescription="@string/observation_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -44,13 +46,13 @@
 
             <ImageView
                 android:id="@+id/photoView"
+                android:contentDescription="@string/nature_image"
                 android:layout_width="379dp"
                 android:layout_height="207dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:contentDescription="@string/nature_image"
                 app:layout_constraintBottom_toTopOf="@+id/categoryView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -58,6 +60,7 @@
 
             <TextView
                 android:id="@+id/categoryView"
+                android:contentDescription="@string/observation_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -73,6 +76,7 @@
 
             <TextView
                 android:id="@+id/infoTextView"
+                android:contentDescription="@string/observation_information"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
@@ -80,7 +84,6 @@
                 android:layout_marginBottom="16dp"
                 android:textAlignment="center"
                 android:textSize="16sp"
-
                 app:layout_constraintBottom_toTopOf="@+id/cardWeatherInfoContainer"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -89,10 +92,9 @@
 
             <TextView
                 android:id="@+id/lightInfoTextView"
+                android:contentDescription="@string/observation_light"
                 android:layout_width="379dp"
                 android:layout_height="60dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
@@ -106,6 +108,7 @@
 
             <LinearLayout
                 android:id="@+id/cardWeatherInfoContainer"
+                android:contentDescription="@string/weather_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"

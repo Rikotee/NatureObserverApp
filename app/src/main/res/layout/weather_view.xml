@@ -28,6 +28,7 @@
 
             <TextView
                 android:id="@+id/temperatureTextView"
+                android:contentDescription="@string/temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -41,6 +42,7 @@
 
         <TextView
             android:id="@+id/descriptionTextView"
+            android:contentDescription="@string/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
@@ -50,6 +52,7 @@
 
         <TextView
             android:id="@+id/placeNameCountryTextView"
+            android:contentDescription="@string/city_and_country"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
@@ -68,6 +71,7 @@
 
         <TextView
             android:id="@+id/pressureTextView"
+            android:contentDescription="@string/pressure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
@@ -77,6 +81,7 @@
 
         <TextView
             android:id="@+id/humidityTextView"
+            android:contentDescription="@string/humidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
@@ -86,6 +91,7 @@
 
         <TextView
             android:id="@+id/windSpeedTextView"
+            android:contentDescription="@string/wind_speed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
@@ -95,6 +101,7 @@
 
         <TextView
             android:id="@+id/windDirectionTextView"
+            android:contentDescription="@string/wind_direction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"

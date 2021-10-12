@@ -58,6 +58,8 @@
     <string name="light_description_text">Light: %s</string>
     <string name="loading_text">Loading</string>
     <string name="add_title">add title</string>
+
+    <!-- For accessibility -->
     <string name="observation_title">observation title</string>
     <string name="observation_date">observation date</string>
     <string name="observation_image">observation image</string>
@@ -65,4 +67,18 @@
     <string name="logo">logo</string>
     <string name="backround_forest">backround forest</string>
     <string name="weather_info">weather info</string>
+    <string name="temperature">temperature</string>
+    <string name="description">description</string>
+    <string name="city_and_country">city and country</string>
+    <string name="pressure">pressure</string>
+    <string name="humidity">humidity</string>
+    <string name="wind_speed">wind speed</string>
+    <string name="wind_direction">wind direction</string>
+    <string name="observation_category">observation category</string>
+    <string name="observation_information">observation information</string>
+    <string name="observation_light">observation light</string>
+    <string name="save_changes">save changes</string>
+    <string name="add_category">add category</string>
+    <string name="select_category">select category_from_list</string>
+    <string name="select_time_period">select time period</string>
 </resources>
