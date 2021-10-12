@@ -47,6 +47,7 @@ class MapFragment : Fragment(), LocationListener {
     private lateinit var lm: LocationManager
     private var currentLocation: Location? = null
     private var gpsLocationFound = false
+    private var firstOwnLocation = true
 
     private var titleId: Long = 0
     var title: String = ""
@@ -160,12 +161,16 @@ class MapFragment : Fragment(), LocationListener {
 
     private fun setOwnLocationMarker() {
         if (currentLocation != null) {
-            map.controller.setCenter(
-                GeoPoint(
-                    currentLocation!!.latitude,
-                    currentLocation!!.longitude
+            if (firstOwnLocation) {
+                map.controller.setCenter(
+                    GeoPoint(
+                        currentLocation!!.latitude,
+                        currentLocation!!.longitude
+                    )
                 )
-            )
+
+                firstOwnLocation = false
+            }
 
             marker.position = GeoPoint(currentLocation!!.latitude, currentLocation!!.longitude)
 /*        if (Geocoder.isPresent()) {
@@ -225,7 +230,7 @@ class MapFragment : Fragment(), LocationListener {
                         //val bundle = bundleOf("pos" to it[index].natureObservation?.id)
                         requireActivity().supportFragmentManager.commit {
                             setReorderingAllowed(true)
-                            replace<ItemFragment>(R.id.flFragment, args = bundle)
+                            replace<ItemFragment>(R.id.fragmentContainer, args = bundle)
                             addToBackStack(null)
                         }
                         return true
@@ -259,16 +264,18 @@ class MapFragment : Fragment(), LocationListener {
 
             requireActivity().supportFragmentManager.commit {
                 setReorderingAllowed(true)
-                replace<MapFragment>(R.id.flFragment)
+                replace<MapFragment>(R.id.fragmentContainer)
             }
         }
     }
 
     private fun checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+        if (context?.let {
+                ContextCompat.checkSelfPermission(
+                    it,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            } != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 requireActivity(),
@@ -350,7 +357,7 @@ class MapFragment : Fragment(), LocationListener {
 
             requireActivity().supportFragmentManager.commit {
                 setReorderingAllowed(true)
-                replace<MapFragment>(R.id.flFragment)
+                replace<MapFragment>(R.id.fragmentContainer)
             }
         }
     }
