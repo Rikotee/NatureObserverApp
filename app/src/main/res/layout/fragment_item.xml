@@ -17,12 +17,12 @@
 
             <TextView
                 android:id="@+id/observationNameView"
-                android:contentDescription="@string/observation_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:contentDescription="@string/observation_title"
                 android:textAlignment="center"
                 android:textSize="24sp"
                 android:textStyle="bold"
@@ -30,12 +30,12 @@
 
             <TextView
                 android:id="@+id/dateTextView"
-                android:contentDescription="@string/observation_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
+                android:contentDescription="@string/observation_date"
                 android:text="@string/date"
                 android:textAlignment="center"
                 android:textSize="16sp"
@@ -60,12 +60,12 @@
 
             <TextView
                 android:id="@+id/categoryView"
-                android:contentDescription="@string/observation_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
+                android:contentDescription="@string/observation_category"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/infoTextView"
@@ -76,12 +76,12 @@
 
             <TextView
                 android:id="@+id/infoTextView"
-                android:contentDescription="@string/observation_information"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
+                android:contentDescription="@string/observation_information"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/cardWeatherInfoContainer"
@@ -92,12 +92,12 @@
 
             <TextView
                 android:id="@+id/lightInfoTextView"
-                android:contentDescription="@string/observation_light"
                 android:layout_width="379dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
+                android:contentDescription="@string/observation_light"
                 android:text="@string/light_info"
                 android:textAlignment="center"
                 android:textSize="16sp"
@@ -108,13 +108,12 @@
 
             <LinearLayout
                 android:id="@+id/cardWeatherInfoContainer"
-                android:contentDescription="@string/weather_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
+                android:contentDescription="@string/weather_info"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -122,6 +121,6 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
         </LinearLayout>
-</ScrollView>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
