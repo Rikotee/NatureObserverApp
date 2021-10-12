@@ -24,23 +24,19 @@ class RecyclerViewAdapter(
 
     override fun getItemCount() = items?.size ?: 0
 
-    override fun onBindViewHolder(holder: ObservationViewHolder, position: Int) {
-        holder.bind()
-    }
-
     inner class ObservationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var titleTextView: TextView = view.findViewById(R.id.titleTextView)
         var dayTextView: TextView = view.findViewById(R.id.dayTextView)
         var oImageView: ImageView = view.findViewById(R.id.oImageView)
+    }
 
-        fun bind() {
-            titleTextView.text = items?.get(position)?.natureObservation?.title
-            dayTextView.text = items?.get(position)?.natureObservation?.dateAndTime
-            oImageView.setImageBitmap(image(position))
+    override fun onBindViewHolder(holder: ObservationViewHolder, position: Int) {
+        holder.titleTextView.text = items?.get(position)?.natureObservation?.title
+        holder.dayTextView.text = items?.get(position)?.natureObservation?.dateAndTime
+        holder.oImageView.setImageBitmap(image(position))
 
-            itemView.setOnClickListener {
-                clickListener.onItemClick(items?.get(position)?.natureObservation?.id)
-            }
+        holder.itemView.setOnClickListener {
+            clickListener.onItemClick(items?.get(position)?.natureObservation?.id)
         }
     }
     
