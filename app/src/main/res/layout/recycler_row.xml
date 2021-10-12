@@ -22,7 +22,6 @@
 
             <TextView
                 android:id="@+id/titleTextView"
-                android:contentDescription="@string/observation_title"
                 android:layout_width="215dp"
                 android:layout_height="38dp"
                 android:layout_marginStart="16dp"
@@ -38,7 +37,6 @@
 
             <TextView
                 android:id="@+id/dayTextView"
-                android:contentDescription="@string/observation_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -52,7 +50,6 @@
 
             <ImageView
                 android:id="@+id/oImageView"
-                android:contentDescription="@string/observation_image"
                 android:layout_width="97dp"
                 android:layout_height="86dp"
                 android:layout_marginEnd="27dp"
