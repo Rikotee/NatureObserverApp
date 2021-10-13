@@ -71,14 +71,22 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.new_observation_title_text)
 
-        val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
         val observationImageView = view.findViewById<ImageView>(R.id.observationImageView)
 
-        if (imageBitmap.height <= imageBitmap.width) {
-            val rotatedBitmap = imageBitmap.rotate(90f)
-            observationImageView.setImageBitmap(rotatedBitmap)
-        } else {
-            observationImageView.setImageBitmap(imageBitmap)
+        GlobalScope.launch(Dispatchers.Default) {
+            val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
+
+            if (imageBitmap.height <= imageBitmap.width) {
+                val rotatedBitmap = imageBitmap.rotate(90f)
+
+                withContext(Dispatchers.Main) {
+                    observationImageView.setImageBitmap(rotatedBitmap)
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    observationImageView.setImageBitmap(imageBitmap)
+                }
+            }
         }
 
         titleEditText = view.findViewById(R.id.observationTitleEditText)

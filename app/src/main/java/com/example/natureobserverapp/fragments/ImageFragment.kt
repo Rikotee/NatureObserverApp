@@ -14,6 +14,10 @@ import androidx.fragment.app.viewModels
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.models.NatureObservationWithWeatherInfoModel
 import com.example.natureobserverapp.models.NatureObservationWithWeatherInfoModelFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ImageFragment : Fragment() {
     private var imageId: Long? = null
@@ -50,15 +54,22 @@ class ImageFragment : Fragment() {
 
             nowwim.getNatureObservationWithWeatherInfo().observe(viewLifecycleOwner) {
                 val pictureFilePath = it.natureObservation?.picturePath
-                val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
+                val imageView = view.findViewById<ImageView>(R.id.fr_imageView)
 
-                if (imageBitmap.height <= imageBitmap.width ){
+                GlobalScope.launch(Dispatchers.Default) {
+                    val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
 
-                    val rotatedBitmap = imageBitmap.rotate(90f)
+                    if (imageBitmap.height <= imageBitmap.width) {
+                        val rotatedBitmap = imageBitmap.rotate(90f)
 
-                    view.findViewById<ImageView>(R.id.fr_imageView).setImageBitmap(rotatedBitmap)
-                }else{
-                    view.findViewById<ImageView>(R.id.fr_imageView).setImageBitmap(imageBitmap)
+                        withContext(Dispatchers.Main) {
+                            imageView.setImageBitmap(rotatedBitmap)
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            imageView.setImageBitmap(imageBitmap)
+                        }
+                    }
                 }
             }
         }
