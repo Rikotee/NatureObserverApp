@@ -21,6 +21,7 @@ import com.example.natureobserverapp.models.NatureObservationWithWeatherInfoMode
 import com.example.natureobserverapp.models.NatureObservationWithWeatherInfoModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -58,7 +59,8 @@ class ItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.GONE
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility =
+            View.GONE
         (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.item_title_text)
@@ -73,18 +75,23 @@ class ItemFragment : Fragment() {
 
             nowwim.getNatureObservationWithWeatherInfo().observe(viewLifecycleOwner) {
                 val pictureFilePath = it.natureObservation?.picturePath
-                val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
+                val imageView = view.findViewById<ImageView>(R.id.photoView)
 
-                if (imageBitmap.height <= imageBitmap.width ){
+                GlobalScope.launch(Dispatchers.Default) {
+                    val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
 
-                    val rotatedBitmap = imageBitmap.rotate(90f)
+                    if (imageBitmap.height <= imageBitmap.width) {
+                        val rotatedBitmap = imageBitmap.rotate(90f)
 
-                    view.findViewById<ImageView>(R.id.photoView).setImageBitmap(rotatedBitmap)
-                }else{
-                    view.findViewById<ImageView>(R.id.photoView).setImageBitmap(imageBitmap)
+                        withContext(Dispatchers.Main) {
+                            imageView.setImageBitmap(rotatedBitmap)
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            imageView.setImageBitmap(imageBitmap)
+                        }
+                    }
                 }
-
-                val imageView = view.findViewById(R.id.photoView) as ImageView
 
                 imageView.setOnClickListener {
                     onItemClick(observationId)
@@ -185,7 +192,7 @@ class ItemFragment : Fragment() {
         }
     }
 
-    private fun lightValueToText(lightValue: Double){
+    private fun lightValueToText(lightValue: Double) {
 
         when (lightValue) {
             in 0.0..3.0 -> lightText = getText(R.string.Darkness).toString()

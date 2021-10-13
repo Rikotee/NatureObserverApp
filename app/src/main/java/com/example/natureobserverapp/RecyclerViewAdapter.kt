@@ -9,6 +9,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RecyclerViewAdapter(
     private val items: List<NatureObservationWithWeatherInfo>?,
@@ -33,7 +37,14 @@ class RecyclerViewAdapter(
     override fun onBindViewHolder(holder: ObservationViewHolder, position: Int) {
         holder.titleTextView.text = items?.get(position)?.natureObservation?.title
         holder.dayTextView.text = items?.get(position)?.natureObservation?.dateAndTime
-        holder.oImageView.setImageBitmap(image(position))
+
+        GlobalScope.launch(Dispatchers.Default) {
+            val imageBitmap = image(position)
+
+            withContext(Dispatchers.Main) {
+                holder.oImageView.setImageBitmap(imageBitmap)
+            }
+        }
 
         holder.itemView.setOnClickListener {
             clickListener.onItemClick(items?.get(position)?.natureObservation?.id)

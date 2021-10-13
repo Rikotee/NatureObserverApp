@@ -19,7 +19,8 @@
             app:layout_constraintBottom_toTopOf="@+id/observationTitleEditText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/loading_image" />
 
         <EditText
             android:id="@+id/observationTitleEditText"
