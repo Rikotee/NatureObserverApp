@@ -4,11 +4,14 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import com.example.natureobserverapp.NatureObservationDB
 import com.example.natureobserverapp.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DeleteDialogFragment : DialogFragment() {
     private val db by lazy { NatureObservationDB.get(requireActivity().applicationContext) }
@@ -27,9 +30,11 @@ class DeleteDialogFragment : DialogFragment() {
                     if (observationId != null) {
                         GlobalScope.launch(Dispatchers.IO) {
                             deleteObservation(observationId)
-                        }
 
-                        requireActivity().onBackPressed()
+                            withContext(Dispatchers.Main) {
+                                requireActivity().onBackPressed()
+                            }
+                        }
                     }
                 }
                 .setNegativeButton(

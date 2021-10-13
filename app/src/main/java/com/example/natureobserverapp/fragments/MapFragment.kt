@@ -26,7 +26,6 @@ import com.example.natureobserverapp.PredefinedLists
 import com.example.natureobserverapp.NatureObservationWithWeatherInfo
 import com.example.natureobserverapp.R
 import com.example.natureobserverapp.models.NatureObservationsWithWeatherInfoModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
