@@ -26,8 +26,10 @@ class DeleteDialogFragment : DialogFragment() {
                 ) { _, _ ->
                     if (observationId != null) {
                         GlobalScope.launch(Dispatchers.IO) {
-                            deleteButtonPressed(observationId)
+                            deleteObservation(observationId)
                         }
+
+                        requireActivity().onBackPressed()
                     }
                 }
                 .setNegativeButton(
@@ -39,10 +41,8 @@ class DeleteDialogFragment : DialogFragment() {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    private fun deleteButtonPressed(observationId: Long) {
+    private fun deleteObservation(observationId: Long) {
         db.natureObservationDao().deleteNatureObservation(observationId)
         db.weatherInfoDao().deleteWeatherInfo(observationId)
-
-        requireActivity().supportFragmentManager.popBackStack()
     }
 }

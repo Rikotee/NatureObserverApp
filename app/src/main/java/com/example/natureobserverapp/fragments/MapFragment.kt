@@ -68,8 +68,6 @@ class MapFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility =
-            View.VISIBLE
         (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.map_title_text)

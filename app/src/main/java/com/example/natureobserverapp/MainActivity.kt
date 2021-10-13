@@ -94,6 +94,15 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
 
         if (supportFragmentManager.backStackEntryCount == 0) {
             bottomNavigationView.visibility = View.VISIBLE
+
+            val mapFragment = supportFragmentManager.findFragmentByTag("mapFragment")
+
+            if (mapFragment != null && mapFragment.isVisible) {
+                supportFragmentManager.commit {
+                    setReorderingAllowed(true)
+                    replace<MapFragment>(R.id.fragmentContainer, "mapFragment")
+                }
+            }
         }
     }
 
