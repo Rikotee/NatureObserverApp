@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class RecyclerViewAdapter(
-    private val items: List<NatureObservationWithWeatherInfo>?,
+    private val items: List<NatureObservation>?,
     private val clickListener: ClickListener
 ) :
     RecyclerView.Adapter<RecyclerViewAdapter.ObservationViewHolder>() {
@@ -35,8 +35,8 @@ class RecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ObservationViewHolder, position: Int) {
-        holder.titleTextView.text = items?.get(position)?.natureObservation?.title
-        holder.dayTextView.text = items?.get(position)?.natureObservation?.dateAndTime
+        holder.titleTextView.text = items?.get(position)?.title
+        holder.dayTextView.text = items?.get(position)?.dateAndTime
 
         GlobalScope.launch(Dispatchers.Default) {
             val imageBitmap = image(position)
@@ -47,20 +47,22 @@ class RecyclerViewAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            clickListener.onItemClick(items?.get(position)?.natureObservation?.id)
+            clickListener.onItemClick(items?.get(position)?.id)
         }
     }
-    
+
     private fun image(position: Int): Bitmap? {
-        val pictureFilePath = items?.get(position)?.natureObservation?.picturePath
+        val pictureFilePath = items?.get(position)?.picturePath
         val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
-        return getResizedBitmap(imageBitmap, 200)
+        return getResizedBitmap(imageBitmap)
     }
 
-    private fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap? {
+    private fun getResizedBitmap(image: Bitmap): Bitmap? {
         var width = image.width
         var height = image.height
+        val maxSize = 200
         val bitmapRatio = width.toFloat() / height.toFloat()
+
         if (bitmapRatio > 1) {
             width = maxSize
             height = (width / bitmapRatio).toInt()
@@ -68,6 +70,7 @@ class RecyclerViewAdapter(
             height = maxSize
             width = (height * bitmapRatio).toInt()
         }
+
         return Bitmap.createScaledBitmap(image, width, height, true)
     }
 

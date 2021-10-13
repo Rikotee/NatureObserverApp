@@ -22,16 +22,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
-import com.example.natureobserverapp.PredefinedLists
-import com.example.natureobserverapp.NatureObservationWithWeatherInfo
-import com.example.natureobserverapp.R
-import com.example.natureobserverapp.models.NatureObservationsWithWeatherInfoModel
+import com.example.natureobserverapp.*
+import com.example.natureobserverapp.models.NatureObservationsModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MapFragment : Fragment(), LocationListener {
@@ -40,7 +37,7 @@ class MapFragment : Fragment(), LocationListener {
     private lateinit var mapCategorySpinner: Spinner
     private lateinit var timeFrameFilterSpinner: Spinner
     private lateinit var lm: LocationManager
-    private val observationList = mutableListOf<NatureObservationWithWeatherInfo>()
+    private val observationList = mutableListOf<NatureObservation>()
     private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
     private var currentLocation: Location? = null
     private var gpsLocationFound: Boolean? = null
@@ -53,8 +50,6 @@ class MapFragment : Fragment(), LocationListener {
     var title: String = ""
     var description: String = ""
     private var category: String = ""
-    private val sharedPrefFile = "sharedpreference"
-    private val sharedPrefFileSpinner = "sharedpreferenceSpinner"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -196,23 +191,21 @@ class MapFragment : Fragment(), LocationListener {
 
     // This add saved observation to map
     private fun addItemMarker() {
-        val nowwim: NatureObservationsWithWeatherInfoModel by viewModels()
-        nowwim.getNatureObservationsWithWeatherInfo().observe(this) { it ->
-
+        val nom: NatureObservationsModel by viewModels()
+        nom.getNatureObservations().observe(this) { it ->
             filterObservationsByTimeFrame(timeSpinnerIndex, it)
-
             val map = view?.findViewById<MapView>(R.id.mapView)
             val items = ArrayList<OverlayItem>()
 
-            val sorted = observationList.sortedBy { it.natureObservation?.category }
+            val sorted = observationList.sortedBy { it.category }
 
-            for (i in sorted.indices) {
-                titleId = sorted[i].natureObservation?.id!!
-                title = sorted[i].natureObservation?.title.toString()
-                description = sorted[i].natureObservation?.description.toString()
-                category = sorted[i].natureObservation?.category.toString()
-                lat = sorted[i].natureObservation?.locationLat!!
-                lon = sorted[i].natureObservation?.locationLon!!
+            for (observation in sorted) {
+                titleId = observation.id
+                title = observation.title
+                description = observation.description
+                category = observation.category
+                lat = observation.locationLat
+                lon = observation.locationLon
 
                 val categoryS = mapCategorySpinner.selectedItem.toString()
 
@@ -255,9 +248,11 @@ class MapFragment : Fragment(), LocationListener {
     }
 
     private fun updateSpinner() {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFileSpinner, Context.MODE_PRIVATE)
-        val oldSpinnerValue = sharedPreference?.getInt("spinnerIndex", 0)
+        val oldSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
+            requireActivity(),
+            "mapCategorySpinnerIndex", 0
+        )
+
         val categoryS = mapCategorySpinner.selectedItem.toString()
         for (i in categoriesList.indices) {
             if (categoryS == categoriesList[i]) {
@@ -266,9 +261,10 @@ class MapFragment : Fragment(), LocationListener {
         }
 
         if (oldSpinnerValue != spinnerIndex) {
-            val editor = sharedPreference?.edit()
-            editor?.putInt("spinnerIndex", spinnerIndex)
-            editor?.commit()
+            SharedPreferencesFunctions.putSharedPreferenceIndexValue(
+                requireActivity(),
+                "mapCategorySpinnerIndex", spinnerIndex
+            )
 
             requireActivity().supportFragmentManager.commit {
                 setReorderingAllowed(true)
@@ -304,14 +300,11 @@ class MapFragment : Fragment(), LocationListener {
     }
 
     private fun addToList(): MutableList<String> {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-
         val newCategoriesSet = HashSet<String>()
 
-        val oldCategories = sharedPreference?.getStringSet(
-            "newCategories",
-            newCategoriesSet
+        val oldCategories = SharedPreferencesFunctions.getSharedPreferenceStringSet(
+            requireActivity(),
+            "newCategories", newCategoriesSet
         )
 
         for (i in categoriesList.indices) {
@@ -343,18 +336,22 @@ class MapFragment : Fragment(), LocationListener {
     }
 
     private fun setSpinnerValue() {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFileSpinner, Context.MODE_PRIVATE)
-        val newSpinnerValue = sharedPreference?.getInt("spinnerIndex", 0)
+        val newSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
+            requireActivity(),
+            "mapCategorySpinnerIndex", 0
+        )
+
         if (newSpinnerValue != null) {
             mapCategorySpinner.setSelection(newSpinnerValue)
         }
     }
 
     private fun setTimeSpinnerValue() {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val newSpinnerValue = sharedPreference?.getInt("mapTimeFrameFilterSpinnerIndex", 0)
+        val newSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
+            requireActivity(),
+            "mapTimeFrameFilterSpinnerIndex", 0
+        )
+
         if (newSpinnerValue != null) {
             timeSpinnerIndex = newSpinnerValue
             timeFrameFilterSpinner.setSelection(newSpinnerValue)
@@ -362,16 +359,16 @@ class MapFragment : Fragment(), LocationListener {
     }
 
     private fun updateTimeSpinner(spinnerIndex: Int) {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val oldSpinnerValue = sharedPreference?.getInt("mapTimeFrameFilterSpinnerIndex", 0)
-        val editor = sharedPreference?.edit()
-        editor?.putInt("mapTimeFrameFilterSpinnerIndex", spinnerIndex)
-        editor?.apply()
+        val oldSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
+            requireActivity(),
+            "mapTimeFrameFilterSpinnerIndex", 0
+        )
 
         if (oldSpinnerValue != spinnerIndex) {
-            editor?.putInt("mapTimeFrameFilterSpinnerIndex", spinnerIndex)
-            editor?.commit()
+            SharedPreferencesFunctions.putSharedPreferenceIndexValue(
+                requireActivity(),
+                "mapTimeFrameFilterSpinnerIndex", spinnerIndex
+            )
 
             requireActivity().supportFragmentManager.commit {
                 setReorderingAllowed(true)
@@ -382,56 +379,11 @@ class MapFragment : Fragment(), LocationListener {
 
     private fun filterObservationsByTimeFrame(
         spinnerIndex: Int,
-        list: List<NatureObservationWithWeatherInfo>
-    ): MutableList<NatureObservationWithWeatherInfo> {
-        val selectedTimeFrame = timeFrameFilterSpinner.getItemAtPosition(spinnerIndex)
-
-        val currentDateCalendar = Calendar.getInstance()
-        val currentYear = currentDateCalendar.get(Calendar.YEAR)
-        val currentMonth = currentDateCalendar.get(Calendar.MONTH)
-        val currentWeek = currentDateCalendar.get(Calendar.WEEK_OF_YEAR)
-        val currentDay = currentDateCalendar.get(Calendar.DAY_OF_YEAR)
-
-        val formatter = SimpleDateFormat("d.M.yyyy hh.mm", Locale.getDefault())
-        val observationDateCalendar = Calendar.getInstance()
-
-        for (observation in list) {
-            val observationDate = formatter.parse(observation.natureObservation!!.dateAndTime)
-
-            if (observationDate != null) {
-                observationDateCalendar.time = observationDate
-                val observationYear = observationDateCalendar.get(Calendar.YEAR)
-                val observationMonth = observationDateCalendar.get(Calendar.MONTH)
-                val observationWeek = observationDateCalendar.get(Calendar.WEEK_OF_YEAR)
-                val observationDay = observationDateCalendar.get(Calendar.DAY_OF_YEAR)
-
-                when (selectedTimeFrame) {
-                    "This year" -> {
-                        if (observationYear == currentYear) {
-                            observationList.add(observation)
-                        }
-                    }
-                    "This month" -> {
-                        if (observationYear == currentYear && observationMonth == currentMonth) {
-                            observationList.add(observation)
-                        }
-                    }
-                    "This week" -> {
-                        if (observationYear == currentYear && observationWeek == currentWeek) {
-                            observationList.add(observation)
-                        }
-                    }
-                    "Today" -> {
-                        if (observationYear == currentYear && observationDay == currentDay) {
-                            observationList.add(observation)
-                        }
-                    }
-                    else -> {
-                        observationList.add(observation)
-                    }
-                }
-            }
-        }
+        list: List<NatureObservation>
+    ): MutableList<NatureObservation> {
+        val selectedTimeFrame = timeFrameFilterSpinner.getItemAtPosition(spinnerIndex).toString()
+        val filteredList = TimeFrameFilter.filterObservationsByTimeFrame(list, selectedTimeFrame)
+        observationList.addAll(filteredList)
         return observationList
     }
 
