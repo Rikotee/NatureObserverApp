@@ -63,6 +63,7 @@ class HomeFragment : Fragment(), LocationListener {
         super.onViewCreated(view, savedInstanceState)
 
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.app_name)
 

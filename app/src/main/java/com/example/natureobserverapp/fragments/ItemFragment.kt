@@ -59,6 +59,7 @@ class ItemFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.GONE
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.item_title_text)
 
@@ -144,6 +145,12 @@ class ItemFragment : Fragment() {
                 val bundle = bundleOf("observationId" to observationId)
 
                 requireActivity().supportFragmentManager.commit {
+                    setCustomAnimations(
+                        R.anim.slide_in,
+                        R.anim.fade_out,
+                        R.anim.fade_in,
+                        R.anim.slide_out
+                    )
                     setReorderingAllowed(true)
                     replace<EditFragment>(R.id.fragmentContainer, args = bundle)
                     addToBackStack(null)

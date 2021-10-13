@@ -67,6 +67,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         super.onViewCreated(view, savedInstanceState)
 
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.GONE
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.new_observation_title_text)
 

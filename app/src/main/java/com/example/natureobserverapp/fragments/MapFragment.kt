@@ -73,6 +73,7 @@ class MapFragment : Fragment(), LocationListener {
         super.onViewCreated(view, savedInstanceState)
 
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.map_title_text)
 
@@ -240,6 +241,12 @@ class MapFragment : Fragment(), LocationListener {
                         val bundle = bundleOf("pos" to markerId)
                         //val bundle = bundleOf("pos" to it[index].natureObservation?.id)
                         requireActivity().supportFragmentManager.commit {
+                            setCustomAnimations(
+                                R.anim.slide_in,
+                                R.anim.fade_out,
+                                R.anim.fade_in,
+                                R.anim.slide_out
+                            )
                             setReorderingAllowed(true)
                             replace<ItemFragment>(R.id.fragmentContainer, args = bundle)
                             addToBackStack(null)

@@ -48,6 +48,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.list_title_text)
 
@@ -118,21 +119,16 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
             val categoryS = listSpinner.selectedItem.toString()
             val filtered = it.filter { categoryS == it.natureObservation?.category ?: 0 }
 
-            if (categoryS == "All categories") {
-                if (observationsRecyclerView != null) {
-
+            if (observationsRecyclerView != null) {
+                if (categoryS == "All categories") {
                     filterObservationsByTimeFrame(timeSpinnerIndex, it)
-                    observationsRecyclerView.adapter =
-                        RecyclerViewAdapter(observationList.reversed(), this)
-                    observationList.clear()
-                }
-            } else {
-                if (observationsRecyclerView != null) {
+                } else {
                     filterObservationsByTimeFrame(timeSpinnerIndex, filtered)
-                    observationsRecyclerView.adapter =
-                        RecyclerViewAdapter(observationList.reversed(), this)
-                    observationList.clear()
                 }
+
+                observationsRecyclerView.adapter =
+                    RecyclerViewAdapter(observationList.reversed(), this)
+                observationList.clear()
             }
         }
     }
@@ -141,6 +137,12 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         val bundle = bundleOf("pos" to observation)
 
         requireActivity().supportFragmentManager.commit {
+            setCustomAnimations(
+                R.anim.slide_in,
+                R.anim.fade_out,
+                R.anim.fade_in,
+                R.anim.slide_out
+            )
             setReorderingAllowed(true)
             replace<ItemFragment>(R.id.fragmentContainer, args = bundle)
             addToBackStack(null)
