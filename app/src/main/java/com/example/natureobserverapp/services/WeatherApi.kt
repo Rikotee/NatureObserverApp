@@ -7,7 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 object WeatherApi {
-    const val URL = "http://api.openweathermap.org/"
+    private const val URL = "http://api.openweathermap.org/"
 
     interface Service {
         @GET("data/2.5/weather?&units=metric")
@@ -22,5 +22,5 @@ object WeatherApi {
         .baseUrl(URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-    val service = retrofit.create(Service::class.java)!!
+    val service: Service = retrofit.create(Service::class.java)
 }
