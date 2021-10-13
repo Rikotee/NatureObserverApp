@@ -10,6 +10,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/bRimageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/backround_forest"
+            android:cropToPadding="false"
+            android:scaleType="centerCrop"
+            android:src="@drawable/natureimg2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
         <Spinner
             android:id="@+id/pieChartTimeFrameFilterSpinner"
             android:layout_width="160dp"
@@ -25,7 +40,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="16dp"
-            android:background="@color/light_gray_background"
+            android:background="@color/weather_view_background"
             android:contentDescription="@string/pie_chart_of_observations"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
