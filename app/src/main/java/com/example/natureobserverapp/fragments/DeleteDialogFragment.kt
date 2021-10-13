@@ -23,7 +23,7 @@ class DeleteDialogFragment : DialogFragment() {
             builder.setMessage(R.string.delete_dialog_text)
                 .setPositiveButton(
                     R.string.delete_text
-                ) { dialog, id ->
+                ) { _, _ ->
                     if (observationId != null) {
                         GlobalScope.launch(Dispatchers.IO) {
                             deleteButtonPressed(observationId)
@@ -32,14 +32,14 @@ class DeleteDialogFragment : DialogFragment() {
                 }
                 .setNegativeButton(
                     R.string.cancel_text
-                ) { dialog, id ->
+                ) { dialog, _ ->
                     dialog.cancel()
                 }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    private suspend fun deleteButtonPressed(observationId: Long) {
+    private fun deleteButtonPressed(observationId: Long) {
         db.natureObservationDao().deleteNatureObservation(observationId)
         db.weatherInfoDao().deleteWeatherInfo(observationId)
 

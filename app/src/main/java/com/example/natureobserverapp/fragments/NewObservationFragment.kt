@@ -221,7 +221,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         }
     }
 
-    private suspend fun insertNatureObservationToDatabase(
+    private fun insertNatureObservationToDatabase(
         title: String,
         category: String,
         description: String,
@@ -241,7 +241,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         return id
     }
 
-    private suspend fun insertWeatherInfoToDatabase(
+    private fun insertWeatherInfoToDatabase(
         observationId: Long,
         description: String,
         icon: String,
