@@ -133,7 +133,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         }
 
         view.findViewById<RadioGroup>(R.id.categoryOptionRadioGroup)
-            .setOnCheckedChangeListener { group, checkedId ->
+            .setOnCheckedChangeListener { _, checkedId ->
                 if (checkedId == R.id.selectCategoryRadioButton) {
                     addCategoryEditText.visibility = View.GONE
                     categorySpinner.visibility = View.VISIBLE

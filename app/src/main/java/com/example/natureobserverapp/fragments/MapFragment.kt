@@ -6,7 +6,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,10 +31,7 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.ItemizedIconOverlay
-import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
-import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.OverlayItem
+import org.osmdroid.views.overlay.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -72,7 +69,8 @@ class MapFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility =
+            View.VISIBLE
         (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.map_title_text)
@@ -233,7 +231,7 @@ class MapFragment : Fragment(), LocationListener {
                 }
             }
 
-            val mOverlay = ItemizedOverlayWithFocus(context,
+            val mOverlay = ItemizedIconOverlay(context,
                 items, object : ItemizedIconOverlay.OnItemGestureListener<OverlayItem?> {
                     override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
                         val markerId = item?.title?.toLong()
@@ -258,7 +256,7 @@ class MapFragment : Fragment(), LocationListener {
                         return false
                     }
                 })
-            mOverlay.setFocusItemsOnTap(true)
+            mOverlay.focus
             map?.overlays?.add(mOverlay)
         }
         observationList.clear()
