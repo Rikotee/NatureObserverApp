@@ -2,6 +2,8 @@ package com.example.natureobserverapp.fragments
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.commit
@@ -14,7 +16,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class DeleteDialogFragment : DialogFragment() {
+    private var activityCallBack: DeleteDialogFragmentListener? = null
     private val db by lazy { NatureObservationDB.get(requireActivity().applicationContext) }
+
+    interface DeleteDialogFragmentListener {
+        fun onDeleteObservationButtonClick()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activityCallBack = context as DeleteDialogFragmentListener
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val args = arguments
@@ -32,7 +44,8 @@ class DeleteDialogFragment : DialogFragment() {
                             deleteObservation(observationId)
 
                             withContext(Dispatchers.Main) {
-                                requireActivity().onBackPressed()
+                                requireActivity().supportFragmentManager.popBackStack()
+                                activityCallBack?.onDeleteObservationButtonClick()
                             }
                         }
                     }

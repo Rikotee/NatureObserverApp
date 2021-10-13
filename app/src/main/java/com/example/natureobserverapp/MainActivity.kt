@@ -15,7 +15,7 @@ import androidx.fragment.app.replace
 import com.example.natureobserverapp.fragments.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
+class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener, DeleteDialogFragment.DeleteDialogFragmentListener {
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var fragmentContainer: FrameLayout
     private lateinit var picPath: String
@@ -48,6 +48,17 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
     override fun onNewObservationButtonClick(picturePath: String, photoURI: Uri) {
         picPath = picturePath
         takePicture.launch(photoURI)
+    }
+
+    override fun onDeleteObservationButtonClick() {
+        val mapFragment = supportFragmentManager.findFragmentByTag("mapFragment")
+
+        if (mapFragment != null && mapFragment.isVisible) {
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                replace<MapFragment>(R.id.fragmentContainer, "mapFragment")
+            }
+        }
     }
 
     private fun setCurrentFragment(fragment: Fragment) {
@@ -94,15 +105,6 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
 
         if (supportFragmentManager.backStackEntryCount == 0) {
             bottomNavigationView.visibility = View.VISIBLE
-
-            val mapFragment = supportFragmentManager.findFragmentByTag("mapFragment")
-
-            if (mapFragment != null && mapFragment.isVisible) {
-                supportFragmentManager.commit {
-                    setReorderingAllowed(true)
-                    replace<MapFragment>(R.id.fragmentContainer, "mapFragment")
-                }
-            }
         }
     }
 

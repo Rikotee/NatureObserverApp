@@ -272,7 +272,7 @@ class MapFragment : Fragment(), LocationListener {
 
             requireActivity().supportFragmentManager.commit {
                 setReorderingAllowed(true)
-                replace<MapFragment>(R.id.fragmentContainer)
+                replace<MapFragment>(R.id.fragmentContainer, "mapFragment")
             }
         }
     }
@@ -375,7 +375,7 @@ class MapFragment : Fragment(), LocationListener {
 
             requireActivity().supportFragmentManager.commit {
                 setReorderingAllowed(true)
-                replace<MapFragment>(R.id.fragmentContainer)
+                replace<MapFragment>(R.id.fragmentContainer, "mapFragment")
             }
         }
     }
