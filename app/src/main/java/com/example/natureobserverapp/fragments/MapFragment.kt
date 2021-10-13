@@ -40,21 +40,20 @@ class MapFragment : Fragment(), LocationListener {
     private lateinit var marker: Marker
     private lateinit var mapCategorySpinner: Spinner
     private lateinit var timeFrameFilterSpinner: Spinner
-    private var timeSpinnerIndex: Int = 0
-    private val observationList = mutableListOf<NatureObservationWithWeatherInfo>()
     private lateinit var lm: LocationManager
+    private val observationList = mutableListOf<NatureObservationWithWeatherInfo>()
+    private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
     private var currentLocation: Location? = null
     private var gpsLocationFound: Boolean? = null
     private var firstOwnLocation: Boolean? = null
-
+    private var timeSpinnerIndex: Int = 0
+    private var spinnerIndex: Int = 0
     private var titleId: Long = 0
+    private var lat: Double = 0.0
+    private var lon: Double = 0.0
     var title: String = ""
     var description: String = ""
     private var category: String = ""
-    private var lat: Double = 0.0
-    private var lon: Double = 0.0
-    private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
-    private var spinnerIndex: Int = 0
     private val sharedPrefFile = "sharedpreference"
     private val sharedPrefFileSpinner = "sharedpreferenceSpinner"
 
@@ -86,7 +85,7 @@ class MapFragment : Fragment(), LocationListener {
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mapCategorySpinner.adapter = aa
 
-        //This set spinner index value from sharedpreferences
+        //This set category spinner index value from sharedpreferences
         setSpinnerValue()
 
         val aaT = ArrayAdapter(
@@ -131,6 +130,7 @@ class MapFragment : Fragment(), LocationListener {
             }
         }
 
+        // This set time period search spinner index value from sharedpreferences
         setTimeSpinnerValue()
 
         timeFrameFilterSpinner.onItemSelectedListener =

@@ -198,7 +198,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
                     currentLocation!!.longitude
                 )
                 weatherViewModel.weatherInfo.observe(requireActivity(), {
-                    val description = it.weather[0].description
+                    val wDescription = it.weather[0].description
                     val icon = it.weather[0].icon
                     val temp = it.main.temp
                     val pressure = it.main.pressure
@@ -210,7 +210,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
 
                     GlobalScope.launch(Dispatchers.IO) {
                         insertWeatherInfoToDatabase(
-                            id.await(), description, icon, temp, pressure,
+                            id.await(), wDescription, icon, temp, pressure,
                             humidity, windSpeed, windDeg, country, placeName
                         )
 
