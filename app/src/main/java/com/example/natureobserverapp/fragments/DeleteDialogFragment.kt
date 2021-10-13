@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
@@ -40,11 +41,18 @@ class DeleteDialogFragment : DialogFragment() {
                     R.string.delete_text
                 ) { _, _ ->
                     if (observationId != null) {
+                        requireActivity().onBackPressed()
+
                         GlobalScope.launch(Dispatchers.IO) {
                             deleteObservation(observationId)
 
                             withContext(Dispatchers.Main) {
-                                requireActivity().supportFragmentManager.popBackStack()
+                                Toast.makeText(
+                                    context,
+                                    R.string.observation_deleted_toast,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
                                 activityCallBack?.onDeleteObservationButtonClick()
                             }
                         }
