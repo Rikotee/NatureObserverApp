@@ -1,5 +1,6 @@
 package com.example.natureobserverapp
 
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
@@ -52,7 +53,13 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
     private fun setCurrentFragment(fragment: Fragment) {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
-            replace(R.id.fragmentContainer, fragment)
+
+            when (fragment) {
+                is HomeFragment -> replace(R.id.fragmentContainer, fragment, "homeFragment")
+                is MapFragment -> replace(R.id.fragmentContainer, fragment, "mapFragment")
+                is NewObservationFragment -> replace(R.id.fragmentContainer, fragment, "newObservationFragment")
+                else -> replace(R.id.fragmentContainer, fragment)
+            }
         }
     }
 
@@ -87,6 +94,37 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener {
 
         if (supportFragmentManager.backStackEntryCount == 0) {
             bottomNavigationView.visibility = View.VISIBLE
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (permissions[0] == android.Manifest.permission.ACCESS_FINE_LOCATION &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            when (requestCode) {
+                0 -> {
+                    val homeFragment =
+                        supportFragmentManager.findFragmentByTag("homeFragment") as HomeFragment
+                    homeFragment.checkLocationPermissionAndRequestUpdates()
+                }
+                1 -> {
+                    val mapFragment =
+                        supportFragmentManager.findFragmentByTag("mapFragment") as MapFragment
+                    mapFragment.checkLocationPermissionAndRequestUpdates()
+                }
+                2 -> {
+                    val newObservationFragment =
+                        supportFragmentManager.findFragmentByTag("newObservationFragment") as NewObservationFragment
+                    newObservationFragment.checkLocationPermissionAndRequestUpdates()
+                }
+                else -> return
+            }
         }
     }
 }

@@ -33,7 +33,7 @@ class HomeFragment : Fragment(), LocationListener {
     private lateinit var weatherViewModel: WeatherViewModel
     private var currentLocation: Location? = null
     private lateinit var lm: LocationManager
-    private var gpsLocationFound = false
+    private var gpsLocationFound: Boolean? = null
 
     interface HomeFragmentListener {
         fun onNewObservationButtonClick(picturePath: String, photoURI: Uri)
@@ -62,18 +62,18 @@ class HomeFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility =
+            View.VISIBLE
         (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.app_name)
 
+        gpsLocationFound = false
+
         weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
-        checkLocationPermission()
-
         lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 500f, this)
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000, 500f, this)
+        checkLocationPermissionAndRequestUpdates()
 
         val newObservationButton = view.findViewById<Button>(R.id.newObservationButton)
 
@@ -98,11 +98,9 @@ class HomeFragment : Fragment(), LocationListener {
         getWeatherInfo()
 
         // When GPS location is found, the network location request is removed
-        if (p0.provider == LocationManager.GPS_PROVIDER && !gpsLocationFound) {
-            lm.removeUpdates(this)
-            checkLocationPermission()
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 500f, this)
+        if (p0.provider == LocationManager.GPS_PROVIDER && gpsLocationFound == false) {
             gpsLocationFound = true
+            checkLocationPermissionAndRequestUpdates()
         }
     }
 
@@ -147,7 +145,7 @@ class HomeFragment : Fragment(), LocationListener {
         }
     }
 
-    private fun checkLocationPermission() {
+    fun checkLocationPermissionAndRequestUpdates() {
         if (context?.let {
                 ContextCompat.checkSelfPermission(
                     it,
@@ -161,6 +159,14 @@ class HomeFragment : Fragment(), LocationListener {
                     arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
                     0
                 )
+            }
+        } else {
+            if (gpsLocationFound == false) {
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 500f, this)
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000, 500f, this)
+            } else {
+                lm.removeUpdates(this)
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 500f, this)
             }
         }
     }

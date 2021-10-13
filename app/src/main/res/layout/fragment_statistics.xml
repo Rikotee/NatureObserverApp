@@ -10,33 +10,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/pieChartTimeFrameFilterContainer"
-            android:layout_width="200dp"
+        <Spinner
+            android:id="@+id/pieChartTimeFrameFilterSpinner"
+            android:layout_width="160dp"
             android:layout_height="48dp"
-            android:orientation="horizontal"
+            android:contentDescription="@string/select_time_period"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <Spinner
-                android:id="@+id/pieChartTimeFrameFilterSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/select_time_period" />
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/pieChart"
-            android:contentDescription="@string/pie_chart_of_observations"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="16dp"
             android:background="@color/light_gray_background"
+            android:contentDescription="@string/pie_chart_of_observations"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pieChartTimeFrameFilterContainer" />
+            app:layout_constraintTop_toBottomOf="@+id/pieChartTimeFrameFilterSpinner" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

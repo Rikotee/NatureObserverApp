@@ -34,7 +34,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     private var pictureFilePath: String? = null
     private var currentLocation: Location? = null
     private lateinit var lm: LocationManager
-    private var gpsLocationFound = false
+    private var gpsLocationFound: Boolean? = null
     private lateinit var sm: SensorManager
     private var sLight: Sensor? = null
     private var lightValue: Double? = null
@@ -95,6 +95,8 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = aa
 
+        gpsLocationFound = false
+
         weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
         sm = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -104,11 +106,8 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
             Log.i("SENSOR", "Your device does not have light sensor.")
         }
 
-        checkLocationPermission()
-
         lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 5f, this)
+        checkLocationPermissionAndRequestUpdates()
 
         if (currentLocation != null) {
             saveObservationButton.isEnabled = true
@@ -276,11 +275,9 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         saveObservationButton.isEnabled = true
 
         // When GPS location is found, the network location request is removed
-        if (p0.provider == LocationManager.GPS_PROVIDER && !gpsLocationFound) {
-            lm.removeUpdates(this)
-            checkLocationPermission()
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
+        if (p0.provider == LocationManager.GPS_PROVIDER && gpsLocationFound == false) {
             gpsLocationFound = true
+            checkLocationPermissionAndRequestUpdates()
         }
     }
 
@@ -315,7 +312,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         lm.removeUpdates(this)
     }
 
-    private fun checkLocationPermission() {
+    fun checkLocationPermissionAndRequestUpdates() {
         if (context?.let {
                 ContextCompat.checkSelfPermission(
                     it,
@@ -327,8 +324,16 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
                 ActivityCompat.requestPermissions(
                     it,
                     arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                    0
+                    2
                 )
+            }
+        } else {
+            if (gpsLocationFound == false) {
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 5f, this)
+            } else {
+                lm.removeUpdates(this)
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
             }
         }
     }

@@ -113,11 +113,8 @@ class MapFragment : Fragment(), LocationListener {
         // This add Marker that show my location
         initializeMapAndMarker()
 
-        checkLocationPermission()
-
         lm = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 5f, this)
+        checkLocationPermissionAndRequestUpdates()
 
         mapCategorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -159,11 +156,9 @@ class MapFragment : Fragment(), LocationListener {
         /* When GPS location is found, the network location request is removed and the map is centered
         on the user location for a more precise location */
         if (p0.provider == LocationManager.GPS_PROVIDER && gpsLocationFound == false) {
-            lm.removeUpdates(this)
-            checkLocationPermission()
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
-            centerMapOnOwnLocation()
             gpsLocationFound = true
+            checkLocationPermissionAndRequestUpdates()
+            centerMapOnOwnLocation()
         }
     }
 
@@ -287,7 +282,7 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
-    private fun checkLocationPermission() {
+    fun checkLocationPermissionAndRequestUpdates() {
         if (context?.let {
                 ContextCompat.checkSelfPermission(
                     it,
@@ -299,8 +294,16 @@ class MapFragment : Fragment(), LocationListener {
                 ActivityCompat.requestPermissions(
                     it,
                     arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                    0
+                    1
                 )
+            }
+        } else {
+            if (gpsLocationFound == false) {
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 5f, this)
+            } else {
+                lm.removeUpdates(this)
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
             }
         }
     }
