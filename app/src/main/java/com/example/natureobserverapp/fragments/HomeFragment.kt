@@ -52,7 +52,7 @@ class HomeFragment : Fragment(), LocationListener {
 
         val weatherViewContainerLayout =
             rootView.findViewById<LinearLayout>(R.id.weatherViewContainerLayout)
-        val weatherViewLayout = inflater.inflate(R.layout.weather_view, null, false)
+        val weatherViewLayout = inflater.inflate(R.layout.weather_view, null as ViewGroup?)
         weatherViewContainerLayout.addView(weatherViewLayout)
 
         // Inflate the layout for this fragment

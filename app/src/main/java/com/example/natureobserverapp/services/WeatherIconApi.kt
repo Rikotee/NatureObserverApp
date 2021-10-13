@@ -9,9 +9,9 @@ object WeatherIconApi {
     private const val baseURL = "http://openweathermap.org/img/wn/"
 
     fun getWeatherIcon(iconName: String) : Bitmap? {
-        val URL = URL("$baseURL${iconName}@2x.png")
+        val url = URL("$baseURL${iconName}@2x.png")
         return try {
-            val connection = URL.openConnection()
+            val connection = url.openConnection()
             val istream = connection.getInputStream()
             BitmapFactory.decodeStream(istream)
         } catch (e: Exception) {

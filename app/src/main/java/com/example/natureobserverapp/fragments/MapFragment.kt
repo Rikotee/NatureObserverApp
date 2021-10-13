@@ -6,7 +6,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,10 +31,7 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.ItemizedIconOverlay
-import org.osmdroid.views.overlay.ItemizedOverlayWithFocus
-import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.OverlayItem
+import org.osmdroid.views.overlay.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -43,21 +40,20 @@ class MapFragment : Fragment(), LocationListener {
     private lateinit var marker: Marker
     private lateinit var mapCategorySpinner: Spinner
     private lateinit var timeFrameFilterSpinner: Spinner
-    private var timeSpinnerIndex: Int = 0
-    private val observationList = mutableListOf<NatureObservationWithWeatherInfo>()
     private lateinit var lm: LocationManager
+    private val observationList = mutableListOf<NatureObservationWithWeatherInfo>()
+    private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
     private var currentLocation: Location? = null
     private var gpsLocationFound: Boolean? = null
     private var firstOwnLocation: Boolean? = null
-
+    private var timeSpinnerIndex: Int = 0
+    private var spinnerIndex: Int = 0
     private var titleId: Long = 0
+    private var lat: Double = 0.0
+    private var lon: Double = 0.0
     var title: String = ""
     var description: String = ""
     private var category: String = ""
-    private var lat: Double = 0.0
-    private var lon: Double = 0.0
-    private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
-    private var spinnerIndex: Int = 0
     private val sharedPrefFile = "sharedpreference"
     private val sharedPrefFileSpinner = "sharedpreferenceSpinner"
 
@@ -72,7 +68,8 @@ class MapFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility =
+            View.VISIBLE
         (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.map_title_text)
@@ -88,7 +85,7 @@ class MapFragment : Fragment(), LocationListener {
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mapCategorySpinner.adapter = aa
 
-        //This set spinner index value from sharedpreferences
+        //This set category spinner index value from sharedpreferences
         setSpinnerValue()
 
         val aaT = ArrayAdapter(
@@ -130,6 +127,7 @@ class MapFragment : Fragment(), LocationListener {
             }
         }
 
+        // This set time period search spinner index value from sharedpreferences
         setTimeSpinnerValue()
 
         timeFrameFilterSpinner.onItemSelectedListener =
@@ -228,7 +226,7 @@ class MapFragment : Fragment(), LocationListener {
                 }
             }
 
-            val mOverlay = ItemizedOverlayWithFocus(context,
+            val mOverlay = ItemizedIconOverlay(context,
                 items, object : ItemizedIconOverlay.OnItemGestureListener<OverlayItem?> {
                     override fun onItemSingleTapUp(index: Int, item: OverlayItem?): Boolean {
                         val markerId = item?.title?.toLong()
@@ -253,7 +251,7 @@ class MapFragment : Fragment(), LocationListener {
                         return false
                     }
                 })
-            mOverlay.setFocusItemsOnTap(true)
+            mOverlay.focus
             map?.overlays?.add(mOverlay)
         }
         observationList.clear()

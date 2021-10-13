@@ -32,10 +32,6 @@ class StatisticsFragment : Fragment() {
     private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
     private val sharedPrefFile = "sharedpreference"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

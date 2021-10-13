@@ -132,7 +132,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         }
 
         view.findViewById<RadioGroup>(R.id.categoryOptionRadioGroup)
-            .setOnCheckedChangeListener { group, checkedId ->
+            .setOnCheckedChangeListener { _, checkedId ->
                 if (checkedId == R.id.selectCategoryRadioButton) {
                     addCategoryEditText.visibility = View.GONE
                     categorySpinner.visibility = View.VISIBLE
@@ -197,7 +197,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
                     currentLocation!!.longitude
                 )
                 weatherViewModel.weatherInfo.observe(requireActivity(), {
-                    val description = it.weather[0].description
+                    val wDescription = it.weather[0].description
                     val icon = it.weather[0].icon
                     val temp = it.main.temp
                     val pressure = it.main.pressure
@@ -209,7 +209,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
 
                     GlobalScope.launch(Dispatchers.IO) {
                         insertWeatherInfoToDatabase(
-                            id.await(), description, icon, temp, pressure,
+                            id.await(), wDescription, icon, temp, pressure,
                             humidity, windSpeed, windDeg, country, placeName
                         )
 
@@ -220,7 +220,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         }
     }
 
-    private suspend fun insertNatureObservationToDatabase(
+    private fun insertNatureObservationToDatabase(
         title: String,
         category: String,
         description: String,
@@ -240,7 +240,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         return id
     }
 
-    private suspend fun insertWeatherInfoToDatabase(
+    private fun insertWeatherInfoToDatabase(
         observationId: Long,
         description: String,
         icon: String,
