@@ -14,3 +14,7 @@ git clone https://github.com/Rikotee/NatureObserverApp.git
 Enter your API in local.properties
 OpenWeatherMapApiKey = ENTER YOUR API
 ```
+
+## Contributing
+
+Backround image by <a href="https://pixabay.com/users/jplenio-7645255/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3622519">jplenio</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3622519">Pixabay</a>
