@@ -26,3 +26,7 @@ OpenWeatherMapApiKey = ENTER YOUR API
 ## Contributing
 
 Backround image by <a href="https://pixabay.com/users/jplenio-7645255/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3622519">jplenio</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3622519">Pixabay</a>
+
+## Screenshot
+
+![screenshot](https://user-images.githubusercontent.com/64250180/137321557-80dc8601-acda-4362-b188-599d783afc88.png)
