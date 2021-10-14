@@ -83,4 +83,5 @@
     <string name="select_category_or_add_new_one">select category or add new one</string>
     <string name="list_of_observations">list of observations</string>
     <string name="pie_chart_of_observations">pie chart of observations</string>
+    <string name="statistics">Statistics</string>
 </resources>
