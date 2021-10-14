@@ -1,6 +1,8 @@
 # Nature Observer
 
-Nature Observer is a journal where user can record their finds in the nature.
+Nature Observer is meant to be like a journal where user can record their finds in the nature.
+User simply takes a photograph and various information is saved simultaneously.
+For example weather information, place in the map and light conditions.
 
 ## Installation
 ```
