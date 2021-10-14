@@ -8,7 +8,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/backround">
 
         <ImageView
             android:id="@+id/observationImageView"
@@ -90,6 +91,7 @@
                 android:layout_height="44dp"
                 android:ems="10"
                 android:hint="@string/add_category_edit_text_hint"
+                android:textColorHint="@color/black"
                 android:importantForAutofill="no"
                 android:inputType="textCapSentences"
                 android:visibility="gone" />
@@ -106,9 +108,11 @@
             android:ems="10"
             android:gravity="start|top"
             android:hint="@string/observation_description_edit_text_hint"
+            android:textColorHint="@color/black"
+            android:importantForAutofill="no"
             android:inputType="textMultiLine"
             android:scrollbars="vertical"
-            android:importantForAutofill="no"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@+id/saveObservationButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
