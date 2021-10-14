@@ -1,8 +1,16 @@
 # Nature Observer
 
-Nature Observer is meant to be like a journal where user can record their finds in the nature.
-User simply takes a photograph and various information is saved simultaneously.
+Nature Observer is meant to be like a journal where user can record their findings in the nature.
+The user simply takes a photograph and various information is saved simultaneously.
 For example weather information, place in the map and light conditions.
+
+## Features
+
+On the home screen the user can press the "New Observation" button to take a new picture, and the the user is taken to the screen where details of the observation are written. Then the observation can be saved.
+The user can see his/her observations in the map and list screens, as well as a statistics chart on the statistics screen.
+The user can filter the nature observations by category and time frame.
+An observation can be seen in detail by clicking it on the map or list, and its details can be edited and it can be deleted from the options on the top bar.
+Also the current weather data is shown on the home screen and weather data is saved to the observations, too.
 
 ## Installation
 ```
