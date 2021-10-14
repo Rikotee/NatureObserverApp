@@ -12,4 +12,7 @@
     <color name="weather_view_background">#80DCEAF0</color>
     <color name="light_gray_background">#F1F1F1</color>
     <color name="backround">#fefaef</color>
+    <color name="dark_green">#2d4748</color>
+    <color name="light_green">#95a076</color>
+    <color name="light_backr">#c3c8aa</color>
 </resources>
