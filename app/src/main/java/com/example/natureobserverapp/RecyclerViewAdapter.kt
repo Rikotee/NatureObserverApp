@@ -41,8 +41,18 @@ class RecyclerViewAdapter(
         GlobalScope.launch(Dispatchers.Default) {
             val imageBitmap = image(position)
 
-            withContext(Dispatchers.Main) {
-                holder.oImageView.setImageBitmap(imageBitmap)
+            if (imageBitmap != null) {
+                if (imageBitmap.height <= imageBitmap.width) {
+                    val rotatedBitmap = imageBitmap.rotate(90f)
+
+                    withContext(Dispatchers.Main) {
+                        holder.oImageView.setImageBitmap(rotatedBitmap)
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        holder.oImageView.setImageBitmap(imageBitmap)
+                    }
+                }
             }
         }
 
@@ -50,7 +60,7 @@ class RecyclerViewAdapter(
             clickListener.onItemClick(items?.get(position)?.natureObservation?.id)
         }
     }
-    
+
     private fun image(position: Int): Bitmap? {
         val pictureFilePath = items?.get(position)?.natureObservation?.picturePath
         val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
