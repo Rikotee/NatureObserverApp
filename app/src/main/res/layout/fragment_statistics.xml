@@ -17,7 +17,7 @@
             android:contentDescription="@string/backround_forest"
             android:cropToPadding="false"
             android:scaleType="centerCrop"
-            android:src="@drawable/natureimg2"
+            android:src="@drawable/natureimg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

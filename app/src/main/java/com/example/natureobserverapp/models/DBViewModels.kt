@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.natureobserverapp.NatureObservation
 import com.example.natureobserverapp.NatureObservationDB
 import com.example.natureobserverapp.NatureObservationWithWeatherInfo
-import com.example.natureobserverapp.WeatherInfo
 
 class NatureObservationsModel(application: Application) : AndroidViewModel(application) {
     private val natureObservations: LiveData<List<NatureObservation>> =
@@ -35,24 +34,6 @@ class NatureObservationWithWeatherInfoModel(application: Application, natureObse
     fun getNatureObservationWithWeatherInfo() = natureObservationWithWeatherInfo
 }
 
-class NatureObservationsWithWeatherInfoModel(application: Application) :
-    AndroidViewModel(application) {
-    private val natureObservationsWithWeatherInfo: LiveData<List<NatureObservationWithWeatherInfo>> =
-        NatureObservationDB.get(getApplication()).natureObservationDao()
-            .getAllNatureObservationsWithWeatherInfo()
-
-    fun getNatureObservationsWithWeatherInfo() = natureObservationsWithWeatherInfo
-}
-
-class WeatherInfosModel(application: Application, natureObservationId: Long) :
-    AndroidViewModel(application) {
-    private val weatherInfos: LiveData<List<WeatherInfo>> =
-        NatureObservationDB.get(getApplication()).weatherInfoDao()
-            .getWeatherInfosOfNatureObservation(natureObservationId)
-
-    fun getWeatherInfos() = weatherInfos
-}
-
 class NatureObservationModelFactory(
     private val application: Application,
     private val natureObservationId: Long
@@ -71,11 +52,3 @@ class NatureObservationWithWeatherInfoModelFactory(
         NatureObservationWithWeatherInfoModel(application, natureObservationId) as T
 }
 
-class WeatherInfosModelFactory(
-    private val application: Application,
-    private val natureObservationId: Long
-) :
-    ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-        WeatherInfosModel(application, natureObservationId) as T
-}

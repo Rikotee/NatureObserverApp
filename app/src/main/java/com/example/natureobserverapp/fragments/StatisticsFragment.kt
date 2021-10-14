@@ -2,7 +2,6 @@ package com.example.natureobserverapp.fragments
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.natureobserverapp.*
 import com.example.natureobserverapp.models.NatureObservationsModel
@@ -20,7 +20,6 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
-import java.text.SimpleDateFormat
 import java.util.*
 
 class StatisticsFragment : Fragment() {
