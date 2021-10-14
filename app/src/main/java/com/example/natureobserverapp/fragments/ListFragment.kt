@@ -1,6 +1,5 @@
 package com.example.natureobserverapp.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,9 +16,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.natureobserverapp.*
-import com.example.natureobserverapp.models.NatureObservationsWithWeatherInfoModel
+import com.example.natureobserverapp.models.NatureObservationsModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import java.text.SimpleDateFormat
 import java.util.*
 
 class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
@@ -27,10 +25,9 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
     private lateinit var listSpinner: Spinner
     private lateinit var timeFrameFilterSpinner: Spinner
     private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
-    private val observationList = mutableListOf<NatureObservationWithWeatherInfo>()
+    private val observationList = mutableListOf<NatureObservation>()
     private var spinnerIndex: Int = 0
     private var timeSpinnerIndex: Int = 0
-    private val sharedPrefFile = "sharedpreference"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +40,8 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.VISIBLE
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility =
+            View.VISIBLE
         (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.list_title_text)
@@ -106,14 +104,15 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
 
     private fun getList() {
         val observationsRecyclerView = view?.findViewById<RecyclerView>(R.id.rv_obs_list)
+
         if (observationsRecyclerView != null) {
             observationsRecyclerView.layoutManager = LinearLayoutManager(this.context)
         }
-        val nowwim: NatureObservationsWithWeatherInfoModel by viewModels()
-        nowwim.getNatureObservationsWithWeatherInfo().observe(this) { it ->
 
+        val nom: NatureObservationsModel by viewModels()
+        nom.getNatureObservations().observe(this) { it ->
             val categoryS = listSpinner.selectedItem.toString()
-            val filtered = it.filter { categoryS == it.natureObservation?.category ?: 0 }
+            val filtered = it.filter { categoryS == it.category }
 
             if (observationsRecyclerView != null) {
                 if (categoryS == "All categories") {
@@ -146,14 +145,11 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
     }
 
     private fun addToList(): MutableList<String> {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-
         val newCategoriesSet = HashSet<String>()
 
-        val oldCategories = sharedPreference?.getStringSet(
-            "newCategories",
-            newCategoriesSet
+        val oldCategories = SharedPreferencesFunctions.getSharedPreferenceStringSet(
+            requireActivity(),
+            "newCategories", newCategoriesSet
         )
 
         for (i in categoriesList.indices) {
@@ -173,9 +169,11 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
     }
 
     private fun setSpinnerValue() {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val newSpinnerValue = sharedPreference?.getInt("listSpinnerIndex", 0)
+        val newSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
+            requireActivity(),
+            "listCategorySpinnerIndex", 0
+        )
+
         if (newSpinnerValue != null) {
             listSpinner.setSelection(newSpinnerValue)
         }
@@ -190,17 +188,18 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
             }
         }
 
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val editor = sharedPreference?.edit()
-        editor?.putInt("listSpinnerIndex", spinnerIndex)
-        editor?.apply()
+        SharedPreferencesFunctions.putSharedPreferenceIndexValue(
+            requireActivity(),
+            "listCategorySpinnerIndex", spinnerIndex
+        )
     }
 
     private fun setTimeSpinnerValue() {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val newSpinnerValue = sharedPreference?.getInt("TimeFrameFilterSpinnerIndex", 0)
+        val newSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
+            requireActivity(),
+            "listTimeFrameFilterSpinnerIndex", 0
+        )
+
         if (newSpinnerValue != null) {
             timeSpinnerIndex = newSpinnerValue
             timeFrameFilterSpinner.setSelection(newSpinnerValue)
@@ -208,65 +207,19 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
     }
 
     private fun updateTimeSpinner(spinnerIndex: Int) {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val editor = sharedPreference?.edit()
-        editor?.putInt("TimeFrameFilterSpinnerIndex", spinnerIndex)
-        editor?.apply()
+        SharedPreferencesFunctions.putSharedPreferenceIndexValue(
+            requireActivity(),
+            "listTimeFrameFilterSpinnerIndex", spinnerIndex
+        )
     }
 
     private fun filterObservationsByTimeFrame(
         spinnerIndex: Int,
-        list: List<NatureObservationWithWeatherInfo>
-    ): MutableList<NatureObservationWithWeatherInfo> {
-        val selectedTimeFrame = timeFrameFilterSpinner.getItemAtPosition(spinnerIndex)
-
-        val currentDateCalendar = Calendar.getInstance()
-        val currentYear = currentDateCalendar.get(Calendar.YEAR)
-        val currentMonth = currentDateCalendar.get(Calendar.MONTH)
-        val currentWeek = currentDateCalendar.get(Calendar.WEEK_OF_YEAR)
-        val currentDay = currentDateCalendar.get(Calendar.DAY_OF_YEAR)
-
-        val formatter = SimpleDateFormat("d.M.yyyy hh.mm", Locale.getDefault())
-        val observationDateCalendar = Calendar.getInstance()
-
-        for (observation in list) {
-            val observationDate = formatter.parse(observation.natureObservation!!.dateAndTime)
-
-            if (observationDate != null) {
-                observationDateCalendar.time = observationDate
-                val observationYear = observationDateCalendar.get(Calendar.YEAR)
-                val observationMonth = observationDateCalendar.get(Calendar.MONTH)
-                val observationWeek = observationDateCalendar.get(Calendar.WEEK_OF_YEAR)
-                val observationDay = observationDateCalendar.get(Calendar.DAY_OF_YEAR)
-
-                when (selectedTimeFrame) {
-                    "This year" -> {
-                        if (observationYear == currentYear) {
-                            observationList.add(observation)
-                        }
-                    }
-                    "This month" -> {
-                        if (observationYear == currentYear && observationMonth == currentMonth) {
-                            observationList.add(observation)
-                        }
-                    }
-                    "This week" -> {
-                        if (observationYear == currentYear && observationWeek == currentWeek) {
-                            observationList.add(observation)
-                        }
-                    }
-                    "Today" -> {
-                        if (observationYear == currentYear && observationDay == currentDay) {
-                            observationList.add(observation)
-                        }
-                    }
-                    else -> {
-                        observationList.add(observation)
-                    }
-                }
-            }
-        }
+        list: List<NatureObservation>
+    ): MutableList<NatureObservation> {
+        val selectedTimeFrame = timeFrameFilterSpinner.getItemAtPosition(spinnerIndex).toString()
+        val filteredList = TimeFrameFilter.filterObservationsByTimeFrame(list, selectedTimeFrame)
+        observationList.addAll(filteredList)
         return observationList
     }
 }

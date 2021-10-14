@@ -1,6 +1,5 @@
 package com.example.natureobserverapp.fragments
 
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,9 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
-import com.example.natureobserverapp.PredefinedLists
-import com.example.natureobserverapp.NatureObservation
-import com.example.natureobserverapp.R
+import com.example.natureobserverapp.*
 import com.example.natureobserverapp.models.NatureObservationsModel
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
@@ -30,7 +27,6 @@ class StatisticsFragment : Fragment() {
     private lateinit var pieChart: PieChart
     private lateinit var timeFrameFilterSpinner: Spinner
     private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
-    private val sharedPrefFile = "sharedpreference"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,56 +79,10 @@ class StatisticsFragment : Fragment() {
         val nom: NatureObservationsModel by viewModels()
         nom.getNatureObservations().observe(this) {
             val observations = it
-            val selectedTimeFrame = timeFrameFilterSpinner.getItemAtPosition(spinnerIndex)
-
-            val currentDateCalendar = Calendar.getInstance()
-            val currentYear = currentDateCalendar.get(Calendar.YEAR)
-            val currentMonth = currentDateCalendar.get(Calendar.MONTH)
-            val currentWeek = currentDateCalendar.get(Calendar.WEEK_OF_YEAR)
-            val currentDay = currentDateCalendar.get(Calendar.DAY_OF_YEAR)
-
-            val formatter = SimpleDateFormat("d.M.yyyy hh.mm", Locale.getDefault())
-            val observationDateCalendar = Calendar.getInstance()
-            val filteredObservations = mutableListOf<NatureObservation>()
-
-            for (observation in observations) {
-                val observationDate = formatter.parse(observation.dateAndTime)
-
-                if (observationDate != null) {
-                    observationDateCalendar.time = observationDate
-                    val observationYear = observationDateCalendar.get(Calendar.YEAR)
-                    val observationMonth = observationDateCalendar.get(Calendar.MONTH)
-                    val observationWeek = observationDateCalendar.get(Calendar.WEEK_OF_YEAR)
-                    val observationDay = observationDateCalendar.get(Calendar.DAY_OF_YEAR)
-
-                    when (selectedTimeFrame) {
-                        "This year" -> {
-                            if (observationYear == currentYear) {
-                                filteredObservations.add(observation)
-                            }
-                        }
-                        "This month" -> {
-                            if (observationYear == currentYear && observationMonth == currentMonth) {
-                                filteredObservations.add(observation)
-                            }
-                        }
-                        "This week" -> {
-                            if (observationYear == currentYear && observationWeek == currentWeek) {
-                                filteredObservations.add(observation)
-                            }
-                        }
-                        "Today" -> {
-                            if (observationYear == currentYear && observationDay == currentDay) {
-                                filteredObservations.add(observation)
-                            }
-                        }
-                        else -> {
-                            filteredObservations.add(observation)
-                        }
-                    }
-                }
-            }
-
+            val selectedTimeFrame =
+                timeFrameFilterSpinner.getItemAtPosition(spinnerIndex).toString()
+            val filteredObservations =
+                TimeFrameFilter.filterObservationsByTimeFrame(observations, selectedTimeFrame)
             createPieChart(filteredObservations)
         }
     }
@@ -206,14 +156,11 @@ class StatisticsFragment : Fragment() {
     }
 
     private fun addUserAddedCategoriesToCategoriesList() {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-
         val newCategoriesSet = HashSet<String>()
 
-        val oldCategories = sharedPreference?.getStringSet(
-            "newCategories",
-            newCategoriesSet
+        val oldCategories = SharedPreferencesFunctions.getSharedPreferenceStringSet(
+            requireActivity(),
+            "newCategories", newCategoriesSet
         )
 
         if (oldCategories != null) {
@@ -226,19 +173,20 @@ class StatisticsFragment : Fragment() {
     }
 
     private fun setSpinnerValue() {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val newSpinnerValue = sharedPreference?.getInt("statisticsTimeFrameFilterSpinnerIndex", 0)
+        val newSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
+            requireActivity(),
+            "statisticsTimeFrameFilterSpinnerIndex", 0
+        )
+
         if (newSpinnerValue != null) {
             timeFrameFilterSpinner.setSelection(newSpinnerValue)
         }
     }
 
     private fun updateSpinner(spinnerIndex: Int) {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val editor = sharedPreference?.edit()
-        editor?.putInt("statisticsTimeFrameFilterSpinnerIndex", spinnerIndex)
-        editor?.apply()
+        SharedPreferencesFunctions.putSharedPreferenceIndexValue(
+            requireActivity(),
+            "statisticsTimeFrameFilterSpinnerIndex", spinnerIndex
+        )
     }
 }
