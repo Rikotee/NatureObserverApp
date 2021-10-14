@@ -8,6 +8,7 @@
 
     <ImageView
         android:id="@+id/fr_imageView"
+        android:background="@color/backround"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/nature_image"

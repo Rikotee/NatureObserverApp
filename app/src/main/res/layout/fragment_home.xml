@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/newObservationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,8 +21,8 @@
             android:padding="16dp"
             android:text="@string/new_observation_button_text"
             android:textSize="16sp"
-            app:cornerRadius="32dp"
-            app:icon="@drawable/ic_camera"
+            android:background="@drawable/custom_button"
+            android:drawableStart="@drawable/ic_camera"
             app:layout_constraintBottom_toTopOf="@+id/weatherViewContainerLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
