@@ -63,6 +63,7 @@
                 android:contentDescription="@string/observation_category"
                 android:textAlignment="center"
                 android:textSize="20sp"
+                android:text="@string/category"
                 tools:text="Category" />
 
             <TextView

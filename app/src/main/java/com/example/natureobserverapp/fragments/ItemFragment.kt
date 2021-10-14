@@ -108,7 +108,7 @@ class ItemFragment : Fragment() {
                 val light = view.findViewById<TextView>(R.id.lightInfoTextView)
 
                 name?.text = it.natureObservation?.title.toString()
-                category?.text = it.natureObservation?.category.toString()
+                category?.text = getString(R.string.category, it.natureObservation?.category.toString())
                 description?.text = it.natureObservation?.description.toString()
                 date?.text = it.natureObservation?.dateAndTime.toString()
 

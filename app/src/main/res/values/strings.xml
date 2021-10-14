@@ -32,6 +32,7 @@
     <string name="list">List</string>
     <string name="chart">Chart</string>
     <string name="date">date</string>
+    <string name="category">Category: %s</string>
 
     <!-- For light sensor -->
     <string name="si_lux_units_m_s_2">SI lux units (m/s^2)</string>
@@ -84,4 +85,5 @@
     <string name="list_of_observations">list of observations</string>
     <string name="pie_chart_of_observations">pie chart of observations</string>
     <string name="statistics">Statistics</string>
+
 </resources>
