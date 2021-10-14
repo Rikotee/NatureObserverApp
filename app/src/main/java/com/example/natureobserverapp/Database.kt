@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
+// Nature observation and weather data database components
 @Entity
 data class NatureObservation(
     @PrimaryKey(autoGenerate = true)

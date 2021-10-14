@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener, Del
 
         setCurrentFragment(homeFragment)
 
+        // The navigation menu fragment is changed
         bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.home -> setCurrentFragment(homeFragment)
@@ -50,6 +51,8 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener, Del
         takePicture.launch(photoURI)
     }
 
+    // When deleting an observation and going back to the map fragment, it will be reloaded to
+    // refresh observation markers
     override fun onDeleteObservationButtonClick() {
         val mapFragment = supportFragmentManager.findFragmentByTag("mapFragment")
 
@@ -74,6 +77,7 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener, Del
         }
     }
 
+    // Takes a picture and moves to the new observation fragment with the picture file path
     private val takePicture =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { result ->
             if (result) {
@@ -103,11 +107,13 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener, Del
     override fun onBackPressed() {
         super.onBackPressed()
 
+        // Bottom navigation view is made visible when going back to the main menu fragments
         if (supportFragmentManager.backStackEntryCount == 0) {
             bottomNavigationView.visibility = View.VISIBLE
         }
     }
 
+    // Handles the response of the user for a location permission request from different fragments
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -115,6 +121,9 @@ class MainActivity : AppCompatActivity(), HomeFragment.HomeFragmentListener, Del
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
+        // If permission is granted, the corresponding fragment's check location permissions function is
+        // called again to start location tracking. This mechanism is implemented for fixing a bug of
+        // crashing after accepting location permission on Android versions older than 9.
         if (permissions[0] == android.Manifest.permission.ACCESS_FINE_LOCATION &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {

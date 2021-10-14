@@ -43,6 +43,7 @@ class ItemFragment : Fragment() {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_item, container, false)
 
+        // The weather view xml is inflated to the layout
         val cardWeatherInfoContainer =
             rootView.findViewById<LinearLayout>(R.id.cardWeatherInfoContainer)
         val weatherViewLayout = inflater.inflate(R.layout.weather_view, null, false)
@@ -77,6 +78,7 @@ class ItemFragment : Fragment() {
                 val pictureFilePath = it.natureObservation?.picturePath
                 val imageView = view.findViewById<ImageView>(R.id.photoView)
 
+                // The image is decoded and rotated in a background thread with a coroutine
                 GlobalScope.launch(Dispatchers.Default) {
                     val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
 
@@ -133,6 +135,7 @@ class ItemFragment : Fragment() {
                     it.weatherInfo?.country
                 )
 
+                // The icon is downloaded from the network in a coroutine
                 lifecycleScope.launch(Dispatchers.Main) {
                     val iconImageBitmap = withContext(Dispatchers.IO) {
                         it.weatherInfo?.icon?.let { icon -> WeatherIconApi.getWeatherIcon(icon) }

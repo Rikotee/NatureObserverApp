@@ -74,6 +74,7 @@ class StatisticsFragment : Fragment() {
             }
     }
 
+    // The observation list is filtered based on the selected time frame
     private fun filterObservationsByTimeFrame(spinnerIndex: Int) {
         val nom: NatureObservationsModel by viewModels()
         nom.getNatureObservations().observe(this) {
@@ -86,6 +87,7 @@ class StatisticsFragment : Fragment() {
         }
     }
 
+    // The pie chart is created
     private fun createPieChart(observations: List<NatureObservation>) {
         pieChart.description.isEnabled = false
         pieChart.animateY(1000, Easing.EaseInOutQuad)
@@ -101,6 +103,7 @@ class StatisticsFragment : Fragment() {
         val observationCategoryCountsList = MutableList(categories.size) { 0 }
         val indicesOfZeroValue = mutableListOf<Int>()
 
+        // The count of observations of different categories is calculated
         for (i in categories.indices) {
             for (observation in observations) {
                 if (observation.category == categories[i]) {
@@ -109,11 +112,13 @@ class StatisticsFragment : Fragment() {
                 }
             }
 
+            // If there are no observations of a category, its index will be added to a list
             if (observationCategoryCountsList[i] == 0) {
                 indicesOfZeroValue.add(i)
             }
         }
 
+        // All categories that have count of zero will be removed from the list
         var indexSubtractionValue = 0
 
         for (i in indicesOfZeroValue.indices) {
@@ -127,6 +132,7 @@ class StatisticsFragment : Fragment() {
 
         val numberOfObservationsByCategory = mutableListOf<PieEntry>()
 
+        // Creates the pie entries
         for (i in observationCategoryCountsList.indices) {
             numberOfObservationsByCategory.add(
                 PieEntry(
@@ -154,6 +160,7 @@ class StatisticsFragment : Fragment() {
         pieChart.invalidate()
     }
 
+    // User added categories are fetched from Shared Preferences and added to the categories list
     private fun addUserAddedCategoriesToCategoriesList() {
         val newCategoriesSet = HashSet<String>()
 
@@ -171,6 +178,7 @@ class StatisticsFragment : Fragment() {
         }
     }
 
+    // Spinner index is fetched from Shared Preferences and the spinner selection is set
     private fun setSpinnerValue() {
         val newSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
             requireActivity(),
@@ -182,6 +190,7 @@ class StatisticsFragment : Fragment() {
         }
     }
 
+    // The selected spinner value index is saved in Shared Preferences
     private fun updateSpinner(spinnerIndex: Int) {
         SharedPreferencesFunctions.putSharedPreferenceIndexValue(
             requireActivity(),

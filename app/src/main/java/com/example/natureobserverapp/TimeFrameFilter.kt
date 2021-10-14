@@ -3,6 +3,7 @@ package com.example.natureobserverapp
 import java.text.SimpleDateFormat
 import java.util.*
 
+// Singleton object for the time frame filter function
 object TimeFrameFilter {
     fun filterObservationsByTimeFrame(
         observations: List<NatureObservation>,

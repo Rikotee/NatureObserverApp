@@ -38,6 +38,7 @@ class RecyclerViewAdapter(
         holder.titleTextView.text = items?.get(position)?.title
         holder.dayTextView.text = items?.get(position)?.dateAndTime
 
+        // The image is decoded, rotated and scaled in a background thread with a coroutine
         GlobalScope.launch(Dispatchers.Default) {
             val imageBitmap = image(position)
 

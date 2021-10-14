@@ -1,6 +1,5 @@
 package com.example.natureobserverapp.fragments
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +11,7 @@ import androidx.fragment.app.viewModels
 import com.example.natureobserverapp.PredefinedLists
 import com.example.natureobserverapp.NatureObservationDB
 import com.example.natureobserverapp.R
+import com.example.natureobserverapp.SharedPreferencesFunctions
 import com.example.natureobserverapp.models.NatureObservationModel
 import com.example.natureobserverapp.models.NatureObservationModelFactory
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +25,6 @@ class EditFragment : Fragment() {
     private lateinit var categorySpinner: Spinner
     private lateinit var categoryEditText: EditText
     private lateinit var descriptionEditText: EditText
-    private val sharedPrefFile = "sharedpreference"
     private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
     private val db by lazy { NatureObservationDB.get(requireActivity().applicationContext) }
     private var usePredefinedCategory = true
@@ -66,6 +65,9 @@ class EditFragment : Fragment() {
 
         setCurrentObservationValues()
 
+        // If the title edit text is empty, the user will be notified, and if the user creates a new
+        // category and the category edit text is empty, the user will be notified too. Else the changes
+        // will be saved.
         view.findViewById<Button>(R.id.editFragmentSaveButton).setOnClickListener {
             if (titleEditText.text.isEmpty()) {
                 Toast.makeText(
@@ -100,6 +102,7 @@ class EditFragment : Fragment() {
             }
     }
 
+    // Current observation values are set to UI
     private fun setCurrentObservationValues() {
         if (observationId != null) {
             val nom: NatureObservationModel by viewModels {
@@ -126,6 +129,7 @@ class EditFragment : Fragment() {
         }
     }
 
+    // The edited data is saved to the database
     private fun getDataAndSave() {
         val title = titleEditText.text.toString()
         val category: String
@@ -137,10 +141,10 @@ class EditFragment : Fragment() {
 
             val newCategoriesSet = HashSet<String>()
 
-            val sharedPreference =
-                this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-
-            val categoriesSet = sharedPreference?.getStringSet("newCategories", newCategoriesSet)
+            val categoriesSet = SharedPreferencesFunctions.getSharedPreferenceStringSet(
+                requireActivity(),
+                "newCategories", newCategoriesSet
+            )
 
             if (categoriesSet != null) {
                 newCategoriesSet.addAll(categoriesSet)
@@ -148,9 +152,11 @@ class EditFragment : Fragment() {
 
             newCategoriesSet.add(category)
 
-            val editor = sharedPreference?.edit()
-            editor?.putStringSet("newCategories", newCategoriesSet)
-            editor?.apply()
+            SharedPreferencesFunctions.putSharedPreferenceStringSet(
+                requireActivity(),
+                "newCategories",
+                newCategoriesSet
+            )
         }
 
         val description = descriptionEditText.text.toString()
@@ -163,15 +169,13 @@ class EditFragment : Fragment() {
         }
     }
 
+    // User added categories are fetched from Shared Preferences and added to the categories list
     private fun getCategoriesListWithAddedCategories(): MutableList<String> {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-
         val newCategoriesSet = HashSet<String>()
 
-        val oldCategories = sharedPreference?.getStringSet(
-            "newCategories",
-            newCategoriesSet
+        val oldCategories = SharedPreferencesFunctions.getSharedPreferenceStringSet(
+            requireActivity(),
+            "newCategories", newCategoriesSet
         )
 
         if (oldCategories != null) {

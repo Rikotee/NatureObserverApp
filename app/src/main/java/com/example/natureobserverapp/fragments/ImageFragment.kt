@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.natureobserverapp.R
-import com.example.natureobserverapp.models.NatureObservationWithWeatherInfoModel
-import com.example.natureobserverapp.models.NatureObservationWithWeatherInfoModelFactory
+import com.example.natureobserverapp.models.NatureObservationModel
+import com.example.natureobserverapp.models.NatureObservationModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,9 +26,6 @@ class ImageFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         imageId = requireArguments().getLong("imageId")
-
-        arguments?.let {
-        }
     }
 
     override fun onCreateView(
@@ -45,17 +42,18 @@ class ImageFragment : Fragment() {
         (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (imageId != null) {
-            val nowwim: NatureObservationWithWeatherInfoModel by viewModels {
-                NatureObservationWithWeatherInfoModelFactory(
+            val nom: NatureObservationModel by viewModels {
+                NatureObservationModelFactory(
                     requireActivity().application,
                     imageId!!
                 )
             }
 
-            nowwim.getNatureObservationWithWeatherInfo().observe(viewLifecycleOwner) {
-                val pictureFilePath = it.natureObservation?.picturePath
+            nom.getNatureObservation().observe(viewLifecycleOwner) {
+                val pictureFilePath = it.picturePath
                 val imageView = view.findViewById<ImageView>(R.id.fr_imageView)
 
+                // The image is decoded and rotated in a background thread with a coroutine
                 GlobalScope.launch(Dispatchers.Default) {
                     val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
 

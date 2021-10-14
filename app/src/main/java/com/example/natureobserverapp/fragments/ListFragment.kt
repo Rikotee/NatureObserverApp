@@ -102,6 +102,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
             }
     }
 
+    // Observations are filtered in the list based on the category and time frame filter spinners
     private fun getList() {
         val observationsRecyclerView = view?.findViewById<RecyclerView>(R.id.rv_obs_list)
 
@@ -144,6 +145,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         }
     }
 
+    // User added categories are fetched from Shared Preferences and added to the categories list
     private fun addToList(): MutableList<String> {
         val newCategoriesSet = HashSet<String>()
 
@@ -168,6 +170,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         return categoriesList
     }
 
+    // Spinner index is fetched from Shared Preferences and the spinner selection is set
     private fun setSpinnerValue() {
         val newSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
             requireActivity(),
@@ -179,6 +182,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         }
     }
 
+    // The selected spinner value index is saved in Shared Preferences
     private fun updateSpinner() {
         val categoryS = listSpinner.selectedItem.toString()
 
@@ -194,6 +198,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         )
     }
 
+    // Spinner index is fetched from Shared Preferences and the spinner selection is set
     private fun setTimeSpinnerValue() {
         val newSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
             requireActivity(),
@@ -206,6 +211,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         }
     }
 
+    // The selected spinner value index is saved in Shared Preferences
     private fun updateTimeSpinner(spinnerIndex: Int) {
         SharedPreferencesFunctions.putSharedPreferenceIndexValue(
             requireActivity(),
@@ -213,6 +219,7 @@ class ListFragment : Fragment(), RecyclerViewAdapter.ClickListener {
         )
     }
 
+    // The observation list is filtered based on the selected time frame
     private fun filterObservationsByTimeFrame(
         spinnerIndex: Int,
         list: List<NatureObservation>

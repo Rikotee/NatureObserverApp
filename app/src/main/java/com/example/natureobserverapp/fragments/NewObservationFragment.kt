@@ -45,7 +45,6 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     private lateinit var addCategoryEditText: EditText
     private lateinit var descriptionEditText: EditText
     private lateinit var saveObservationButton: Button
-    private val sharedPrefFile = "sharedpreference"
     private val categoriesList: MutableList<String> = PredefinedLists.categories.toMutableList()
     private var usePredefinedCategory = true
 
@@ -66,13 +65,15 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility = View.GONE
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.visibility =
+            View.GONE
         (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             getString(R.string.new_observation_title_text)
 
         val observationImageView = view.findViewById<ImageView>(R.id.observationImageView)
 
+        // The image is decoded and rotated in a background thread with a coroutine
         GlobalScope.launch(Dispatchers.Default) {
             val imageBitmap = BitmapFactory.decodeFile(pictureFilePath)
 
@@ -103,10 +104,12 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = aa
 
+        // First the gps location found variable is false
         gpsLocationFound = false
 
         weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
+        // Sensor manager is required and the availability of light sensor is checked
         sm = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
         if (sm.getDefaultSensor(Sensor.TYPE_LIGHT) != null) {
             sLight = sm.getDefaultSensor(Sensor.TYPE_LIGHT)
@@ -121,6 +124,9 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
             saveObservationButton.isEnabled = true
         }
 
+        // If the title edit text is empty, the user will be notified, and if the user creates a new
+        // category and the category edit text is empty, the user will be notified too. Else the observation
+        // will be saved.
         saveObservationButton.setOnClickListener {
             if (titleEditText.text.isEmpty()) {
                 Toast.makeText(
@@ -154,6 +160,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
             }
     }
 
+    // The data is saved to the database including weather data that is fetched from the network
     private fun getDataAndSave() {
         val title = titleEditText.text.toString()
 
@@ -166,10 +173,10 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
 
             val newCategoriesSet = HashSet<String>()
 
-            val sharedPreference =
-                this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-
-            val categoriesSet = sharedPreference?.getStringSet("newCategories", newCategoriesSet)
+            val categoriesSet = SharedPreferencesFunctions.getSharedPreferenceStringSet(
+                requireActivity(),
+                "newCategories", newCategoriesSet
+            )
 
             if (categoriesSet != null) {
                 newCategoriesSet.addAll(categoriesSet)
@@ -177,9 +184,11 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
 
             newCategoriesSet.add(category)
 
-            val editor = sharedPreference?.edit()
-            editor?.putStringSet("newCategories", newCategoriesSet)
-            editor?.apply()
+            SharedPreferencesFunctions.putSharedPreferenceStringSet(
+                requireActivity(),
+                "newCategories",
+                newCategoriesSet
+            )
         }
 
         val description = descriptionEditText.text.toString()
@@ -320,6 +329,7 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         lm.removeUpdates(this)
     }
 
+    // The location permission is checked. If permission is granted, the location updates are requested.
     fun checkLocationPermissionAndRequestUpdates() {
         if (context?.let {
                 ContextCompat.checkSelfPermission(
@@ -336,6 +346,8 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
                 )
             }
         } else {
+            // If GPS has not yet found a location, the network based location is used. When the GPS
+            // location is found, it will be used only for better accuracy.
             if (gpsLocationFound == false) {
                 lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
                 lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 5f, this)
@@ -346,15 +358,13 @@ class NewObservationFragment : Fragment(), LocationListener, SensorEventListener
         }
     }
 
+    // User added categories are fetched from Shared Preferences and added to the categories list
     private fun getCategoriesListWithAddedCategories(): MutableList<String> {
-        val sharedPreference =
-            this.activity?.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-
         val newCategoriesSet = HashSet<String>()
 
-        val oldCategories = sharedPreference?.getStringSet(
-            "newCategories",
-            newCategoriesSet
+        val oldCategories = SharedPreferencesFunctions.getSharedPreferenceStringSet(
+            requireActivity(),
+            "newCategories", newCategoriesSet
         )
 
         if (oldCategories != null) {

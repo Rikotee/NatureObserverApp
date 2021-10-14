@@ -90,12 +90,14 @@ class MapFragment : Fragment(), LocationListener {
 
         setSpinnerValue()
 
+        // First the gps location found variable is false and first own location value is true
         gpsLocationFound = false
         firstOwnLocation = true
 
         //This add all markers from saved observations
         addItemMarker()
 
+        // Open Street Map API registering
         Configuration.getInstance()
             .load(context, PreferenceManager.getDefaultSharedPreferences(context))
 
@@ -143,8 +145,8 @@ class MapFragment : Fragment(), LocationListener {
         currentLocation = p0
         setOwnLocationMarker()
 
-        /* When GPS location is found, the network location request is removed and the map is centered
-        on the user location for a more precise location */
+        // When GPS location is found, the network location request is removed and the map is centered
+        // on the user location for a more precise location.
         if (p0.provider == LocationManager.GPS_PROVIDER && gpsLocationFound == false) {
             gpsLocationFound = true
             checkLocationPermissionAndRequestUpdates()
@@ -152,6 +154,7 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
+    // The location of the user is marked on the map
     private fun setOwnLocationMarker() {
         if (currentLocation != null) {
             // The map is centered on user location only on the first location update
@@ -161,9 +164,6 @@ class MapFragment : Fragment(), LocationListener {
             }
 
             marker.position = GeoPoint(currentLocation!!.latitude, currentLocation!!.longitude)
-            /*if (Geocoder.isPresent()) {
-                marker.title = getAddress(p0.latitude, p0.longitude)
-            }*/
             marker.subDescription =
                 "Lat: ${currentLocation!!.latitude}, Lon: ${currentLocation!!.longitude}, Alt: ${currentLocation!!.altitude}"
             map.overlays.add(marker)
@@ -183,13 +183,7 @@ class MapFragment : Fragment(), LocationListener {
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
     }
 
-/*    private fun getAddress(lat: Double, lng: Double): String {
-        val geocoder = Geocoder(context)
-        val list = geocoder.getFromLocation(lat, lng, 1)
-        return list[0].getAddressLine(0)
-    }*/
-
-    // This add saved observation to map
+    // This adds saved observations to the map
     private fun addItemMarker() {
         val nom: NatureObservationsModel by viewModels()
         nom.getNatureObservations().observe(this) { it ->
@@ -247,6 +241,7 @@ class MapFragment : Fragment(), LocationListener {
         observationList.clear()
     }
 
+    // The selected spinner value index is saved in Shared Preferences
     private fun updateSpinner() {
         val oldSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
             requireActivity(),
@@ -273,6 +268,7 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
+    // The location permission is checked. If permission is granted, the location updates are requested.
     fun checkLocationPermissionAndRequestUpdates() {
         if (context?.let {
                 ContextCompat.checkSelfPermission(
@@ -289,6 +285,8 @@ class MapFragment : Fragment(), LocationListener {
                 )
             }
         } else {
+            // If GPS has not yet found a location, the network based location is used. When the GPS
+            // location is found, it will be used only for better accuracy.
             if (gpsLocationFound == false) {
                 lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
                 lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 5f, this)
@@ -299,6 +297,7 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
+    // User added categories are fetched from Shared Preferences and added to the categories list
     private fun addToList(): MutableList<String> {
         val newCategoriesSet = HashSet<String>()
 
@@ -335,6 +334,7 @@ class MapFragment : Fragment(), LocationListener {
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
     }
 
+    // Spinner index is fetched from Shared Preferences and the spinner selection is set
     private fun setSpinnerValue() {
         val newSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
             requireActivity(),
@@ -346,6 +346,7 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
+    // Spinner index is fetched from Shared Preferences and the spinner selection is set
     private fun setTimeSpinnerValue() {
         val newSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
             requireActivity(),
@@ -358,6 +359,7 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
+    // The selected spinner value index is saved in Shared Preferences
     private fun updateTimeSpinner(spinnerIndex: Int) {
         val oldSpinnerValue = SharedPreferencesFunctions.getSharedPreferenceIndexValue(
             requireActivity(),
@@ -377,6 +379,7 @@ class MapFragment : Fragment(), LocationListener {
         }
     }
 
+    // The observation list is filtered based on the selected time frame
     private fun filterObservationsByTimeFrame(
         spinnerIndex: Int,
         list: List<NatureObservation>

@@ -35,6 +35,7 @@ class HomeFragment : Fragment(), LocationListener {
     private lateinit var lm: LocationManager
     private var gpsLocationFound: Boolean? = null
 
+    // Interface that the MainActivity implements for launching camera
     interface HomeFragmentListener {
         fun onNewObservationButtonClick(picturePath: String, photoURI: Uri)
     }
@@ -50,6 +51,7 @@ class HomeFragment : Fragment(), LocationListener {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_home, container, false)
 
+        // The weather view xml is inflated to the layout
         val weatherViewContainerLayout =
             rootView.findViewById<LinearLayout>(R.id.weatherViewContainerLayout)
         val weatherViewLayout = inflater.inflate(R.layout.weather_view, null as ViewGroup?)
@@ -77,6 +79,7 @@ class HomeFragment : Fragment(), LocationListener {
 
         val newObservationButton = view.findViewById<Button>(R.id.newObservationButton)
 
+        // A new file is created and activity callback is called for taking a picture
         newObservationButton.setOnClickListener {
             val fileName = "nature_observation_picture"
             val imgPath = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -107,6 +110,7 @@ class HomeFragment : Fragment(), LocationListener {
     override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
     }
 
+    // Weather data is fetched from the view model
     private fun getWeatherInfo() {
         if (isAdded) {
             if (currentLocation != null) {
@@ -131,6 +135,7 @@ class HomeFragment : Fragment(), LocationListener {
                     view?.findViewById<TextView>(R.id.placeNameCountryTextView)?.text =
                         getString(R.string.place_name_country_text, it.name, it.sys.country)
 
+                    // The icon is downloaded from the network in a coroutine
                     lifecycleScope.launch(Dispatchers.Main) {
                         val iconImageBitmap = withContext(Dispatchers.IO) {
                             WeatherIconApi.getWeatherIcon(it.weather[0].icon)
@@ -145,6 +150,7 @@ class HomeFragment : Fragment(), LocationListener {
         }
     }
 
+    // The location permission is checked. If permission is granted, the location updates are requested.
     fun checkLocationPermissionAndRequestUpdates() {
         if (context?.let {
                 ContextCompat.checkSelfPermission(
@@ -161,6 +167,8 @@ class HomeFragment : Fragment(), LocationListener {
                 )
             }
         } else {
+            // If GPS has not yet found a location, the network based location is used. When the GPS
+            // location is found, it will be used only for better accuracy.
             if (gpsLocationFound == false) {
                 lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 500f, this)
                 lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000, 500f, this)

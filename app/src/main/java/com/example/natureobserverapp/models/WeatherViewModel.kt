@@ -10,6 +10,7 @@ import androidx.lifecycle.liveData
 import com.example.natureobserverapp.services.WeatherServiceRepository
 import kotlinx.coroutines.Dispatchers
 
+// View model for weather data retrieving
 class WeatherViewModel : ViewModel() {
     private val repository: WeatherServiceRepository = WeatherServiceRepository()
     private var searchLat: Double? = null
@@ -20,6 +21,7 @@ class WeatherViewModel : ViewModel() {
         searchLat = lat
         searchLon = lon
 
+        // The Open Weather Map API key is fetched
         val ai: ApplicationInfo = context.packageManager
             .getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
         val value = ai.metaData["openWeatherMapApiKeyValue"]

@@ -1,5 +1,6 @@
 package com.example.natureobserverapp.models
 
+// Weather data model
 object WeatherModel {
     data class Result (
         val coord: Coord,

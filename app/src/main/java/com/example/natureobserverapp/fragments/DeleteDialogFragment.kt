@@ -13,10 +13,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+// Dialog fragment for the delete observation confirmation dialog
 class DeleteDialogFragment : DialogFragment() {
     private var activityCallBack: DeleteDialogFragmentListener? = null
     private val db by lazy { NatureObservationDB.get(requireActivity().applicationContext) }
 
+    // Interface that the MainActivity implements for map refresh
     interface DeleteDialogFragmentListener {
         fun onDeleteObservationButtonClick()
     }

@@ -9,6 +9,7 @@ import com.example.natureobserverapp.NatureObservation
 import com.example.natureobserverapp.NatureObservationDB
 import com.example.natureobserverapp.NatureObservationWithWeatherInfo
 
+// Database View Models for different functions
 class NatureObservationsModel(application: Application) : AndroidViewModel(application) {
     private val natureObservations: LiveData<List<NatureObservation>> =
         NatureObservationDB.get(getApplication()).natureObservationDao().getAll()
@@ -51,4 +52,3 @@ class NatureObservationWithWeatherInfoModelFactory(
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
         NatureObservationWithWeatherInfoModel(application, natureObservationId) as T
 }
-

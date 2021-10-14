@@ -1,5 +1,6 @@
 package com.example.natureobserverapp
 
+// Singleton object for predefined lists
 object PredefinedLists {
     val categories = arrayOf(
         "Mammal",

@@ -3,6 +3,7 @@ package com.example.natureobserverapp
 import android.app.Activity
 import android.content.Context
 
+// Singleton object for different Shared Preference functions
 object SharedPreferencesFunctions {
     private const val sharedPrefFile = "sharedpreference"
 
@@ -32,5 +33,13 @@ object SharedPreferencesFunctions {
         val sharedPreference =
             activity.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         return sharedPreference?.getStringSet(keyName, defaultValue)
+    }
+
+    fun putSharedPreferenceStringSet(activity: Activity, keyName: String, value: HashSet<String>) {
+        val sharedPreference =
+            activity.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val editor = sharedPreference.edit()
+        editor.putStringSet(keyName, value)
+        editor.apply()
     }
 }
